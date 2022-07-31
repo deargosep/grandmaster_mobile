@@ -8,42 +8,78 @@ class Header extends StatelessWidget {
       this.text,
       this.withPadding = true,
       this.withBack = true,
+      this.icon = '',
+      this.iconOnTap,
+      this.padding,
+      this.bottomChild,
       this.onTap})
       : super(key: key);
   final text;
   bool withPadding;
   bool withBack;
+  final padding;
+  String icon;
+  Widget? bottomChild;
   final VoidCallback? onTap;
+  final VoidCallback? iconOnTap;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          withPadding ? EdgeInsets.fromLTRB(20, 0, 20, 0) : EdgeInsets.all(0),
-      child: Row(
+    return Container(
+      height: 50,
+      child: Column(
         children: [
-          !withBack
-              ? Container()
-              : Row(children: [
-                  Container(
-                    height: 17,
-                    width: 10,
-                    child: BrandIcon(
-                      icon: 'back_arrow',
-                      onTap: onTap,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 26,
-                  ),
-                ]),
-          Text(
-            text ?? '',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.secondary),
-          )
+          Padding(
+            padding: padding != null
+                ? padding
+                : withPadding
+                    ? EdgeInsets.fromLTRB(
+                        20, 10 + MediaQuery.of(context).viewInsets.top, 20, 0)
+                    : EdgeInsets.all(0),
+            child: Row(
+              children: [
+                !withBack
+                    ? Container()
+                    : Row(children: [
+                        Container(
+                          height: 17,
+                          width: 10,
+                          child: BrandIcon(
+                            icon: 'back_arrow',
+                            onTap: onTap,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 26,
+                        ),
+                      ]),
+                Text(
+                  text ?? '',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
+                Spacer(),
+                icon != ''
+                    ? Container(
+                        height: 18,
+                        width: 18,
+                        child: BrandIcon(
+                          icon: icon,
+                          onTap: iconOnTap,
+                          color: Theme.of(context).colorScheme.secondary,
+                          height: 18,
+                          width: 18,
+                        ),
+                      )
+                    : Container()
+              ],
+            ),
+          ),
+          bottomChild != null ? Spacer() : Container(),
+          bottomChild ?? Container()
         ],
       ),
     );

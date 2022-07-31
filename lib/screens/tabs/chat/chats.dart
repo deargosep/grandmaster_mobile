@@ -10,6 +10,29 @@ class ChatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ChatData chatData(index) {
+      switch (index) {
+        case 0:
+          return ChatData(name: "Игорь Федотов", isGroup: false);
+        case 1:
+          return ChatData(name: "Соревнования", isGroup: true, members: [
+            {"username": "Lisa"},
+            {"username": "Artem"},
+          ]);
+        case 2:
+          return ChatData(
+              name: "Группа 0401",
+              isGroup: true,
+              isSystem: true,
+              members: [
+                {"username": "Lisa"},
+                {"username": "Artem"},
+              ]);
+        default:
+          return ChatData(name: "Игорь Афотьев", isGroup: false);
+      }
+    }
+
     return CustomScaffold(
         noPadding: true,
         appBar: PreferredSize(
@@ -28,32 +51,45 @@ class ChatsScreen extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          index == 0
-                              ? SizedBox(
-                                  height: 16,
-                                )
-                              : Container(),
-                          ChatTile(index),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          Divider(
-                            thickness: 2,
-                            color: Color(0xFFF8F8F8),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                        ],
-                      );
-                    }),
-              ),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: ListView(children: [
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ChatTile(chatData(0)),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Divider(
+                      thickness: 2,
+                      color: Color(0xFFF8F8F8),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ChatTile(chatData(1)),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Divider(
+                      thickness: 2,
+                      color: Color(0xFFF8F8F8),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ChatTile(chatData(2)),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Divider(
+                      thickness: 2,
+                      color: Color(0xFFF8F8F8),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    )
+                  ])),
             )
           ],
         ));
@@ -61,25 +97,16 @@ class ChatsScreen extends StatelessWidget {
 }
 
 class ChatTile extends StatelessWidget {
-  const ChatTile(this.index, {Key? key}) : super(key: key);
+  const ChatTile(this.data, {Key? key}) : super(key: key);
 
-  final int index;
+  final ChatData data;
 
   @override
   Widget build(BuildContext context) {
-    ChatData chatArgs = ChatData(
-        isGroup: !index.isOdd,
-        members: index.isOdd
-            ? []
-            : [
-                {"username": "Lisa"},
-                {"username": "Artem"},
-              ],
-        name: index.isOdd ? "Игорь Федотов" : "Соревнования");
     return GestureDetector(
       onTap: () {
         // TODO: pass data to screen
-        Get.toNamed('/chat', arguments: chatArgs);
+        Get.toNamed('/chat', arguments: data);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,7 +121,7 @@ class ChatTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    chatArgs.name,
+                    data.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -106,8 +133,8 @@ class ChatTile extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    chatArgs.messages.isNotEmpty
-                        ? chatArgs.messages.last.text
+                    data.messages.isNotEmpty
+                        ? data.messages.last.text
                         : 'Всем привет!',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary),
@@ -124,18 +151,18 @@ class ChatTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  chatArgs.messages.isNotEmpty
-                      ? DateFormat.Hm().format(chatArgs.messages.last.timedate)
+                  data.messages.isNotEmpty
+                      ? DateFormat.Hm().format(data.messages.last.timedate)
                       : '15:24',
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
-                index.isOdd
+                !data.isSystem
                     ? Container()
                     : SizedBox(
                         height: 8,
                       ),
-                index.isOdd
+                !data.isSystem
                     ? Container()
                     : Container(
                         height: 15,
@@ -162,14 +189,14 @@ class ChatTile extends StatelessWidget {
 
 class ChatData {
   bool isGroup;
-  bool isSystemGroup;
+  bool isSystem;
   List members;
   String name;
   List<MessageType> messages;
 
   ChatData(
       {this.isGroup = false,
-      this.isSystemGroup = false,
+      this.isSystem = false,
       members,
       messages,
       required this.name})

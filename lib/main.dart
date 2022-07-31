@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
 import 'package:grandmaster/screens/auth/code.dart';
 import 'package:grandmaster/screens/event_screen.dart';
+import 'package:grandmaster/screens/members.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
 import 'package:grandmaster/state/events.dart';
@@ -26,6 +27,7 @@ void main() {
         GetPage(name: '/bar', page: () => BarScreen()),
         GetPage(name: '/article', page: () => EventScreen()),
         GetPage(name: '/chat', page: () => ChatScreen()),
+        GetPage(name: '/members', page: () => MembersScreen()),
       ],
       theme: ThemeClass.lightTheme,
     ),

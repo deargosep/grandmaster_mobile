@@ -323,16 +323,23 @@ class _Header extends StatelessWidget {
                   height: 4,
                 ),
                 chat.isGroup
-                    ? Text(
-                        'Участники: ${chat.members.length}',
-                        style:
-                            TextStyle(color: Color(0xFF927474), fontSize: 14),
-                      )
-                    : Container()
+                    ? GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/members', arguments: {
+                            "members": chat.members,
+                            "isOwner": true
+                          });
+                        },
+                        child: Text(
+                          'Участники: ${chat.members.length}',
+                          style:
+                              TextStyle(color: Color(0xFF927474), fontSize: 14),
+                        ))
+                    : Container(),
               ],
             ),
             Spacer(),
-            chat.isGroup && !chat.isSystemGroup
+            chat.isGroup && !chat.isSystem
                 ? BrandIcon(
                     icon: 'logout',
                     color: Theme.of(context).colorScheme.secondary,
