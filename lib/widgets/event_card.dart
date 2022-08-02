@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 class EventCard extends StatelessWidget {

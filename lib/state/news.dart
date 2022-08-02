@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Articles extends ChangeNotifier {
-  List<ArticleType> _events = [
+  List<ArticleType> _news = [
     ArticleType(
-        id: "123adssdad",
-        author: Author(
-          id: "12222",
-          username: "HotLine",
-          name: "Игорь",
-          age: 24,
-          country: "Россия",
-          city: "Москва",
-          description:
-              "С другой стороны, экономическая повестка сегодняшнего дня предоставляет широкие возможности для существующих финансовых и административных условий.",
-        ),
+        id: "123adssdad3",
         name: "Катаемся на барсуках",
         date: "09 июня 2022",
         time: '15:00',
@@ -22,16 +13,6 @@ class Articles extends ChangeNotifier {
         views: 100),
     ArticleType(
         id: "123adssdad",
-        author: Author(
-          id: "12222",
-          username: "fdfdfdfdfdfdfd",
-          name: "Игорь",
-          age: 24,
-          country: "Россия",
-          city: "Москва",
-          description:
-              "С другой стороны, экономическая повестка сегодняшнего дня предоставляет широкие возможности для существующих финансовых и административных условий.",
-        ),
         name: "Катаемся на барсуках2",
         date: "09 июня 2022",
         time: '15:00',
@@ -40,22 +21,25 @@ class Articles extends ChangeNotifier {
         views: 100)
   ];
 
-  List<ArticleType> get events => _events;
+  List<ArticleType> get news => _news;
 
   void setEvents(List<ArticleType> events) {
-    _events = events;
+    _news = events;
+  }
+
+  ArticleType? getNews(id) {
+    return _news.firstWhereOrNull((element) => element.id == id);
   }
 
   /// Removes all items from the cart.
   void removeAll() {
-    _events.clear();
+    _news.clear();
     notifyListeners();
   }
 }
 
 class ArticleType {
   final id;
-  final Author author;
   final name;
   final date;
   final time;
@@ -64,7 +48,6 @@ class ArticleType {
 
   ArticleType({
     required this.id,
-    required this.author,
     required this.name,
     required this.date,
     required this.time,
@@ -73,9 +56,10 @@ class ArticleType {
   });
 }
 
-class Author {
+class User {
   final id;
-  final username;
+  final fullName;
+  final phoneNumber;
   final role;
   final gender;
   final birthday;
@@ -83,20 +67,21 @@ class Author {
   final country;
   final city;
   final name;
-  final description;
   final registration_date;
+  final List<User> children;
 
-  Author({
+  User({
     required this.id,
-    required this.username,
+    required this.fullName,
+    this.phoneNumber,
+    children,
     this.role,
     this.gender,
     this.birthday,
-    required this.name,
+    this.name,
     required this.age,
     required this.country,
     required this.city,
-    required this.description,
     this.registration_date,
-  });
+  }) : children = children ?? [];
 }

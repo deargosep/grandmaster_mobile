@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/add_edit_article.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
 import 'package:grandmaster/screens/auth/code.dart';
 import 'package:grandmaster/screens/event_screen.dart';
 import 'package:grandmaster/screens/members.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/screens/tabs/profile/child_profile.dart';
+import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
-import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +20,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => Articles()),
-      ChangeNotifierProvider(create: (context) => User()),
+      ChangeNotifierProvider(create: (context) => UserState()),
     ],
     child: GetMaterialApp(
       getPages: [
@@ -30,6 +33,9 @@ void main() {
         GetPage(name: '/chat', page: () => ChatScreen()),
         GetPage(name: '/members', page: () => MembersScreen()),
         GetPage(name: '/other_profile', page: () => SomeoneProfile()),
+        GetPage(name: '/profile', page: () => ProfileScreen()),
+        GetPage(name: '/child_profile', page: () => ChildProfileScreen()),
+        GetPage(name: '/add_edit_article', page: () => AddEditArticleScreen()),
       ],
       theme: ThemeClass.lightTheme,
     ),

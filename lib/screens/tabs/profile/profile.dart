@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<User>(context).userMeta;
+    var user = Provider.of<UserState>(context).user;
     return Scaffold(
         body: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -27,15 +27,15 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListOfOptions(user: user),
+                child: _ListOfOptions(user: user),
               )
             ])));
   }
 }
 
-class ListOfOptions extends StatelessWidget {
-  const ListOfOptions({Key? key, required this.user}) : super(key: key);
-  final Author user;
+class _ListOfOptions extends StatelessWidget {
+  const _ListOfOptions({Key? key, required this.user}) : super(key: key);
+  final User user;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,27 +43,35 @@ class ListOfOptions extends StatelessWidget {
         Option(
             text: "Мой профиль",
             onTap: () {
-              Get.toNamed('/profile/info', arguments: user);
+              Get.toNamed('/my_profile', arguments: user);
             },
             type: 'primary'),
-        SizedBox(
-          height: 16,
-        ),
-        Option(
-          text: "Иванов Иван Иванович",
-          onTap: () {
-            Get.toNamed('/profile/events', arguments: user);
-          },
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Option(
-          text: "Иванов Иван Иванович",
-          onTap: () {
-            Get.toNamed('/profile/support', arguments: user);
-          },
-        ),
+        ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: Provider.of<UserState>(context).user.children.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Option(
+                    text: Provider.of<UserState>(context)
+                        .user
+                        .children[index]
+                        .fullName,
+                    onTap: () {
+                      Get.toNamed('/child_profile',
+                          arguments:
+                              Provider.of<UserState>(context, listen: false)
+                                  .user
+                                  .children[index]);
+                    },
+                  ),
+                ],
+              );
+            }),
       ],
     );
   }

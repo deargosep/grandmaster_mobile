@@ -3,9 +3,8 @@ import 'package:get/get.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/top_tab.dart';
-import 'package:provider/provider.dart';
 
-import '../state/events.dart';
+import '../state/news.dart';
 import '../widgets/tabbar_switch.dart';
 
 class ProfileOtherScreen extends StatefulWidget {
@@ -17,7 +16,7 @@ class ProfileOtherScreen extends StatefulWidget {
 
 class _ProfileOtherScreenState extends State<ProfileOtherScreen>
     with TickerProviderStateMixin {
-  final Author author = Get.arguments;
+  final User author = Get.arguments;
   late TabController controller;
   @override
   void initState() {
@@ -53,7 +52,7 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen>
               height: 24,
             ),
             Text(
-              author.username,
+              author.name,
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -75,152 +74,10 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen>
             SizedBox(
               height: 32,
             ),
-            Expanded(
-                child: TabBarView(children: [
-              Info(
-                author: author,
-              ),
-              History(
-                items: Provider.of<Articles>(context)
-                    .events
-                    .where((e) => e.author.username == author.username)
-                    .toList(),
-              )
-            ])),
+            Expanded(child: TabBarView(children: [])),
           ],
         ),
       ),
-    );
-  }
-}
-
-class Info extends StatelessWidget {
-  const Info({Key? key, required this.author}) : super(key: key);
-  final Author author;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Имя',
-          style: TextStyle(color: Color(0xFF6A7592)),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          author.name,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Возраст',
-          style: TextStyle(color: Color(0xFF6A7592)),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          author.age.toString(),
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Страна',
-          style: TextStyle(color: Color(0xFF6A7592)),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          author.country,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Город',
-          style: TextStyle(color: Color(0xFF6A7592)),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          author.city,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'О себе',
-          style: TextStyle(color: Color(0xFF6A7592)),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          author.description,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-      ],
-    );
-  }
-}
-
-class History extends StatelessWidget {
-  const History({Key? key, required this.items}) : super(key: key);
-  final List<ArticleType> items;
-  @override
-  Widget build(BuildContext context) {
-    //TODO
-    return ListView(
-      children: [
-        Text(
-          'Активные',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        SizedBox(
-          height: 32,
-        ),
-        Text(
-          'Завершенные',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 16,
-        ),
-      ],
     );
   }
 }

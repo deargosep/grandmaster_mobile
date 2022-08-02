@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/events.dart';
-import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
-import 'package:provider/provider.dart';
 
 class EventScreen extends StatefulWidget {
   EventScreen({Key? key}) : super(key: key);
@@ -18,9 +16,6 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var isAuthor =
-        Provider.of<User>(context).userMeta.username == item.author.username;
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return Scaffold(
       bottomNavigationBar: BottomBarWrap(currentTab: 1),
       body: SingleChildScrollView(

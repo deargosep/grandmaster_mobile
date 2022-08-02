@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 
-  late final currentUser = Provider.of<User>(context).userMeta.username;
+  // late final currentUser = Provider.of<UserState>(context).user.username;
   ChatData chat = Get.arguments;
 
   @override

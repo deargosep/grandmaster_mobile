@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/event_card.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -16,14 +16,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-    var user = Provider.of<User>(context);
+    var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
       appBar: AppHeader(
         text: 'Новости',
         withBack: false,
-        icon: user.userMeta.role == 'moderator' ? 'plus' : '',
-        iconOnTap: () {},
+        icon: user.user.role == 'moderator' ? 'plus' : '',
+        iconOnTap: () {
+          Get.toNamed('/add_edit_article');
+        },
       ),
       body: Column(
         children: [
@@ -44,13 +46,13 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var list = Provider.of<Articles>(context, listen: true).events;
-    var user = Provider.of<User>(context);
+    var list = Provider.of<Articles>(context, listen: true).news;
+    var user = Provider.of<UserState>(context);
     if (list.isNotEmpty) {
       return Column(
-          children: list.map((e) {
+          children: list.map((item) {
         return Slidable(
-          enabled: user.userMeta.role == 'moderator',
+          enabled: user.user.role == 'moderator',
           endActionPane:
               ActionPane(extentRatio: 0.3, motion: ScrollMotion(), children: [
             Expanded(
@@ -64,6 +66,9 @@ class Content extends StatelessWidget {
                       color: Colors.black,
                       height: 18,
                       width: 18,
+                      onTap: () {
+                        Get.toNamed('/add_edit_article', arguments: item.id);
+                      },
                     ),
                     BrandIcon(
                       icon: 'no_view',
@@ -92,7 +97,7 @@ class Content extends StatelessWidget {
                     bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: EventCard(item: e),
+              child: EventCard(item: item),
             ),
           ),
         );
@@ -141,7 +146,7 @@ class _Header extends StatelessWidget {
               style: textStyle,
             ),
             Text(
-              Provider.of<User>(context, listen: true).user.city,
+              Provider.of<UserState>(context, listen: true).user.city,
               style: textStyleBold,
             )
           ],

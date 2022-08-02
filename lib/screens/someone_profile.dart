@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 class SomeoneProfile extends StatelessWidget {
@@ -7,7 +8,7 @@ class SomeoneProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var username = Get.arguments;
+    User user = Get.arguments;
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: 32, left: 20, right: 20),
@@ -33,7 +34,7 @@ class SomeoneProfile extends StatelessWidget {
                       height: 16,
                     ),
                     Text(
-                      username,
+                      user.fullName,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontWeight: FontWeight.bold,
