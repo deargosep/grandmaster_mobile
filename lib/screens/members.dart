@@ -32,54 +32,60 @@ class MembersScreen extends StatelessWidget {
               child: ListView.builder(
                 itemCount: item["members"].length ?? 0,
                 itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // TODO: image (backend)
-                            Row(
-                              children: [
-                                Container(
-                                  width: 45,
-                                  height: 45,
-                                  child: CircleAvatar(),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  item["members"][index]["username"],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Color(0xFF927474)),
-                                ),
-                              ],
-                            ),
-                            Builder(builder: (context) {
-                              if (item["isOwner"] != null && !item["isOwner"])
-                                return Container();
-                              return Row(
+                  return GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/other_profile',
+                          arguments: item["members"][index]["username"]);
+                    },
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // TODO: image (backend)
+                              Row(
                                 children: [
-                                  BrandIcon(
-                                    height: 16,
+                                  Container(
+                                    width: 45,
+                                    height: 45,
+                                    child: CircleAvatar(),
+                                  ),
+                                  SizedBox(
                                     width: 16,
-                                    icon: 'decline',
-                                    color: Color(0xFF4F3333),
-                                  )
+                                  ),
+                                  Text(
+                                    item["members"][index]["username"],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Color(0xFF927474)),
+                                  ),
                                 ],
-                              );
-                            })
-                          ],
+                              ),
+                              Builder(builder: (context) {
+                                if (item["isOwner"] != null && !item["isOwner"])
+                                  return Container();
+                                return Row(
+                                  children: [
+                                    BrandIcon(
+                                      height: 16,
+                                      width: 16,
+                                      icon: 'decline',
+                                      color: Color(0xFF4F3333),
+                                    )
+                                  ],
+                                );
+                              })
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      )
-                    ],
+                        SizedBox(
+                          height: 8,
+                        )
+                      ],
+                    ),
                   );
                 },
               ),

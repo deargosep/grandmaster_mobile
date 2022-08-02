@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'images/brand_icon.dart';
 
 class Option extends StatefulWidget {
-  const Option({Key? key, required this.text, this.onTap}) : super(key: key);
+  const Option(
+      {Key? key, required this.text, this.onTap, this.type = 'secondary'})
+      : super(key: key);
   final text;
   final onTap;
+  final type;
 
   @override
   State<Option> createState() => _OptionState();
@@ -36,7 +39,8 @@ class _OptionState extends State<Option> {
         height: 50,
         padding: EdgeInsets.fromLTRB(20, 16.5, 20, 16.5),
         decoration: BoxDecoration(
-          color: pressing ? Color(0xFFE4E6EB) : Color(0xFFF8F8F8),
+          color:
+              widget.type == 'primary' ? Color(0xFFFF5B5B) : Color(0xFFFBF7F7),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Row(
@@ -45,13 +49,17 @@ class _OptionState extends State<Option> {
             Text(
               widget.text ?? '',
               style: TextStyle(
-                  color: Color(0xFF6A7592),
+                  color: widget.type == 'primary'
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.secondary,
                   fontSize: 14,
                   fontWeight: FontWeight.w500),
             ),
             BrandIcon(
               icon: 'right_arrow',
-              color: Color(0xFF6A7592),
+              color: widget.type == 'primary'
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.secondary,
               height: 14,
               width: 8,
             )

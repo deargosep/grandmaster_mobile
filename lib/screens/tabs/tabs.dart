@@ -25,7 +25,7 @@ class _BarScreenState extends State<BarScreen> {
     //Chat
     ChatsScreen(),
     //Profile
-    MyProfileScreen()
+    ProfileScreen()
   ];
 
   void _onItemTapped(int index) {
