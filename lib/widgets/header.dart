@@ -54,12 +54,16 @@ class Header extends StatelessWidget {
                           width: 26,
                         ),
                       ]),
-                Text(
-                  text ?? '',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.secondary),
+                Container(
+                  width: icon != '' ? 250 : 299,
+                  child: Text(
+                    text ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
                 Spacer(),
                 icon != ''
@@ -139,12 +143,16 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         width: 26,
                       ),
                     ]),
-              Text(
-                text ?? '',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                    color: Theme.of(context).colorScheme.secondary),
+              Container(
+                width: icon != '' ? 250 : 299,
+                child: Text(
+                  text ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
               ),
               Spacer(),
               icon != ''

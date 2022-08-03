@@ -15,7 +15,7 @@ class ChildProfileScreen extends StatelessWidget {
           currentTab: 3,
         ),
         body: Container(
-          padding: EdgeInsets.only(top: 32, left: 20, right: 20),
+          padding: EdgeInsets.only(top: 32, left: 0, right: 0),
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Stack(
@@ -23,9 +23,12 @@ class ChildProfileScreen extends StatelessWidget {
               Positioned(
                 left: 0,
                 top: 28,
-                child: BrandIcon(
-                  icon: 'back_arrow',
-                  color: Theme.of(context).colorScheme.secondary,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: BrandIcon(
+                    icon: 'back_arrow',
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
               ),
               Positioned(
@@ -49,14 +52,15 @@ class ChildProfileScreen extends StatelessWidget {
                       ),
                       Divider(
                         height: 0,
-                        thickness: 2,
-                        color: Color(0xFFF3F3F3),
                       ),
                       SizedBox(
                         height: 32,
                       ),
-                      Info(
-                        user: user,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Info(
+                          user: user,
+                        ),
                       )
                     ],
                   ))

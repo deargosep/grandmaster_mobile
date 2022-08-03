@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class ThemeClass {
   static ThemeData lightTheme = ThemeData(
+    dividerColor: Color(0xFFF3F3F3),
+    dividerTheme: DividerThemeData(thickness: 2),
     fontFamily: 'TTNormsPro',
     primaryColor: Color(0xFFFF5858),
     scaffoldBackgroundColor: Colors.white,

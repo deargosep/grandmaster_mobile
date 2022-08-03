@@ -46,8 +46,6 @@ class ChatsScreen extends StatelessWidget {
           children: [
             Divider(
               height: 3,
-              thickness: 2,
-              color: Color(0xFFF3F3F3),
             ),
             Expanded(
               child: Padding(
@@ -60,10 +58,7 @@ class ChatsScreen extends StatelessWidget {
                     SizedBox(
                       height: 16,
                     ),
-                    Divider(
-                      thickness: 2,
-                      color: Color(0xFFF8F8F8),
-                    ),
+                    Divider(),
                     SizedBox(
                       height: 16,
                     ),
@@ -71,10 +66,7 @@ class ChatsScreen extends StatelessWidget {
                     SizedBox(
                       height: 16,
                     ),
-                    Divider(
-                      thickness: 2,
-                      color: Color(0xFFF8F8F8),
-                    ),
+                    Divider(),
                     SizedBox(
                       height: 16,
                     ),
@@ -82,10 +74,7 @@ class ChatsScreen extends StatelessWidget {
                     SizedBox(
                       height: 16,
                     ),
-                    Divider(
-                      thickness: 2,
-                      color: Color(0xFFF8F8F8),
-                    ),
+                    Divider(),
                     SizedBox(
                       height: 16,
                     )

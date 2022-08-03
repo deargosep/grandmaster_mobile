@@ -39,8 +39,11 @@ class CustomScaffold extends StatelessWidget {
           body: LayoutBuilder(builder: (context, constraint) {
             return Center(
               child: noPadding == true
-                  ? SingleChildScrollView(
-                      child: body,
+                  ? Align(
+                      alignment: Alignment.topCenter,
+                      child: SingleChildScrollView(
+                        child: body,
+                      ),
                     )
                   : Padding(
                       padding: onlyTopPadding == true

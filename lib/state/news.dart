@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
 
 class Articles extends ChangeNotifier {
   List<ArticleType> _news = [
@@ -69,19 +70,21 @@ class User {
   final name;
   final registration_date;
   final List<User> children;
+  Passport passport;
 
-  User({
-    required this.id,
-    required this.fullName,
-    this.phoneNumber,
-    children,
-    this.role,
-    this.gender,
-    this.birthday,
-    this.name,
-    required this.age,
-    required this.country,
-    required this.city,
-    this.registration_date,
-  }) : children = children ?? [];
+  User(
+      {required this.id,
+      required this.fullName,
+      this.phoneNumber,
+      children,
+      this.role,
+      this.gender,
+      this.birthday,
+      this.name,
+      required this.age,
+      required this.country,
+      required this.city,
+      this.registration_date,
+      required this.passport})
+      : children = children ?? [];
 }

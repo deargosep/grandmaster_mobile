@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:grandmaster/widgets/list_of_options.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<OptionType> optionList = [
+      OptionType('Мероприятия', ''),
+      OptionType('Видео', ''),
+      OptionType('Учебные материалы', ''),
+      OptionType('Залы', ''),
+      OptionType('Оплата', ''),
+      OptionType('QR коды', ''),
+      OptionType('О клубе', '')
+    ];
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 40, left: 20, right: 20),
@@ -21,7 +31,7 @@ class MenuScreen extends StatelessWidget {
             SizedBox(
               height: 32,
             ),
-            _ListOfOptions()
+            ListOfOptions(list: optionList)
           ],
         ),
       ),

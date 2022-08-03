@@ -23,6 +23,9 @@ class _TabsSwitchState extends State<TabsSwitch> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    widget.controller?.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   // @override
@@ -36,17 +39,24 @@ class _TabsSwitchState extends State<TabsSwitch> with TickerProviderStateMixin {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFFF8F8F8),
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: TabBar(
           controller: widget.controller,
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorWeight: 0,
+          isScrollable: false,
           indicator: BoxDecoration(
               color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          splashBorderRadius: BorderRadius.all(Radius.circular(20)),
-          unselectedLabelColor: Color(0xFF6A7592),
+              borderRadius: widget.controller?.index == 0
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10))
+                  : BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10))),
+          splashBorderRadius: BorderRadius.all(Radius.circular(10)),
+          unselectedLabelColor: Color(0xFF927474),
           labelColor: Colors.white,
           tabs: widget.mockupOnly == true
               ? [

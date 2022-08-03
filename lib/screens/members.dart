@@ -22,8 +22,6 @@ class MembersScreen extends StatelessWidget {
             height: 32,
           ),
           Divider(
-            thickness: 2,
-            color: Color(0xFFF3F3F3),
             height: 0,
           ),
           Expanded(
