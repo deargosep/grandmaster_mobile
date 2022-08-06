@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/news.dart';
 
+import '../../../state/user.dart';
 import '../../../utils/bottombar_wrap.dart';
 import '../../../widgets/images/brand_icon.dart';
 

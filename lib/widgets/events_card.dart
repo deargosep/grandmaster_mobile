@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:intl/intl.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({Key? key, required this.item}) : super(key: key);
-  final ArticleType item;
+  final EventType item;
   @override
   Widget build(BuildContext context) {
+    Color color = Color(0xFF927474);
+    bool isEnded(DateTime end) {
+      return DateTime.now().isAfter(end);
+    }
+
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/article', arguments: item);
+        Get.toNamed('/event', arguments: item);
       },
       child: Container(
-        height: 244,
+        height: 286,
         width: 335,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -24,7 +30,7 @@ class EventCard extends StatelessWidget {
             Container(
               height: 132,
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.all(Radius.circular(15))),
             ), // TODO: should be an Image (backend)
             // meta info
@@ -53,9 +59,7 @@ class EventCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFAC9595)),
+                    fontSize: 12, fontWeight: FontWeight.w500, color: color),
               ),
             ),
             SizedBox(
@@ -74,46 +78,43 @@ class EventCard extends StatelessWidget {
                         icon: 'calendar',
                         height: 12,
                         width: 12,
+                        color: color,
                       ),
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
-                      item.date,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.secondary),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 33,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: 12,
-                      width: 12,
-                      child: BrandIcon(
-                        icon: 'view',
-                        height: 12,
-                        width: 12,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      item.views.toString(),
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.secondary),
+                      "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                      style: TextStyle(fontSize: 12, color: color),
                     )
                   ],
                 ),
               ],
             ),
+            SizedBox(
+              height: 17.33,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                height: 26,
+                width: 89,
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Theme.of(context).inputDecorationTheme.fillColor),
+                child: Center(
+                  child: Text(
+                    isEnded(item.timeDateEnd) ? 'Закрытое' : 'Открытое',
+                    style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

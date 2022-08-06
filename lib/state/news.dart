@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/user.dart';
+
+enum Role { admin, moderator, trainer, parent, student, guest }
 
 class Articles extends ChangeNotifier {
   List<ArticleType> _news = [
@@ -24,7 +25,7 @@ class Articles extends ChangeNotifier {
 
   List<ArticleType> get news => _news;
 
-  void setEvents(List<ArticleType> events) {
+  void setNews(List<ArticleType> events) {
     _news = events;
   }
 
@@ -55,36 +56,4 @@ class ArticleType {
     required this.description,
     required this.views,
   });
-}
-
-class User {
-  final id;
-  final fullName;
-  final phoneNumber;
-  final role;
-  final gender;
-  final birthday;
-  final age;
-  final country;
-  final city;
-  final name;
-  final registration_date;
-  final List<User> children;
-  Passport passport;
-
-  User(
-      {required this.id,
-      required this.fullName,
-      this.phoneNumber,
-      children,
-      this.role,
-      this.gender,
-      this.birthday,
-      this.name,
-      required this.age,
-      required this.country,
-      required this.city,
-      this.registration_date,
-      required this.passport})
-      : children = children ?? [];
 }

@@ -7,12 +7,14 @@ import 'package:grandmaster/screens/event_screen.dart';
 import 'package:grandmaster/screens/members.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/screens/tabs/menu/events/events.dart';
 import 'package:grandmaster/screens/tabs/profile/child_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/document.dart';
 import 'package:grandmaster/screens/tabs/profile/documents.dart';
 import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
+import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) => Articles()),
       ChangeNotifierProvider(create: (context) => UserState()),
+      ChangeNotifierProvider(create: (context) => EventsState()),
     ],
     child: GetMaterialApp(
       getPages: [
@@ -44,6 +47,7 @@ void main() {
             name: '/my_profile/documents/document',
             page: () => DocumentScreen()),
         GetPage(name: '/child_profile', page: () => ChildProfileScreen()),
+        GetPage(name: '/events', page: () => EventsScreen()),
       ],
       theme: ThemeClass.lightTheme,
     ),

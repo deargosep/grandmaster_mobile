@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+
+import '../state/user.dart';
 
 class SomeoneProfile extends StatelessWidget {
   const SomeoneProfile({Key? key}) : super(key: key);

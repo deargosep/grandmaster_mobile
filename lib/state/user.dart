@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grandmaster/state/news.dart';
 
 class UserState extends ChangeNotifier {
   User _userMeta = User(
@@ -131,4 +130,43 @@ class Passport {
       this.mother_birthday = '12.06.2000',
       this.mother_phoneNumber = '+7 (911) 345-12-78',
       this.mother_email = 'mail@mail.ru'});
+}
+
+class User {
+// Role role = Role.user
+//
+// switch ( role){
+//   case (Role.user): break;
+// };
+  final id;
+  final fullName;
+  final phoneNumber;
+  final gender;
+  // final role = Role;
+  final birthday;
+  final role;
+  final age;
+  final country;
+  final city;
+  final name;
+  final registration_date;
+  final List<User> children;
+  Passport passport;
+
+  User(
+      {required this.id,
+      required this.fullName,
+      this.phoneNumber,
+      children,
+      this.role,
+      // this.role = 'guest',
+      this.gender,
+      this.birthday,
+      this.name,
+      required this.age,
+      required this.country,
+      required this.city,
+      this.registration_date,
+      required this.passport})
+      : children = children ?? [];
 }

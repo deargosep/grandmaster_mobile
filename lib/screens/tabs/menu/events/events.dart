@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/user.dart';
-import 'package:grandmaster/widgets/brand_card.dart';
+import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/news_card.dart';
 import 'package:provider/provider.dart';
 
-import '../../../utils/custom_scaffold.dart';
+import '/utils/custom_scaffold.dart';
+import '../../../../widgets/brand_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class EventsScreen extends StatelessWidget {
+  const EventsScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
+      bottomNavigationBar: BottomBarWrap(currentTab: 0),
       appBar: AppHeader(
-        text: 'Новости',
-        withBack: false,
+        text: 'Мероприятия',
         icon: user.user.role == 'moderator' ? 'plus' : '',
         iconOnTap: () {
           Get.toNamed('/add_edit_article');
@@ -31,7 +31,10 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: ListView(children: [
               // List
-              Content()
+              Content(),
+              SizedBox(
+                height: 97,
+              )
             ]),
           ),
         ],
@@ -45,21 +48,15 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var list = Provider.of<Articles>(context, listen: true).news;
-    var user = Provider.of<UserState>(context);
+    var list = Provider.of<EventsState>(context, listen: true).events;
     if (list.isNotEmpty) {
       return Column(
           children: list.map((item) {
-        return BrandCard(item);
+        return BrandCard(
+          item,
+          type: 'events',
+        );
       }).toList());
-      return ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: NewsCard(item: list[index]),
-            );
-          });
     }
     return Center(child: Text('Пока что событий нет'));
   }

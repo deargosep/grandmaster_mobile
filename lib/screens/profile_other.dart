@@ -4,7 +4,7 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/top_tab.dart';
 
-import '../state/news.dart';
+import '../state/user.dart';
 import '../widgets/tabbar_switch.dart';
 
 class ProfileOtherScreen extends StatefulWidget {
