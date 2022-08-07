@@ -58,7 +58,9 @@ class MembersScreen extends StatelessWidget {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
-                                        color: Color(0xFF927474)),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryContainer),
                                   ),
                                 ],
                               ),

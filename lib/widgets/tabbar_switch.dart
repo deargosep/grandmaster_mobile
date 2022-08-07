@@ -56,7 +56,8 @@ class _TabsSwitchState extends State<TabsSwitch> with TickerProviderStateMixin {
                       topRight: Radius.circular(10),
                       bottomRight: Radius.circular(10))),
           splashBorderRadius: BorderRadius.all(Radius.circular(10)),
-          unselectedLabelColor: Color(0xFF927474),
+          unselectedLabelColor:
+              Theme.of(context).colorScheme.secondaryContainer,
           labelColor: Colors.white,
           tabs: widget.mockupOnly == true
               ? [

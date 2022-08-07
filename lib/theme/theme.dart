@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeClass {
   static ThemeData lightTheme = ThemeData(
+    androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
     dividerColor: Color(0xFFF3F3F3),
     dividerTheme: DividerThemeData(thickness: 2),
     fontFamily: 'TTNormsPro',
@@ -11,11 +12,11 @@ class ThemeClass {
       filled: true,
       fillColor: Color(0xFFFFBF7F7),
       labelStyle: TextStyle(
-          fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFFE1D6D6)),
+          fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF927474)),
     ),
     // appBarTheme: AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
-    colorScheme:
-        ColorScheme.fromSwatch().copyWith(secondary: Color(0xFF4F3333)),
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: Color(0xFF4F3333), secondaryContainer: Color(0xFF927474)),
     // cardColor: Color(0xFFE4F3F7),
     // textTheme: TextTheme(caption: TextStyle(color: Colors.white)),
     // primaryIconTheme: IconThemeData(color: Colors.black, size: 24),

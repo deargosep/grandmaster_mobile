@@ -5,14 +5,14 @@ import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
-class EventScreen extends StatefulWidget {
-  EventScreen({Key? key}) : super(key: key);
+class ArticleScreen extends StatefulWidget {
+  ArticleScreen({Key? key}) : super(key: key);
 
   @override
-  State<EventScreen> createState() => _EventScreenState();
+  State<ArticleScreen> createState() => _ArticleScreenState();
 }
 
-class _EventScreenState extends State<EventScreen> {
+class _ArticleScreenState extends State<ArticleScreen> {
   final ArticleType item = Get.arguments;
 
   @override

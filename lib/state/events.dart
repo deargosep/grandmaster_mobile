@@ -7,7 +7,8 @@ class EventsState extends ChangeNotifier {
       id: "123adssdad3",
       name: "Катаемся на барсуках",
       timeDateStart: DateTime(2022, 8, 5, 15),
-      timeDateEnd: DateTime(2022, 8, 6, 15),
+      timeDateEnd: DateTime(2022, 8, 7),
+      registerEnd: DateTime(2022, 8, 6, 15),
       address: 'Москва, Большая Дмитровка, д.9',
       description:
           "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
@@ -16,7 +17,8 @@ class EventsState extends ChangeNotifier {
       id: "123adssdad",
       name: "Катаемся на барсуках2",
       timeDateStart: DateTime(2022, 8, 5, 15),
-      timeDateEnd: DateTime(2022, 8, 11, 18),
+      timeDateEnd: DateTime(2022, 8, 11),
+      registerEnd: DateTime(2022, 8, 10, 18),
       address: 'Москва, Большая Дмитровка, д.9',
       description:
           "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
@@ -45,6 +47,7 @@ class EventType {
   final name;
   final DateTime timeDateStart;
   final DateTime timeDateEnd;
+  final DateTime registerEnd;
   final description;
   final address;
 
@@ -53,6 +56,7 @@ class EventType {
     required this.name,
     required this.timeDateStart,
     required this.timeDateEnd,
+    required this.registerEnd,
     required this.description,
     required this.address,
   });

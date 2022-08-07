@@ -73,9 +73,9 @@ class ChildProfileScreen extends StatelessWidget {
 class Info extends StatelessWidget {
   Info({Key? key, required this.user}) : super(key: key);
   final User user;
-  final color = Color(0xFF927474);
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.secondaryContainer;
     return Align(
       alignment: Alignment.centerLeft,
       child: Column(

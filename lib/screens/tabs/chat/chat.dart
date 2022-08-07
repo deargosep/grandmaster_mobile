@@ -2,11 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
-import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../../../widgets/input.dart';
 
@@ -120,7 +118,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         Text(
                           calculateDifference(parsed),
                           style: TextStyle(
-                              color: Color(0xFF927474),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
                               fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
@@ -332,8 +332,11 @@ class _Header extends StatelessWidget {
                         },
                         child: Text(
                           'Участники: ${chat.members.length}',
-                          style:
-                              TextStyle(color: Color(0xFF927474), fontSize: 14),
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
+                              fontSize: 14),
                         ))
                     : Container(),
               ],

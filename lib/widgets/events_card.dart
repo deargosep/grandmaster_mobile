@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 
@@ -9,10 +10,7 @@ class EventCard extends StatelessWidget {
   final EventType item;
   @override
   Widget build(BuildContext context) {
-    Color color = Color(0xFF927474);
-    bool isEnded(DateTime end) {
-      return DateTime.now().isAfter(end);
-    }
+    Color color = Theme.of(context).colorScheme.secondaryContainer;
 
     return GestureDetector(
       onTap: () {
@@ -97,23 +95,7 @@ class EventCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: Container(
-                height: 26,
-                width: 89,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    color: Theme.of(context).inputDecorationTheme.fillColor),
-                child: Center(
-                  child: Text(
-                    isEnded(item.timeDateEnd) ? 'Закрытое' : 'Открытое',
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12),
-                  ),
-                ),
-              ),
+              child: BrandPill(item.timeDateEnd),
             )
           ],
         ),

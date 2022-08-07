@@ -106,7 +106,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   bool withPadding;
   bool withBack;
   final padding;
-  String icon;
+  String? icon;
   Widget? bottomChild;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;

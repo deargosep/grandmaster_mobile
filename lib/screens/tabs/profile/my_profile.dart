@@ -8,7 +8,6 @@ import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../state/news.dart';
 import '../../../widgets/tabbar_switch.dart';
 import '../../../widgets/top_tab.dart';
 import 'child_profile.dart';
@@ -132,7 +131,9 @@ class _MyProfileScreenState extends State<MyProfileScreen>
             Text(
               'Спортивная квалификация: текст',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF927474), fontSize: 14),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  fontSize: 14),
             ),
             SizedBox(
               height: 8,
@@ -140,7 +141,9 @@ class _MyProfileScreenState extends State<MyProfileScreen>
             Text(
               'Техническая квалификация: текст',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF927474), fontSize: 14),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  fontSize: 14),
             ),
             SizedBox(
               height: 24,
@@ -161,7 +164,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                   hasAnyNulls() ? 'Не допущен' : 'Допущен',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Color(0xFF927474),
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
                 ),
@@ -414,9 +417,9 @@ class _Item extends StatelessWidget {
   _Item({Key? key, required this.name, this.value}) : super(key: key);
   final String name;
   final value;
-  final color = Color(0xFF927474);
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.secondaryContainer;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
