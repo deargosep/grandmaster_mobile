@@ -7,12 +7,16 @@ import 'package:grandmaster/screens/menu/events/event_screen.dart';
 import 'package:grandmaster/screens/menu/events/events.dart';
 import 'package:grandmaster/screens/menu/learnings/add_learning.dart';
 import 'package:grandmaster/screens/menu/learnings/learnings.dart';
+import 'package:grandmaster/screens/menu/places/add_place.dart';
+import 'package:grandmaster/screens/menu/places/place_screen.dart';
+import 'package:grandmaster/screens/menu/places/places.dart';
 import 'package:grandmaster/screens/menu/video/add_video.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
 import 'package:grandmaster/screens/tabs/home/article_screen.dart';
+import 'package:grandmaster/screens/tabs/home/select_trainers.dart';
 import 'package:grandmaster/screens/tabs/profile/child_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/document.dart';
 import 'package:grandmaster/screens/tabs/profile/documents.dart';
@@ -21,6 +25,7 @@ import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +37,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => Articles()),
       ChangeNotifierProvider(create: (context) => UserState()),
       ChangeNotifierProvider(create: (context) => EventsState()),
+      ChangeNotifierProvider(create: (context) => Places()),
     ],
     child: GetMaterialApp(
       transitionDuration: Duration.zero,
@@ -88,6 +94,22 @@ void main() {
         GetPage(
           name: '/learnings/add',
           page: () => AddLearningScreen(),
+        ),
+        GetPage(
+            name: '/places',
+            page: () => PlacesScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/place',
+            page: () => PlaceScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+          name: '/places/add',
+          page: () => AddPlace(),
+        ),
+        GetPage(
+          name: '/places/add/trainers',
+          page: () => SelectTrainersScreen(),
         ),
       ],
       theme: ThemeClass.lightTheme,

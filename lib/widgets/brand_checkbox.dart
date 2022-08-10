@@ -46,11 +46,9 @@ class _BrandCheckboxState extends State<BrandCheckbox>
   Widget build(BuildContext context) {
     Color getColor() {
       switch (widget.valid) {
-        case false:
-          return Color(0xFFEE3838);
         default:
-          if (pressing) return Color(0xFF777DFF);
-          return Color(0xFF3840EE);
+          if (pressing) return Theme.of(context).colorScheme.secondary;
+          return Theme.of(context).colorScheme.secondary;
       }
     }
 
@@ -87,7 +85,7 @@ class _BrandCheckboxState extends State<BrandCheckbox>
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               border: Border.all(
-                  color: Theme.of(context).primaryColor, width: 1.5)),
+                  color: Theme.of(context).colorScheme.secondary, width: 1.5)),
           child: Builder(builder: (context) {
             if (widget.checked == false) {
               if (pressing) {

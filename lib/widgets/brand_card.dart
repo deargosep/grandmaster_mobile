@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/menu/places/places.dart';
 import '../state/user.dart';
 import 'events_card.dart';
 import 'images/brand_icon.dart';
@@ -14,6 +16,21 @@ class BrandCard extends StatelessWidget {
   final type;
   @override
   Widget build(BuildContext context) {
+    Widget getCard() {
+      switch (type) {
+        case 'news':
+          return NewsCard(item: item);
+        case 'events':
+          return EventCard(item: item);
+        case 'places':
+          return PlaceCard(item: item);
+        case 'videos':
+          return VideoCard();
+        default:
+          return Text('Wrong type!');
+      }
+    }
+
     User user = Provider.of<UserState>(context).user;
     return Slidable(
       enabled: user.role == 'moderator' || user.role == 'admin',
@@ -63,10 +80,7 @@ class BrandCard extends StatelessWidget {
         decoration: BoxDecoration(
             border:
                 Border(bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: type == 'news' ? NewsCard(item: item) : EventCard(item: item),
-        ),
+        child: Padding(padding: const EdgeInsets.all(20), child: getCard()),
       ),
     );
   }

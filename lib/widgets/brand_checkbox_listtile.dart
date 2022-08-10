@@ -15,27 +15,35 @@ class BrandCheckboxListTile extends StatelessWidget {
   final bool use_title;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        BrandCheckbox(
-          checked: value,
-          onChanged: () {
-            if (use_title) {
-              onChanged(title, !value);
-            } else {
-              onChanged(!value);
-            }
-          },
-        ),
-        SizedBox(
-          width: 13,
-        ),
-        Text(
-          title,
-          style:
-              TextStyle(color: Color(0xFF6A7592), fontWeight: FontWeight.w500),
-        )
-      ],
+    return Container(
+      height: 50,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+          color: Theme.of(context).inputDecorationTheme.fillColor,
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      child: Row(
+        children: [
+          BrandCheckbox(
+            checked: value,
+            onChanged: () {
+              if (use_title) {
+                onChanged(title, !value);
+              } else {
+                onChanged(!value);
+              }
+            },
+          ),
+          SizedBox(
+            width: 13,
+          ),
+          Text(
+            title,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                fontWeight: FontWeight.w500),
+          )
+        ],
+      ),
     );
   }
 }
