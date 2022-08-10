@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UserState extends ChangeNotifier {
   User _userMeta = User(
       id: "12222",
-      role: "moderator",
+      role: "parent",
       name: "Глухарь",
       phoneNumber: '+7 (900) 993-45-76',
       fullName: 'Глухарев Глухарь Глухарьевич',

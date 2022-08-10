@@ -7,6 +7,7 @@ import 'package:grandmaster/screens/menu/events/event_screen.dart';
 import 'package:grandmaster/screens/menu/events/events.dart';
 import 'package:grandmaster/screens/menu/learnings/add_learning.dart';
 import 'package:grandmaster/screens/menu/learnings/learnings.dart';
+import 'package:grandmaster/screens/menu/payment/payment.dart';
 import 'package:grandmaster/screens/menu/places/add_place.dart';
 import 'package:grandmaster/screens/menu/places/place_screen.dart';
 import 'package:grandmaster/screens/menu/places/places.dart';
@@ -25,6 +26,7 @@ import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/state/payments.dart';
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +40,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => UserState()),
       ChangeNotifierProvider(create: (context) => EventsState()),
       ChangeNotifierProvider(create: (context) => Places()),
+      ChangeNotifierProvider(create: (context) => PaymentsState()),
     ],
     child: GetMaterialApp(
       transitionDuration: Duration.zero,
@@ -111,6 +114,10 @@ void main() {
           name: '/places/add/trainers',
           page: () => SelectTrainersScreen(),
         ),
+        GetPage(
+            name: '/payment',
+            page: () => PaymentScreen(),
+            transition: Transition.noTransition),
       ],
       theme: ThemeClass.lightTheme,
     ),
