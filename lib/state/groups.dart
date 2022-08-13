@@ -31,6 +31,33 @@ class GroupsState extends ChangeNotifier {
           registration_date: '03.06.2022',
           passport: Passport()),
     ]),
+    GroupType(id: "123adssd2ad3", name: "Группа 0402", aging: [
+      9,
+      14
+    ], members: [
+      User(
+          id: "12223",
+          name: "Иван",
+          fullName: 'Иванов Иван Иванович2',
+          birthday: '03.06.2000',
+          gender: 'Мужчина',
+          age: 12,
+          country: "Россия",
+          city: "Москва",
+          registration_date: '03.06.2022',
+          passport: Passport()),
+      User(
+          id: "12224",
+          name: "Иван",
+          fullName: 'Иванов Иван Иванович',
+          birthday: '03.06.2000',
+          gender: 'Мужчина',
+          age: 11,
+          country: "Россия",
+          city: "Москва",
+          registration_date: '03.06.2022',
+          passport: Passport()),
+    ]),
   ];
 
   List<GroupType> get groups => _groups;

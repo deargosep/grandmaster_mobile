@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
@@ -22,6 +23,9 @@ class PlacesJournalScreen extends StatelessWidget {
           withShadow: false,
           child: BrandButton(
             text: 'Сформировать отчет',
+            onPressed: () {
+              Get.toNamed('/journal/log');
+            },
           ),
         ),
         appBar: AppHeader(

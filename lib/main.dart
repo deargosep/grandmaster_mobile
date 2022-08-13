@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
 import 'package:grandmaster/screens/auth/code.dart';
+import 'package:grandmaster/screens/fail.dart';
 import 'package:grandmaster/screens/members.dart';
 import 'package:grandmaster/screens/menu/about/about.dart';
 import 'package:grandmaster/screens/menu/about/add_about.dart';
@@ -12,6 +13,8 @@ import 'package:grandmaster/screens/menu/groups/group_add.dart';
 import 'package:grandmaster/screens/menu/groups/group_manage.dart';
 import 'package:grandmaster/screens/menu/groups/groups.dart';
 import 'package:grandmaster/screens/menu/journal/journal_groups.dart';
+import 'package:grandmaster/screens/menu/journal/journal_log.dart';
+import 'package:grandmaster/screens/menu/journal/journal_mark.dart';
 import 'package:grandmaster/screens/menu/journal/journal_places.dart';
 import 'package:grandmaster/screens/menu/learnings/add_learning.dart';
 import 'package:grandmaster/screens/menu/learnings/learnings.dart';
@@ -26,6 +29,7 @@ import 'package:grandmaster/screens/menu/schedule/schedule_table.dart';
 import 'package:grandmaster/screens/menu/video/add_video.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
+import 'package:grandmaster/screens/success.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
 import 'package:grandmaster/screens/tabs/home/article_screen.dart';
@@ -181,8 +185,20 @@ void main() {
             page: () => GroupsJournalScreen(),
             transition: Transition.noTransition),
         GetPage(
-            name: '/journal/table',
-            page: () => GroupsScheduleScreen(),
+            name: '/journal/mark',
+            page: () => MarkJournalScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/journal/log',
+            page: () => LogJournalScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/success',
+            page: () => SuccessScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/fail',
+            page: () => FailScreen(),
             transition: Transition.noTransition),
       ],
       theme: ThemeClass.lightTheme,

@@ -39,9 +39,9 @@ class _BrandSelectState extends State<BrandSelect>
   Widget build(BuildContext context) {
     Color getColor() {
       if (pressing) {
-        return Color(0xFF777DFF);
+        return Theme.of(context).colorScheme.secondary;
       } else {
-        return Color(0xFF3840EE);
+        return Theme.of(context).colorScheme.secondary;
       }
     }
 
@@ -79,7 +79,9 @@ class _BrandSelectState extends State<BrandSelect>
             width: 22,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(100000)),
-                border: Border.all(color: Theme.of(context).primaryColor, width: 1.5)),
+                border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 1.5)),
             child: Builder(builder: (context) {
               if (widget.checked == true) {
                 if (pressing) {

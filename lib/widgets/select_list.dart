@@ -10,86 +10,43 @@ class SelectList extends StatelessWidget {
       : super(key: key);
   final onChange;
   final value;
-  final Map items;
+  final List items;
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            onChange(items.values.elementAt(0));
-          },
-          child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: items.map((e) {
+          return Column(
             children: [
-              BrandSelect(
-                  onChanged: () {
-                    onChange(items.values.elementAt(0));
-                  },
-                  checked: value == items.values.elementAt(0)),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                items.keys.elementAt(0),
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF6A7592),
-                    fontSize: 14),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Row(
-          children: [
-            BrandSelect(
-                onChanged: () {
-                  onChange(items.values.elementAt(1));
+              GestureDetector(
+                onTap: () {
+                  onChange(e);
                 },
-                checked: value == items.values.elementAt(1)),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              items.keys.elementAt(1),
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF6A7592),
-                  fontSize: 14),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        GestureDetector(
-          onTap: () {
-            onChange(items.values.elementAt(2));
-          },
-          child: Row(
-            children: [
-              BrandSelect(
-                  onChanged: () {
-                    onChange(items.values.elementAt(2));
-                  },
-                  checked: value == items.values.elementAt(2)),
-              SizedBox(
-                width: 10,
+                child: Row(
+                  children: [
+                    BrandSelect(
+                        onChanged: () {
+                          onChange(e);
+                        },
+                        checked: value == e),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      e,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 14),
+                    )
+                  ],
+                ),
               ),
-              Text(
-                items.keys.elementAt(2),
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF6A7592),
-                    fontSize: 14),
-              )
+              SizedBox(
+                height: 16,
+              ),
             ],
-          ),
-        ),
-      ],
-    );
+          );
+        }).toList());
   }
 }
