@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/menu/about/about.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,8 @@ class BrandCard extends StatelessWidget {
           return PlaceCard(item: item);
         case 'videos':
           return VideoCard();
+        case 'about':
+          return AboutCard(item: item);
         default:
           return Text('Wrong type!');
       }

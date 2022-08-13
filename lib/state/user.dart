@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class UserState extends ChangeNotifier {
-  User _userMeta = User(
+  User _user = User(
       id: "12222",
-      role: "parent",
+      role: "moderator",
       name: "Глухарь",
       phoneNumber: '+7 (900) 993-45-76',
       fullName: 'Глухарев Глухарь Глухарьевич',
@@ -38,6 +38,67 @@ class UserState extends ChangeNotifier {
       city: "Москва",
       registration_date: '03.06.2022',
       passport: Passport());
+  List<User> _users = [
+    User(
+        id: "12222",
+        role: "trainer",
+        name: "Глухарь",
+        phoneNumber: '+7 (900) 993-45-76',
+        fullName: 'Глухарев Глухарь Глухарьевич',
+        birthday: '03.06.2000',
+        gender: 'Мужчина',
+        children: [
+          User(
+              id: "12223",
+              name: "Иван",
+              fullName: 'Иванов Иван Иванович',
+              birthday: '03.06.2000',
+              gender: 'Мужчина',
+              age: 12,
+              country: "Россия",
+              city: "Москва",
+              registration_date: '03.06.2022',
+              passport: Passport()),
+          User(
+              id: "12224",
+              name: "Иван",
+              fullName: 'Иванов Иван Иванович',
+              birthday: '03.06.2000',
+              gender: 'Мужчина',
+              age: 11,
+              country: "Россия",
+              city: "Москва",
+              registration_date: '03.06.2022',
+              passport: Passport()),
+        ],
+        age: 24,
+        country: "Россия",
+        city: "Москва",
+        registration_date: '03.06.2022',
+        passport: Passport()),
+    User(
+        id: "12223",
+        name: "Иван",
+        fullName: 'Иванов Иван Иванович2',
+        birthday: '03.06.2000',
+        gender: 'Мужчина',
+        age: 12,
+        country: "Россия",
+        city: "Москва",
+        registration_date: '03.06.2022',
+        passport: Passport()),
+    User(
+        id: "12224",
+        name: "Иван",
+        fullName: 'Иванов Иван Иванович',
+        birthday: '03.06.2000',
+        gender: 'Мужчина',
+        age: 11,
+        country: "Россия",
+        city: "Москва",
+        registration_date: '03.06.2022',
+        passport: Passport()),
+  ];
   // List<Dot> _filteredDots = [];
 
   // void setUser(List<String> filters) {
@@ -56,7 +117,8 @@ class UserState extends ChangeNotifier {
     notifyListeners();
   }
 
-  User get user => _userMeta;
+  User get user => _user;
+  List<User> get list => _users;
 }
 
 class Passport {

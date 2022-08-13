@@ -20,7 +20,7 @@ class MenuScreen extends StatelessWidget {
         "payment": '/payment',
         "qr": '/qr',
         'about': '/about',
-        'visits': '/visits',
+        'visits': '/journal',
         'schedule': '/schedule',
         'groups': '/groups',
         'trainers': '/trainers',

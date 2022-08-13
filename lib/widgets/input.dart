@@ -2,36 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 class Input extends StatelessWidget {
-  Input({
-    Key? key,
-    String? this.label,
-    this.defaultText = '',
-    this.obscureText,
-    TextEditingController? this.controller,
-    ValueChanged<String>? this.onChanged,
-    bool? this.expanded,
-    String? this.icon,
-    this.borderRadius,
-    this.width,
-    this.height,
-    this.onFieldSubmitted,
-    this.onTapCalendar,
-    this.onTap,
-  }) : super(key: key);
+  Input(
+      {Key? key,
+      this.label,
+      this.defaultText = '',
+      this.obscureText = false,
+      this.controller,
+      this.onChanged,
+      this.expanded = false,
+      this.icon,
+      this.borderRadius,
+      this.width,
+      this.height,
+      this.onFieldSubmitted,
+      this.onTapCalendar,
+      this.onTap,
+      this.centerText = false})
+      : super(key: key);
 
-  String? label;
-  String? defaultText;
-  bool? obscureText = false;
-  TextEditingController? controller;
-  ValueChanged<String>? onChanged;
-  bool? expanded = false;
-  String? icon;
+  final String? label;
+  final String? defaultText;
+  final bool? obscureText;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final bool? expanded;
+  final String? icon;
   final borderRadius;
-  final width;
-  final height;
+  final double? width;
+  final double? height;
   final Function(String)? onFieldSubmitted;
   final onTapCalendar;
   final onTap;
+  bool centerText;
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +53,12 @@ class Input extends StatelessWidget {
         initialValue: controller != null ? null : defaultText,
         decoration: InputDecoration(
           contentPadding: height != null
-              ? EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
-              : null,
+              ? centerText
+                  ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
+                  : EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
+              : centerText
+                  ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
+                  : null,
           suffixIcon: icon != null
               ? Transform.scale(
                   scale: 0.45,

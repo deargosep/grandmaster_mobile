@@ -4,11 +4,10 @@ import 'package:get/get.dart';
 import 'brand_option.dart';
 
 class ListOfOptions extends StatelessWidget {
-  const ListOfOptions({
-    Key? key,
-    required this.list,
-  }) : super(key: key);
+  const ListOfOptions({Key? key, required this.list, this.noArrow = false})
+      : super(key: key);
   final List<OptionType> list;
+  final bool noArrow;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,6 +18,7 @@ class ListOfOptions extends StatelessWidget {
                   Option(
                     text: e.name,
                     type: e.type,
+                    noArrow: noArrow,
                     onTap: () {
                       Get.toNamed(e.screen, arguments: e.arguments);
                     },

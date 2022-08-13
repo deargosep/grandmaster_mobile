@@ -3,14 +3,26 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
 import 'package:grandmaster/screens/auth/code.dart';
 import 'package:grandmaster/screens/members.dart';
+import 'package:grandmaster/screens/menu/about/about.dart';
+import 'package:grandmaster/screens/menu/about/add_about.dart';
 import 'package:grandmaster/screens/menu/events/event_screen.dart';
 import 'package:grandmaster/screens/menu/events/events.dart';
+import 'package:grandmaster/screens/menu/groups/group.dart';
+import 'package:grandmaster/screens/menu/groups/group_add.dart';
+import 'package:grandmaster/screens/menu/groups/group_manage.dart';
+import 'package:grandmaster/screens/menu/groups/groups.dart';
+import 'package:grandmaster/screens/menu/journal/journal_groups.dart';
+import 'package:grandmaster/screens/menu/journal/journal_places.dart';
 import 'package:grandmaster/screens/menu/learnings/add_learning.dart';
 import 'package:grandmaster/screens/menu/learnings/learnings.dart';
 import 'package:grandmaster/screens/menu/payment/payment.dart';
 import 'package:grandmaster/screens/menu/places/add_place.dart';
 import 'package:grandmaster/screens/menu/places/place_screen.dart';
 import 'package:grandmaster/screens/menu/places/places.dart';
+import 'package:grandmaster/screens/menu/schedule/schedule_edit.dart';
+import 'package:grandmaster/screens/menu/schedule/schedule_groups.dart';
+import 'package:grandmaster/screens/menu/schedule/schedule_places.dart';
+import 'package:grandmaster/screens/menu/schedule/schedule_table.dart';
 import 'package:grandmaster/screens/menu/video/add_video.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
@@ -25,6 +37,7 @@ import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
 import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/payments.dart';
 import 'package:grandmaster/state/places.dart';
@@ -41,6 +54,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => EventsState()),
       ChangeNotifierProvider(create: (context) => Places()),
       ChangeNotifierProvider(create: (context) => PaymentsState()),
+      ChangeNotifierProvider(create: (context) => GroupsState()),
     ],
     child: GetMaterialApp(
       transitionDuration: Duration.zero,
@@ -117,6 +131,58 @@ void main() {
         GetPage(
             name: '/payment',
             page: () => PaymentScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/groups',
+            page: () => GroupsScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/group',
+            page: () => GroupScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/group/manage',
+            page: () => GroupManageScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/groups/add',
+            page: () => GroupAddScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/about',
+            page: () => AboutScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/about/add',
+            page: () => AddAboutScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/schedule',
+            page: () => PlacesScheduleScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/schedule/groups',
+            page: () => GroupsScheduleScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/schedule/table',
+            page: () => TableScheduleScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/schedule/edit',
+            page: () => EditScheduleScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/journal',
+            page: () => PlacesJournalScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/journal/groups',
+            page: () => GroupsJournalScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/journal/table',
+            page: () => GroupsScheduleScreen(),
             transition: Transition.noTransition),
       ],
       theme: ThemeClass.lightTheme,
