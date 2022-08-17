@@ -12,7 +12,7 @@ class ThemeClass {
       filled: true,
       fillColor: Color(0xFFFFBF7F7),
       labelStyle: TextStyle(
-          fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xFF927474)),
+          color: Color(0xFFE1D6D6), fontSize: 14, fontWeight: FontWeight.w500),
     ),
     // appBarTheme: AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
     colorScheme: ColorScheme.fromSwatch().copyWith(

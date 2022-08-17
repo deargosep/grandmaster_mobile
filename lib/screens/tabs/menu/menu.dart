@@ -23,7 +23,6 @@ class MenuScreen extends StatelessWidget {
         'visits': '/journal',
         'schedule': '/schedule',
         'groups': '/groups',
-        'trainers': '/trainers',
       };
       if (user.role == 'parent') {
         return <OptionType>[
@@ -70,7 +69,6 @@ class MenuScreen extends StatelessWidget {
           OptionType('QR коды', links["qr"]!),
           OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
-          OptionType('Тренеры', links["trainers"]!)
         ];
       }
       if (user.role == 'guest') {

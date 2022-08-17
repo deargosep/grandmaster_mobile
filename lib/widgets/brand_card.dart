@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/menu/about/about.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
+import 'package:grandmaster/utils/dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/menu/places/places.dart';
@@ -63,12 +64,20 @@ class BrandCard extends StatelessWidget {
                   color: Colors.black,
                   height: 18,
                   width: 18,
+                  onTap: () {
+                    showCustomDialog(
+                        context, 'Скрыть данное мероприятие?', 'Скрыть');
+                  },
                 ),
                 BrandIcon(
                   icon: 'x',
                   color: Colors.black,
                   height: 18,
                   width: 18,
+                  onTap: () {
+                    showCustomDialog(
+                        context, 'Удалить данное мероприятие?', 'Удалить');
+                  },
                 ),
                 SizedBox(
                   width: 0,

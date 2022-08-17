@@ -12,7 +12,7 @@ class GroupsJournalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<GroupType> groups = Provider.of<GroupsState>(context).groups;
     List<OptionType> list = groups
-        .map((e) => OptionType(e.name, '/journal/', arguments: e))
+        .map((e) => OptionType(e.name, '/journal/mark', arguments: e))
         .toList();
     return CustomScaffold(
         noTopPadding: true,

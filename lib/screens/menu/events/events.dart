@@ -23,7 +23,7 @@ class EventsScreen extends StatelessWidget {
         text: 'Мероприятия',
         icon: user.user.role == 'moderator' ? 'plus' : '',
         iconOnTap: () {
-          Get.toNamed('/add_edit_article');
+          Get.toNamed('/events/add');
         },
       ),
       body: Column(

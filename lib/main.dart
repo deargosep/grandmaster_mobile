@@ -6,6 +6,7 @@ import 'package:grandmaster/screens/fail.dart';
 import 'package:grandmaster/screens/members.dart';
 import 'package:grandmaster/screens/menu/about/about.dart';
 import 'package:grandmaster/screens/menu/about/add_about.dart';
+import 'package:grandmaster/screens/menu/events/add_event.dart';
 import 'package:grandmaster/screens/menu/events/event_screen.dart';
 import 'package:grandmaster/screens/menu/events/events.dart';
 import 'package:grandmaster/screens/menu/groups/group.dart';
@@ -22,6 +23,9 @@ import 'package:grandmaster/screens/menu/payment/payment.dart';
 import 'package:grandmaster/screens/menu/places/add_place.dart';
 import 'package:grandmaster/screens/menu/places/place_screen.dart';
 import 'package:grandmaster/screens/menu/places/places.dart';
+import 'package:grandmaster/screens/menu/qr/qr.dart';
+import 'package:grandmaster/screens/menu/qr/qr_events.dart';
+import 'package:grandmaster/screens/menu/qr/qr_partners.dart';
 import 'package:grandmaster/screens/menu/schedule/schedule_edit.dart';
 import 'package:grandmaster/screens/menu/schedule/schedule_groups.dart';
 import 'package:grandmaster/screens/menu/schedule/schedule_places.dart';
@@ -98,6 +102,10 @@ void main() {
         GetPage(
             name: '/events',
             page: () => EventsScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/events/add',
+            page: () => AddEventScreen(),
             transition: Transition.noTransition),
         GetPage(name: '/event', page: () => EventScreen()),
         GetPage(
@@ -199,6 +207,18 @@ void main() {
         GetPage(
             name: '/fail',
             page: () => FailScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/qr',
+            page: () => QRScreen(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/qr/events',
+            page: () => QREvents(),
+            transition: Transition.noTransition),
+        GetPage(
+            name: '/qr/partners',
+            page: () => QRPartners(),
             transition: Transition.noTransition),
       ],
       theme: ThemeClass.lightTheme,

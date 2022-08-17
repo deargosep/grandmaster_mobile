@@ -48,7 +48,7 @@ class AuthRegisterScreen extends StatelessWidget {
         ),
         BrandButton(
             onPressed: () {
-              Get.toNamed('/bar', arguments: 1);
+              Get.offAllNamed('/bar', arguments: 1);
             },
             text: 'Войти как гость',
             type: 'secondary'),

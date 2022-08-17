@@ -17,7 +17,8 @@ class Input extends StatelessWidget {
       this.onFieldSubmitted,
       this.onTapCalendar,
       this.onTap,
-      this.centerText = false})
+      this.centerText = false,
+      this.textStyle})
       : super(key: key);
 
   final String? label;
@@ -33,7 +34,8 @@ class Input extends StatelessWidget {
   final Function(String)? onFieldSubmitted;
   final onTapCalendar;
   final onTap;
-  bool centerText;
+  final TextStyle? textStyle;
+  final bool centerText;
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +53,16 @@ class Input extends StatelessWidget {
         controller: controller,
         onChanged: onChanged,
         initialValue: controller != null ? null : defaultText,
+        style: textStyle ??
+            TextStyle(
+                color: Color(
+                  0xFF927474,
+                ),
+                fontWeight: FontWeight.w500),
         decoration: InputDecoration(
           contentPadding: height != null
               ? centerText
-                  ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
+                  ? EdgeInsets.fromLTRB(20, 10.0, 20.0, 10.0)
                   : EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
               : centerText
                   ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)

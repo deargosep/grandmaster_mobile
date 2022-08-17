@@ -60,6 +60,11 @@ class TimePill extends StatelessWidget {
         height: 37,
         width: 75,
         defaultText: text,
+        centerText: true,
+        textStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.secondary),
       );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -53,7 +53,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         Spacer(),
         BrandButton(
             onPressed: () {
-              Get.toNamed('/bar', arguments: 1);
+              Get.offAllNamed('/bar', arguments: 1);
             },
             text: 'Вход',
             type: 'primary',
