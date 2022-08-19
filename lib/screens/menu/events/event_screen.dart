@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class EventScreen extends StatefulWidget {
   EventScreen({Key? key}) : super(key: key);
@@ -16,12 +19,165 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen> {
   final EventType item = Get.arguments;
+  bool zapisan = false;
+  bool added = false;
 
   @override
   Widget build(BuildContext context) {
+    String getRole() {
+      return Provider.of<UserState>(context, listen: false).user.role;
+    }
+
+    bool hasChildren() {
+      return Provider.of<UserState>(context, listen: false)
+          .user
+          .children
+          .isNotEmpty;
+    }
+
+    bool hasMoreThanOneChild() {
+      return Provider.of<UserState>(context, listen: false)
+              .user
+              .children
+              .length >
+          0;
+    }
+
     return CustomScaffold(
       noPadding: true,
       scrollable: true,
+      bottomNavigationBar: BottomPanel(
+          withShadow: false,
+          height: zapisan ? 148.0 : 85.0,
+          child: getRole() == 'moderator' ||
+                  (getRole() == 'sportsmen' && item.closed)
+              ? Container()
+              : Column(
+                  children: [
+                    zapisan
+                        ? BrandButton(
+                            type: 'info',
+                            text: 'Вы уже записаны на мероприятие',
+                            textStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer),
+                            icon: 'check',
+                            iconColor: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer)
+                        : Container(),
+                    zapisan
+                        ? SizedBox(
+                            height: 16,
+                          )
+                        : Container(),
+                    BrandButton(
+                      onPressed: () {
+                        // if not trainer or parent (multiple students)
+                        if (getRole() != 'trainer' && !hasChildren()) {
+                          if (zapisan) {
+                            if (item.closed) {
+                              // посмотреть список
+                              Get.toNamed('/events/list', arguments: {
+                                "item": item,
+                                "options": {"type": "view"}
+                              });
+                            }
+                            if (!item.closed) {
+                              // отменить запись
+                              if (mounted)
+                                setState(() {
+                                  zapisan = false;
+                                });
+                            }
+                          }
+
+                          if (!zapisan) {
+                            // записаться
+                            if (mounted)
+                              setState(() {
+                                zapisan = true;
+                              });
+                            Get.toNamed('/success',
+                                arguments:
+                                    'Вы успешно записались на мероприятие');
+                          }
+                        } else {
+                          if (getRole() == "trainer") {
+                            if (!zapisan) {
+                              if (mounted)
+                                setState(() {
+                                  zapisan = true;
+                                });
+                              // add
+                              Get.toNamed('/events/list', arguments: {
+                                "item": item,
+                                "options": {"type": "add"}
+                              });
+                            }
+                            if (zapisan) {
+                              // edit
+                              Get.toNamed('/events/list', arguments: {
+                                "item": item,
+                                "options": {"type": "edit"}
+                              });
+                            }
+                          }
+
+                          if (hasChildren()) {
+                            if (!hasMoreThanOneChild()) {
+                              if (mounted)
+                                setState(() {
+                                  zapisan = true;
+                                });
+                              Get.toNamed('/success',
+                                  arguments:
+                                      'Вы успешно записались на мероприятие');
+                            }
+                            if (hasMoreThanOneChild()) {
+                              if (item.closed) {
+                                Get.toNamed('/events/list', arguments: {
+                                  "item": item,
+                                  "options": {"type": "view"}
+                                });
+                              }
+                              if (!item.closed) {
+                                if (mounted)
+                                  setState(() {
+                                    zapisan = true;
+                                  });
+                                Get.toNamed('/events/list', arguments: {
+                                  "item": item,
+                                  "options": {"type": "choose"}
+                                });
+                              }
+                            }
+                          }
+                        }
+                      },
+                      text: !hasChildren() && getRole() != 'trainer'
+                          ? zapisan
+                              ? item.closed
+                                  ? 'Посмотреть список'
+                                  : 'Отменить запись'
+                              : 'Записаться'
+                          : zapisan
+                              ? getRole() != 'trainer'
+                                  ? 'Редактировать список'
+                                  : 'Посмотреть список'
+                              : hasMoreThanOneChild()
+                                  ? 'Записать спортсменов'
+                                  : 'Записаться',
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.white),
+                    )
+                  ],
+                )),
       body: Stack(
         children: [
           Container(
@@ -45,7 +201,19 @@ class _EventScreenState extends State<EventScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BrandPill(item.timeDateEnd),
+                        Row(
+                          children: [
+                            BrandPill(item.closed),
+                            Spacer(),
+                            getRole() == 'moderator'
+                                ? BrandIcon(
+                                    icon: 'download',
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  )
+                                : Container()
+                          ],
+                        ),
                         SizedBox(
                           height: 32,
                         ),
@@ -180,36 +348,6 @@ class _EventScreenState extends State<EventScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Column(
-                          children: [
-                            BrandButton(
-                                type: 'info',
-                                text: 'Вы уже записаны на мероприятие',
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondaryContainer),
-                                icon: 'check',
-                                iconColor: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryContainer),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            BrandButton(
-                              text: 'Вы уже записаны на мероприятие',
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.white),
-                            )
-                          ],
-                        )
                       ],
                     ),
                   ),

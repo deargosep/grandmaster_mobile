@@ -24,7 +24,7 @@ class MenuScreen extends StatelessWidget {
         'schedule': '/schedule',
         'groups': '/groups',
       };
-      if (user.role == 'parent') {
+      if (user.children.isNotEmpty || user.role == 'sportsmen') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
           OptionType('Видео', links["videos"]!),
@@ -51,9 +51,10 @@ class MenuScreen extends StatelessWidget {
       }
       if (user.role == 'student') {
         return <OptionType>[
+          OptionType('Мероприятия', links["events"]!),
           OptionType('Расписание', links["schedule"]!),
+          OptionType('Видео', links["videos"]!),
           OptionType('Залы', links["places"]!),
-          OptionType('Оплата', links["payment"]!),
           OptionType('QR коды', links["qr"]!),
           OptionType('О клубе', links["about"]!)
         ];
@@ -74,7 +75,6 @@ class MenuScreen extends StatelessWidget {
       if (user.role == 'guest') {
         return <OptionType>[
           OptionType('Залы', links["places"]!),
-          OptionType('Видео', links["videos"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }

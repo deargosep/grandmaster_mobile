@@ -95,7 +95,7 @@ class EventCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: BrandPill(item.timeDateEnd),
+              child: BrandPill(item.closed),
             )
           ],
         ),
