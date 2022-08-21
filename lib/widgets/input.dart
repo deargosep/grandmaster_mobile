@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 class Input extends StatelessWidget {
-  Input(
-      {Key? key,
-      this.label,
-      this.defaultText = '',
-      this.obscureText = false,
-      this.controller,
-      this.onChanged,
-      this.expanded = false,
-      this.icon,
-      this.borderRadius,
-      this.width,
-      this.height,
-      this.onFieldSubmitted,
-      this.onTapCalendar,
-      this.onTap,
-      this.centerText = false,
-      this.textStyle})
-      : super(key: key);
+  Input({
+    Key? key,
+    this.label,
+    this.defaultText = '',
+    this.obscureText = false,
+    this.controller,
+    this.onChanged,
+    this.expanded = false,
+    this.icon,
+    this.borderRadius,
+    this.width,
+    this.height,
+    this.onFieldSubmitted,
+    this.onTapCalendar,
+    this.onTap,
+    this.centerText = false,
+    this.textStyle,
+  }) : super(key: key);
 
   final String? label;
   final String? defaultText;
   final bool? obscureText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
-  final bool? expanded;
+  final bool expanded;
   final String? icon;
   final borderRadius;
   final double? width;
@@ -48,8 +48,10 @@ class Input extends StatelessWidget {
           onFieldSubmitted!(text);
         },
         obscureText: obscureText == true,
-        minLines: expanded == true ? 3 : 1,
-        maxLines: expanded == true ? 3 : 1,
+        minLines:
+            expanded || label == 'Описание' || label == 'Название' ? 1 : 1,
+        maxLines:
+            expanded || label == 'Описание' || label == 'Название' ? 10 : 1,
         controller: controller,
         onChanged: onChanged,
         initialValue: controller != null ? null : defaultText,

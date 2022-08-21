@@ -8,8 +8,21 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
-class GroupsScreen extends StatelessWidget {
+class GroupsScreen extends StatefulWidget {
   const GroupsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<GroupsScreen> createState() => _GroupsScreenState();
+}
+
+class _GroupsScreenState extends State<GroupsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<GroupsState>(context, listen: false).setGroups();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +41,13 @@ class GroupsScreen extends StatelessWidget {
               text: 'Создать группу',
               type: 'create',
               noArrow: true,
-              onTap: (){
+              onTap: () {
                 Get.toNamed('/groups/add');
               },
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             ListOfOptions(
               list: listOptions,
               noArrow: true,

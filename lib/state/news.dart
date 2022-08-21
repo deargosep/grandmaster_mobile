@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum Role { admin, moderator, trainer, parent, student, guest }
+import '../utils/dio.dart';
 
 class Articles extends ChangeNotifier {
-  List<ArticleType> _news = [
-    ArticleType(
-        id: "123adssdad3",
-        name: "Катаемся на барсуках",
-        date: "09 июня 2022",
-        time: '15:00',
-        description:
-            "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
-        views: 100),
-    ArticleType(
-        id: "123adssdad",
-        name: "Катаемся на барсуках2",
-        date: "09 июня 2022",
-        time: '15:00',
-        description:
-            "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
-        views: 100)
-  ];
+  List<ArticleType> _news = [];
 
   List<ArticleType> get news => _news;
 
-  void setNews(List<ArticleType> events) {
-    _news = events;
+  void setNews({List<ArticleType>? data}) {
+    if (data != null)
+      _news = data;
+    else {
+      createDio().get('/news/').then((value) {
+        List<ArticleType> newList = [
+          ...value.data["results"].where((el) => !el["hidden"]).map((e) {
+            DateTime newDate = DateTime.parse(e["created_at"]);
+            return ArticleType(
+                id: e["id"],
+                name: e["title"],
+                dateTime: newDate,
+                description: e["description"],
+                views: e["viewed_times"],
+                cover: e["cover"],
+                photos: e["images"],
+                order: e["order"]);
+          }).toList()
+        ];
+        print(newList);
+        _news = newList;
+        notifyListeners();
+      });
+    }
+    notifyListeners();
   }
 
   ArticleType? getNews(id) {
@@ -43,17 +49,21 @@ class Articles extends ChangeNotifier {
 class ArticleType {
   final id;
   final name;
-  final date;
-  final time;
+  final cover;
+  final DateTime dateTime;
+  final List photos;
   final description;
   final views;
+  final order;
 
-  ArticleType({
-    required this.id,
-    required this.name,
-    required this.date,
-    required this.time,
-    required this.description,
-    required this.views,
-  });
+  ArticleType(
+      {required this.id,
+      required this.name,
+      this.cover,
+      required this.dateTime,
+      required this.description,
+      required this.views,
+      photos,
+      this.order})
+      : photos = photos ?? [];
 }

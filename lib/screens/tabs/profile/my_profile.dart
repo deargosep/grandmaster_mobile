@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/tabbar_switch.dart';
@@ -39,39 +41,40 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   Widget build(BuildContext context) {
     var user = Provider.of<UserState>(context).user;
     bool hasAnyNulls() {
-      var passport = user.passport;
-      bool isNull = false;
-      var list = [
-        passport.sport_qualification,
-        passport.weight,
-        passport.height,
-        passport.tech_qualification,
-        passport.place_of_training,
-        passport.trainer,
-        passport.vedomstvo,
-        passport.sport_school,
-        passport.phoneNumber,
-        passport.birthday,
-        passport.fio,
-        passport.address,
-        passport.father_birthday,
-        passport.father_email,
-        passport.father_fio,
-        passport.father_phoneNumber,
-        passport.med_spravka_date,
-        passport.mother_birthday,
-        passport.city,
-        passport.mother_email,
-        passport.mother_fio,
-        passport.mother_phoneNumber,
-        passport.region,
-        passport.school,
-        passport.strah_date
-      ];
-      list.forEach((element) {
-        if (element == null) isNull = true;
-      });
-      return isNull;
+      return !user.admitted;
+      // var passport = user.passport;
+      // bool isNull = false;
+      // var list = [
+      //   passport.sport_qualification,
+      //   passport.weight,
+      //   passport.height,
+      //   passport.tech_qualification,
+      //   passport.place_of_training,
+      //   passport.trainer,
+      //   passport.vedomstvo,
+      //   passport.sport_school,
+      //   passport.phoneNumber,
+      //   passport.birthday,
+      //   passport.fio,
+      //   passport.address,
+      //   passport.father_birthday,
+      //   passport.father_email,
+      //   passport.father_fio,
+      //   passport.father_phoneNumber,
+      //   passport.med_spravka_date,
+      //   passport.mother_birthday,
+      //   passport.city,
+      //   passport.mother_email,
+      //   passport.mother_fio,
+      //   passport.mother_phoneNumber,
+      //   passport.region,
+      //   passport.school,
+      //   passport.strah_date
+      // ];
+      // list.forEach((element) {
+      //   if (element == null) isNull = true;
+      // });
+      // return isNull;
     }
 
     void getImage() {
@@ -101,6 +104,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
+        bottomNavigationBar: BottomBarWrap(currentTab: 3),
         noPadding: true,
         body: ListView(
           children: [
@@ -112,8 +116,17 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                   // TODO: more realistic dialog
                   getImage();
                 },
-                child:
-                    Container(height: 136, width: 136, child: CircleAvatar())),
+                child: Container(
+                    height: 136,
+                    width: 136,
+                    child: CircleAvatar(
+                      child: user.photo != null
+                          ? ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: Image.network(user.photo!))
+                          : null,
+                    ))),
             SizedBox(
               height: 16,
             ),
@@ -238,7 +251,9 @@ class PassportInfo extends StatelessWidget {
                 ),
                 _Item(
                   name: "Дата рождения",
-                  value: passport.birthday,
+                  value: user.birthday != null
+                      ? DateFormat('d.MM.y').format(user.birthday!)
+                      : '',
                 ),
                 _Item(
                   name: "Телефон спортсмена",

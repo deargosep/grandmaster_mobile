@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/bottombar_wrap.dart';
@@ -36,7 +37,13 @@ class ChildProfileScreen extends StatelessWidget {
                   left: 0,
                   child: Column(
                     children: [
-                      Container(height: 136, width: 136, child: CircleAvatar()),
+                      Container(
+                          height: 136,
+                          width: 136,
+                          child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: CircleAvatar())),
                       SizedBox(
                         height: 16,
                       ),
@@ -89,7 +96,9 @@ class Info extends StatelessWidget {
             height: 8,
           ),
           Text(
-            user.birthday,
+            user.birthday != null
+                ? DateFormat('d.MM.y').format(user.birthday!)
+                : '',
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,

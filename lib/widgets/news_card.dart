@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:intl/intl.dart';
 
 class NewsCard extends StatelessWidget {
   const NewsCard({Key? key, required this.item}) : super(key: key);
@@ -23,10 +24,22 @@ class NewsCard extends StatelessWidget {
             // Image cover
             Container(
               height: 132,
+              width: double.infinity,
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: item.cover != null
+                      ? null
+                      : Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.all(Radius.circular(15))),
-            ), // TODO: should be an Image (backend)
+              child: item.cover != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      child: Image.network(
+                        item.cover,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : null,
+            ),
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
@@ -80,7 +93,7 @@ class NewsCard extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      item.date,
+                      DateFormat('d MMMM y').format(item.dateTime),
                       style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).colorScheme.secondary),

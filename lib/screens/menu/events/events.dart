@@ -54,6 +54,9 @@ class Content extends StatelessWidget {
           children: list.map((item) {
         return BrandCard(
           item,
+          // TODO
+          () {},
+          () {},
           type: 'events',
         );
       }).toList());

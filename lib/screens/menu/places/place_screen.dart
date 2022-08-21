@@ -47,7 +47,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           height: 32,
                         ),
                         Text(
-                          item.name ?? "",
+                          item.name,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,

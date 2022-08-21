@@ -55,7 +55,8 @@ class Header extends StatelessWidget {
                         ),
                       ]),
                 Container(
-                  width: icon != '' ? 250 : 299,
+                  width:
+                      icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
                   child: Text(
                     text ?? '',
                     overflow: TextOverflow.ellipsis,
@@ -144,7 +145,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ]),
               Container(
-                width: icon != '' ? 250 : 299,
+                width:
+                    icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
                 child: Text(
                   text ?? '',
                   overflow: TextOverflow.ellipsis,

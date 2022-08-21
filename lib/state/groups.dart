@@ -1,69 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/user.dart';
+
+import '../utils/dio.dart';
 
 class GroupsState extends ChangeNotifier {
-  List<GroupType> _groups = [
-    GroupType(id: "123adssdad3", name: "Группа 0401", aging: [
-      9,
-      14
-    ], members: [
-      User(
-          id: "12223",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович2',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 12,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-      User(
-          id: "12224",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 11,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-    ]),
-    GroupType(id: "123adssd2ad3", name: "Группа 0402", aging: [
-      9,
-      14
-    ], members: [
-      User(
-          id: "12223",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович2',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 12,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-      User(
-          id: "12224",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 11,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-    ]),
-  ];
+  List<GroupType> _groups = [];
+
+  List _sportsmens = [];
+
+  Future<List> setSportsmens() async {
+    // log(data.toString());
+    var response = await createDio().get('/sport_groups/sportsmen/');
+    print(response.data);
+    var data = response.data;
+    print(data);
+    _sportsmens = data;
+    notifyListeners();
+    return data;
+  }
 
   List<GroupType> get groups => _groups;
+  List get sportsmens => _sportsmens;
 
-  void setGroups(List<GroupType> groups) {
-    _groups = groups;
+  void setGroups({List<GroupType>? data}) {
+    if (data != null)
+      _groups = data;
+    else {
+      createDio().get('/sport_groups/').then((value) {
+        print(value);
+        List<GroupType> newList = [
+          ...value.data.map((e) {
+            // DateTime newDate = DateTime.parse(e["created_at"]);
+            return GroupType(
+                id: e["id"],
+                name: e["name"],
+                trainer: e["trainer"],
+                members: e["members"],
+                maxAge: e["max_age"],
+                minAge: e["min_age"]);
+          }).toList()
+        ];
+        _groups = newList;
+        notifyListeners();
+      });
+    }
+    notifyListeners();
   }
 
   GroupType? getGroups(id) {
@@ -80,13 +61,17 @@ class GroupsState extends ChangeNotifier {
 class GroupType {
   final id;
   final name;
-  final List<int> aging;
-  final List<User> members;
+  final int minAge;
+  final int maxAge;
+  final List members;
+  final int? trainer;
 
   GroupType(
       {required this.id,
       required this.name,
-      required this.aging,
+      required this.minAge,
+      required this.maxAge,
+      this.trainer,
       required this.members});
 }
 

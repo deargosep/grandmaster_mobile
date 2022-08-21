@@ -2,9 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
+import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../widgets/input.dart';
 
@@ -58,9 +61,11 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     void onChangedSM(newMessages) {
-      setState(() {
-        messages = newMessages;
-      });
+      showErrorSnackbar('Не удалось отправить сообщение');
+
+      // setState(() {
+      //   messages = newMessages;
+      // });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -178,7 +183,9 @@ class Message extends StatelessWidget {
             : Container(
                 height: 38,
                 width: 38,
-                child: CircleAvatar(),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    child: CircleAvatar()),
               ),
         isMine()
             ? Container()
@@ -240,21 +247,32 @@ class Message extends StatelessWidget {
   }
 }
 
-class SendMessage extends StatelessWidget {
+class SendMessage extends StatefulWidget {
   const SendMessage({Key? key, this.onChanged, this.messages})
       : super(key: key);
   final onChanged;
   final messages;
+
+  @override
+  State<SendMessage> createState() => _SendMessageState();
+}
+
+class _SendMessageState extends State<SendMessage> {
+  TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     void sendMessage(String text) {
+      controller.clear();
       print(text);
       // TODO: use actual user
       var localMessages = <MessageType>[
-        ...messages,
-        MessageType(user: "HotLine2", text: text, timedate: DateTime.now()),
+        ...widget.messages,
+        MessageType(
+            user: Provider.of<UserState>(context, listen: false).user.fullName,
+            text: text,
+            timedate: DateTime.now()),
       ];
-      onChanged(localMessages);
+      widget.onChanged(localMessages);
     }
 
     return Row(
@@ -269,6 +287,7 @@ class SendMessage extends StatelessWidget {
         ),
         Expanded(
           child: Input(
+            controller: controller,
             onFieldSubmitted: sendMessage,
             height: 40.0,
             borderRadius: BorderRadius.all(Radius.circular(20)),

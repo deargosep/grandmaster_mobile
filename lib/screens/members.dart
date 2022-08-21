@@ -48,7 +48,10 @@ class MembersScreen extends StatelessWidget {
                                   Container(
                                     width: 45,
                                     height: 45,
-                                    child: CircleAvatar(),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(100)),
+                                        child: CircleAvatar()),
                                   ),
                                   SizedBox(
                                     width: 16,

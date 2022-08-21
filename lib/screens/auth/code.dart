@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/images/logo.dart';
 import 'package:grandmaster/widgets/input.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
@@ -15,8 +21,7 @@ class InputCodeScreen extends StatefulWidget {
 }
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
-  TextEditingController controller = TextEditingController();
-  String text = '';
+  TextEditingController controller = TextEditingController(text: '12345');
   void initState() {
     super.initState();
   }
@@ -29,7 +34,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         Spacer(),
         Logo(),
         Spacer(),
-        Text('Для авторизации введите номер телефона',
+        Text('Введите код из СМС',
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
@@ -39,11 +44,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
           height: 32,
         ),
         Input(
-          onChanged: (value) {
-            setState(() {
-              text = value;
-            });
-          },
+          controller: controller,
           label: 'Код',
         ),
         SizedBox(
@@ -52,12 +53,28 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         Timer(),
         Spacer(),
         BrandButton(
-            onPressed: () {
-              Get.offAllNamed('/bar', arguments: 1);
-            },
-            text: 'Вход',
-            type: 'primary',
-            disabled: text.length < 6),
+          onPressed: () async {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+            createDio().post('/auth/validate_code/', data: {
+              "phone_number": Get.arguments,
+              "code": controller.text
+            }).then((value) async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setString('access', value.data["access"]);
+              await prefs.setString('refresh', value.data["refresh"]);
+              createDio().get('/users/self/').then((value) {
+                log(value.data.toString());
+                var data = value.data;
+                log(data.toString());
+                Provider.of<UserState>(context, listen: false).setUser(data);
+                Get.toNamed('/bar', arguments: 1);
+              });
+            });
+          },
+          text: 'Вход',
+          type: 'primary',
+        ),
       ],
     ));
   }

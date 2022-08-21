@@ -4,6 +4,7 @@ import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:intl/intl.dart';
 
 class ArticleScreen extends StatefulWidget {
   ArticleScreen({Key? key}) : super(key: key);
@@ -25,9 +26,17 @@ class _ArticleScreenState extends State<ArticleScreen> {
         children: [
           Container(
             height: 220,
+            width: double.infinity,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
+                color:
+                    item.cover != null ? null : Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: item.cover != null
+                ? Image.network(
+                    item.cover,
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
           Container(
             margin: EdgeInsets.only(top: 200),
@@ -62,7 +71,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "${item.date ?? ""}, ${item.time}",
+                              DateFormat('d MMMM y, H:m').format(item.dateTime),
                               style: TextStyle(
                                   fontSize: 12,
                                   color:
@@ -108,18 +117,22 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: 8,
+                          itemCount: item.photos.length,
                           itemBuilder: (context, index) {
+                            final photo = item.photos[index];
                             return Container(
-                              margin: EdgeInsets.only(
-                                  right: 16, left: index == 0 ? 16 : 0),
-                              height: 110,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
+                                margin: EdgeInsets.only(
+                                    right: 16, left: index == 0 ? 16 : 0),
+                                height: 110,
+                                width: 150,
+                                child: ClipRRect(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                            );
+                                      BorderRadius.all(Radius.circular(15)),
+                                  child: Image.network(
+                                    photo["image"],
+                                    fit: BoxFit.contain,
+                                  ),
+                                ));
                           },
                         ),
                       ),

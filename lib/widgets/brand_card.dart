@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/menu/about/about.dart';
+import 'package:grandmaster/screens/menu/learnings/learnings.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/utils/dialog.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +14,14 @@ import 'images/brand_icon.dart';
 import 'news_card.dart';
 
 class BrandCard extends StatelessWidget {
-  const BrandCard(this.item, {Key? key, this.type = 'news'}) : super(key: key);
+  const BrandCard(this.item, this.onHide, this.onDelete,
+      {Key? key, this.type = 'news', this.withPadding = true})
+      : super(key: key);
   final item;
   final type;
+  final onDelete;
+  final onHide;
+  final bool withPadding;
   @override
   Widget build(BuildContext context) {
     Widget getCard() {
@@ -27,22 +33,62 @@ class BrandCard extends StatelessWidget {
         case 'places':
           return PlaceCard(item: item);
         case 'videos':
-          return VideoCard();
+          return VideoCard(item);
         case 'about':
           return AboutCard(item: item);
+        case 'learning':
+          return LearningCard(item);
         default:
           return Text('Wrong type!');
       }
     }
 
+    String getPrompts() {
+      switch (type) {
+        case 'news':
+          return 'данную новость';
+        case 'events':
+          return 'данное мероприятие';
+        case 'places':
+          return 'данный зал';
+        case 'videos':
+          return "данное видео";
+        case 'about':
+          return "данный контент";
+        default:
+          return "данный объект";
+      }
+    }
+
+    String getUrl() {
+      switch (type) {
+        case 'news':
+          return '/add_edit_article';
+        case 'events':
+          return '/add_edit_event';
+        //  TODO
+        case 'learning':
+          return "/learnings/add";
+        case 'places':
+          return '/places/add';
+        case 'videos':
+          return "/videos/add";
+        case 'about':
+          return "/about/add";
+        default:
+          return "/bar";
+      }
+    }
+
     User user = Provider.of<UserState>(context).user;
     return Slidable(
+      key: Key(item.id.toString()),
       enabled: user.role == 'moderator' || user.role == 'admin',
       endActionPane:
           ActionPane(extentRatio: 0.3, motion: ScrollMotion(), children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 100),
+            padding: EdgeInsets.only(bottom: type == 'learning' ? 0 : 100),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -52,11 +98,7 @@ class BrandCard extends StatelessWidget {
                   height: 18,
                   width: 18,
                   onTap: () {
-                    Get.toNamed(
-                        type == 'news'
-                            ? '/add_edit_article'
-                            : '/add_edit_event',
-                        arguments: item.id);
+                    Get.toNamed(getUrl(), arguments: item);
                   },
                 ),
                 BrandIcon(
@@ -66,7 +108,9 @@ class BrandCard extends StatelessWidget {
                   width: 18,
                   onTap: () {
                     showCustomDialog(
-                        context, 'Скрыть данное мероприятие?', 'Скрыть');
+                        context, 'Скрыть ${getPrompts()}?', 'Скрыть', () {
+                      onHide();
+                    });
                   },
                 ),
                 BrandIcon(
@@ -76,7 +120,9 @@ class BrandCard extends StatelessWidget {
                   width: 18,
                   onTap: () {
                     showCustomDialog(
-                        context, 'Удалить данное мероприятие?', 'Удалить');
+                        context, 'Удалить ${getPrompts()}?', 'Удалить', () {
+                      onDelete();
+                    });
                   },
                 ),
                 SizedBox(
@@ -90,9 +136,17 @@ class BrandCard extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            border:
-                Border(bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
-        child: Padding(padding: const EdgeInsets.all(20), child: getCard()),
+            border: type == 'learning'
+                ? null
+                : Border(
+                    bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
+        child: Padding(
+            padding: withPadding
+                ? const EdgeInsets.all(20)
+                : type == 'learning'
+                    ? EdgeInsets.only(right: 20)
+                    : EdgeInsets.zero,
+            child: getCard()),
       ),
     );
   }

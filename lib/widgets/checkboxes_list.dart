@@ -12,34 +12,29 @@ class CheckboxesList extends StatelessWidget {
     if (checkboxes == null) {
       return Text('no checkboxes');
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListView.builder(
-            shrinkWrap: true,
-            physics: ScrollPhysics(),
-            itemCount: checkboxes?.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  BrandCheckboxListTile(
-                      title: checkboxes?.keys.elementAt(index),
-                      value: checkboxes?.values.elementAt(index),
-                      onChanged: (val) {
-                        var localCheckboxes = {...checkboxes!};
-                        print(checkboxes?.keys.elementAt(index));
-                        print(checkboxes?.values.elementAt(index));
-                        localCheckboxes.update(
-                            checkboxes!.keys.elementAt(index), (value) => val);
-                        changeCheckbox(localCheckboxes);
-                      }),
-                  SizedBox(
-                    height: 16,
-                  )
-                ],
-              );
-            })
-      ],
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: checkboxes?.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              BrandCheckboxListTile(
+                  title: checkboxes?.keys.elementAt(index).split('_')[1],
+                  value: checkboxes?.values.elementAt(index),
+                  onChanged: (val) {
+                    var localCheckboxes = {...checkboxes!};
+                    print(checkboxes?.keys.elementAt(index));
+                    print(checkboxes?.values.elementAt(index));
+                    localCheckboxes.update(
+                        checkboxes!.keys.elementAt(index), (value) => val);
+                    changeCheckbox(localCheckboxes);
+                  }),
+              SizedBox(
+                height: 16,
+              )
+            ],
+          );
+        });
   }
 }

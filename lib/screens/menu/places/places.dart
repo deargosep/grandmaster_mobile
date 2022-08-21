@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +11,22 @@ import '../../../state/places.dart';
 import '../../../state/user.dart';
 import '../../../widgets/images/brand_icon.dart';
 
-class PlacesScreen extends StatelessWidget {
+class PlacesScreen extends StatefulWidget {
   const PlacesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PlacesScreen> createState() => _PlacesScreenState();
+}
+
+class _PlacesScreenState extends State<PlacesScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<PlacesState>(context, listen: false).setPlaces();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +35,7 @@ class PlacesScreen extends StatelessWidget {
       return user.role == 'moderator';
     }
 
-    List<PlaceType> items = Provider.of<Places>(context).places;
+    List<PlaceType> items = Provider.of<PlacesState>(context).places;
 
     return CustomScaffold(
         noPadding: true,
@@ -43,6 +58,17 @@ class PlacesScreen extends StatelessWidget {
                   },
                   child: BrandCard(
                     e,
+                    // TODO
+                    () {
+                      createDio()
+                          .patch('/gyms/${e.id}/', data: {"hidden": true});
+                      Provider.of<PlacesState>(context).setPlaces();
+                    },
+                    () {
+                      createDio().delete('/gyms/${e.id}/');
+                      Provider.of<PlacesState>(context).setPlaces();
+                    },
+
                     type: 'places',
                   ),
                 ))

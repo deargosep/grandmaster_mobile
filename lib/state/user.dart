@@ -1,105 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class UserState extends ChangeNotifier {
   User _user = User(
     id: "12222",
-    role: "sportsmen",
-    name: "Глухарь",
-    phoneNumber: '+7 (900) 993-45-76',
+    role: "trainer",
+    phoneNumber: '+79515251625',
     fullName: 'Глухарев Глухарь Глухарьевич',
-    birthday: '03.06.2000',
+    birthday: DateTime(2000, 6, 1),
     gender: 'Мужчина',
     age: 24,
     country: "Россия",
     city: "Москва",
     registration_date: '03.06.2022',
     passport: Passport(),
-    children: [
-      User(
-          id: "12223",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 12,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-      User(
-          id: "12224",
-          name: "Иван",
-          fullName: 'Иванов Иван Иванович',
-          birthday: '03.06.2000',
-          gender: 'Мужчина',
-          age: 11,
-          country: "Россия",
-          city: "Москва",
-          registration_date: '03.06.2022',
-          passport: Passport()),
-    ],
   );
-  List<User> _users = [
-    User(
-        id: "12222",
-        role: "trainer",
-        name: "Глухарь",
-        phoneNumber: '+7 (900) 993-45-76',
-        fullName: 'Глухарев Глухарь Глухарьевич',
-        birthday: '03.06.2000',
-        gender: 'Мужчина',
-        children: [
-          User(
-              id: "12223",
-              name: "Иван",
-              fullName: 'Иванов Иван Иванович',
-              birthday: '03.06.2000',
-              gender: 'Мужчина',
-              age: 12,
-              country: "Россия",
-              city: "Москва",
-              registration_date: '03.06.2022',
-              passport: Passport()),
-          User(
-              id: "12224",
-              name: "Иван",
-              fullName: 'Иванов Иван Иванович',
-              birthday: '03.06.2000',
-              gender: 'Мужчина',
-              age: 11,
-              country: "Россия",
-              city: "Москва",
-              registration_date: '03.06.2022',
-              passport: Passport()),
-        ],
-        age: 24,
-        country: "Россия",
-        city: "Москва",
-        registration_date: '03.06.2022',
-        passport: Passport()),
-    User(
-        id: "12223",
-        name: "Иван",
-        fullName: 'Иванов Иван Иванович2',
-        birthday: '03.06.2000',
-        gender: 'Мужчина',
-        age: 12,
-        country: "Россия",
-        city: "Москва",
-        registration_date: '03.06.2022',
-        passport: Passport()),
-    User(
-        id: "12224",
-        name: "Иван",
-        fullName: 'Иванов Иван Иванович',
-        birthday: '03.06.2000',
-        gender: 'Мужчина',
-        age: 11,
-        country: "Россия",
-        city: "Москва",
-        registration_date: '03.06.2022',
-        passport: Passport()),
-  ];
+
+  // List<User> _users = [];
+
   // List<Dot> _filteredDots = [];
 
   // void setUser(List<String> filters) {
@@ -112,6 +32,107 @@ class UserState extends ChangeNotifier {
   //   notifyListeners();
   // }
 
+  int calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
+  }
+
+  String getRole(String contact_type) {
+    switch (contact_type) {
+      case 'CLIENT':
+        return 'sportsmen';
+      case 'PARTNER':
+        return 'trainer';
+      case 'MODERATOR':
+        return 'moderator';
+      default:
+        return 'guest';
+    }
+  }
+
+  User convertMapToUser(Map data) {
+    return User(
+        id: data["id"],
+        parents: data["parents"],
+        children: data["children"],
+        documentsUrl: data["documents"],
+        photo: data["photo"],
+        admitted: data["admitted"],
+        firstName: data["first_name"],
+        middleName: data["middle_name"],
+        lastName: data["last_name"],
+        fullName:
+            "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
+        age: calculateAge(DateTime.parse(data["birth_date"])),
+        birthday: data["birth_date"] != null
+            ? DateTime.parse(data["birth_date"])
+            : null,
+        role: getRole(data["contact_type"]),
+        country: 'Россия',
+        gender: data["gender"],
+        city: data["city"],
+        passport: Passport(
+          fio:
+              "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
+          birthday: data["birth_date"] != null
+              ? DateFormat("d.MM.y").format(DateTime.parse(data["birth_date"]))
+              : null,
+          phoneNumber: data["phone_number"],
+          sport_school: data["sport_school"],
+          school: data["school"],
+          region: data["region"],
+          tech_qualification: data["tech_qualification"],
+          sport_qualification: data["sport_qualification"],
+          address: data["address"],
+          med_spravka_date: data["med_certificate_date"] != null
+              ? DateFormat("d.MM.y")
+                  .format(DateTime.parse(data["med_certificate_date"]))
+              : null,
+          strah_date: data["insurance_policy_date"] != null
+              ? DateFormat("d.MM.y")
+                  .format(DateTime.parse(data["insurance_policy_date"]))
+              : null,
+          father_birthday: data["father_birth_date"] != null
+              ? DateFormat("d.MM.y")
+                  .format(DateTime.parse(data["father_birth_date"]))
+              : null,
+          father_fio: data["father_full_name"],
+          father_email: data["father_email"],
+          father_phoneNumber: data["father_phone_number"],
+          mother_birthday: data["mother_birth_date"] != null
+              ? DateFormat("d.MM.y")
+                  .format(DateTime.parse(data["mother_birth_date"]))
+              : null,
+          mother_fio: data["mother_full_name"],
+          mother_email: data["mother_email"],
+          mother_phoneNumber: data["mother_phone_number"],
+          height: data["height"],
+          weight: data["weight"],
+          vedomstvo: data["department"],
+          trainer: data["trainer_name"],
+          place_of_training: data["training_place"],
+          city: data["city"],
+        ));
+  }
+
+  void setUser(data) {
+    log(data.toString());
+    User user = convertMapToUser(data);
+    _user = user;
+  }
+
   /// Removes all items from the cart.
   void removeAll() {
     // This call tells the widgets that are listening to this model to rebuild.
@@ -119,7 +140,7 @@ class UserState extends ChangeNotifier {
   }
 
   User get user => _user;
-  List<User> get list => _users;
+  // List<User> get list => _users;
 }
 
 class Passport {
@@ -203,33 +224,52 @@ class User {
 // };
   final id;
   final fullName;
+  final String? documentsUrl;
   final phoneNumber;
   final gender;
   // final role = Role;
-  final birthday;
+  final DateTime? birthday;
   final role;
   final age;
   final country;
   final city;
-  final name;
+  final firstName;
+  final lastName;
+  final middleName;
   final registration_date;
-  final List<User> children;
+  final List children;
+  final List parents;
   Passport passport;
+  final String? photo;
+  final bool admitted;
 
   User(
-      {required this.id,
+      {this.id,
+      this.documentsUrl,
       required this.fullName,
+      this.firstName,
+      this.lastName,
+      this.middleName,
       this.phoneNumber,
       children,
+      parents,
       this.role,
       // this.role = 'guest',
       this.gender,
       this.birthday,
-      this.name,
       required this.age,
       required this.country,
       required this.city,
       this.registration_date,
-      required this.passport})
-      : children = children ?? [];
+      required this.passport,
+      this.admitted = false,
+      this.photo})
+      : children = children ?? [],
+        parents = parents ?? [];
+}
+
+class MinimalUser {
+  final full_name;
+  final id;
+  MinimalUser({required this.full_name, required this.id});
 }

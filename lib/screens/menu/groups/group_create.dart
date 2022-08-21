@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
@@ -6,6 +10,7 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
+import '../../../utils/dio.dart';
 import '../../../widgets/checkboxes_list.dart';
 import '../../../widgets/input.dart';
 
@@ -19,6 +24,10 @@ class GroupAddScreen extends StatefulWidget {
 class _GroupAddScreenState extends State<GroupAddScreen> {
   Map<String, bool>? checkboxes;
 
+  TextEditingController name = TextEditingController();
+  TextEditingController minAge = TextEditingController();
+  TextEditingController maxAge = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -26,9 +35,14 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<User> users = Provider.of<UserState>(context, listen: false).list;
-      setState(() {
-        checkboxes = {for (var v in users) v.fullName: false};
+      Provider.of<GroupsState>(context, listen: false)
+          .setSportsmens()
+          .then((value) {
+        setState(() {
+          checkboxes = {
+            for (var v in value) '${v["id"]}_${v["full_name"]}': false
+          };
+        });
       });
     });
   }
@@ -42,18 +56,46 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
     }
 
     return CustomScaffold(
-      scrollable: true,
+      // scrollable: true,
       noTopPadding: true,
       appBar: AppHeader(
         text: 'Создание группы',
       ),
       bottomNavigationBar: BottomPanel(
-          withShadow: false,
-          child: BrandButton(
-            text: 'Продолжить',
-          )),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        withShadow: false,
+        child: BrandButton(
+          text: Get.arguments != null ? 'Сохранить' : 'Опубликовать',
+          onPressed: () {
+            Map data = {
+              "name": name.text,
+              "min_age": int.parse(minAge.text),
+              "max_age": int.parse(maxAge.text),
+              "members": [
+                ...?checkboxes?.entries
+                    .where((map) => map.value)
+                    .toList()
+                    .map((e) => e.key.split('_')[0])
+              ],
+              "trainer": Provider.of<UserState>(context, listen: false)
+                  .user
+                  .id
+                  .toString()
+            };
+            createDio()
+                .post(
+              '/sport_groups/',
+              data: data,
+            )
+                .then((value) {
+              log(value.toString());
+              Provider.of<GroupsState>(context, listen: false).setGroups();
+              Get.back();
+            });
+          },
+        ),
+      ),
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 24,
@@ -70,6 +112,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
           ),
           Input(
             label: 'Название',
+            controller: name,
           ),
           SizedBox(
             height: 32,
@@ -91,6 +134,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
                 width: 124.0,
                 height: 50.0,
                 label: 'От',
+                controller: minAge,
                 centerText: true,
               ),
               Container(
@@ -102,6 +146,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
                 label: 'До',
                 width: 124.0,
                 height: 50.0,
+                controller: maxAge,
                 centerText: true,
               )
             ],
@@ -109,11 +154,9 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
           SizedBox(
             height: 32,
           ),
-          Expanded(
-            child: CheckboxesList(
-              changeCheckbox: changeCheckboxesState,
-              checkboxes: checkboxes,
-            ),
+          CheckboxesList(
+            changeCheckbox: changeCheckboxesState,
+            checkboxes: checkboxes,
           )
         ],
       ),

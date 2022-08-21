@@ -102,7 +102,12 @@ class ChatTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(height: 60, width: 60, child: CircleAvatar()),
+              Container(
+                  height: 60,
+                  width: 60,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      child: CircleAvatar())),
               SizedBox(
                 width: 16,
               ),

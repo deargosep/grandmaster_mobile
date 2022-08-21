@@ -7,6 +7,8 @@ class ThemeClass {
     dividerTheme: DividerThemeData(thickness: 2),
     fontFamily: 'TTNormsPro',
     primaryColor: Color(0xFFFF5858),
+    progressIndicatorTheme:
+        ProgressIndicatorThemeData(color: Color(0xFFFF5858)),
     scaffoldBackgroundColor: Colors.white,
     inputDecorationTheme: const InputDecorationTheme(
       filled: true,

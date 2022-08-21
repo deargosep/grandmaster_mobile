@@ -23,6 +23,9 @@ class _PaymentScreenState extends State<PaymentScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<PaymentsState>(context).setPayments();
+    });
     controller = TabController(vsync: this, length: 2);
     controller.addListener(() {
       if (mounted) setState(() {});

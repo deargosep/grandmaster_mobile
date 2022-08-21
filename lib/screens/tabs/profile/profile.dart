@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../widgets/header.dart';
 
@@ -29,6 +29,11 @@ class ProfileScreen extends StatelessWidget {
               Header(
                 text: 'Профили',
                 withBack: false,
+                icon: 'logout',
+                iconOnTap: () {
+                  SharedPreferences.getInstance().then((value) =>
+                      value.clear().then((value) => Get.offAllNamed('/')));
+                },
               ),
               SizedBox(
                 height: 32,

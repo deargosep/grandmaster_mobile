@@ -10,6 +10,8 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
+import '../../../state/groups.dart';
+
 class EventMembersListScreen extends StatefulWidget {
   const EventMembersListScreen({Key? key}) : super(key: key);
 
@@ -27,11 +29,11 @@ class _EventMembersListScreenState extends State<EventMembersListScreen> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<User> users = Provider.of<UserState>(context, listen: false).list;
-      print(users);
-      setState(() {
-        checkboxes = {for (var v in users) v.fullName: false};
-      });
+      // List<User> users = Provider.of<UserState>(context, listen: false).list;
+      // print(users);
+      // setState(() {
+      //   checkboxes = {for (var v in users) v.fullName: false};
+      // });
     });
   }
 
@@ -105,10 +107,13 @@ class _AddState extends State<_Add> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<User> users = Provider.of<UserState>(context, listen: false).list;
-      print(users);
+      Provider.of<GroupsState>(context, listen: false).setSportsmens();
+      List sportsmens =
+          Provider.of<GroupsState>(context, listen: false).sportsmens;
       setState(() {
-        checkboxes = {for (var v in users) v.fullName: false};
+        checkboxes = {
+          for (var v in sportsmens) '${v["id"]}_${v["full_name"]}': false,
+        };
       });
     });
   }

@@ -1,8 +1,10 @@
+import 'package:dio/src/response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/news_card.dart';
@@ -12,12 +14,18 @@ import '../../../utils/custom_scaffold.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+  Future<Response> getNews() async {
+    var response = await createDio().get('/news/');
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
+      scrollable: true,
       appBar: AppHeader(
         text: 'Новости',
         withBack: false,
@@ -28,29 +36,51 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(children: [
-              // List
-              Content()
-            ]),
-          ),
+          Content(),
         ],
       ),
     );
   }
 }
 
-class Content extends StatelessWidget {
+class Content extends StatefulWidget {
   const Content({Key? key}) : super(key: key);
+
+  @override
+  State<Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<Articles>(context, listen: false).setNews();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var list = Provider.of<Articles>(context, listen: true).news;
-    var user = Provider.of<UserState>(context);
+    // var user = Provider.of<UserState>(context);
     if (list.isNotEmpty) {
       return Column(
           children: list.map((item) {
-        return BrandCard(item);
+        return BrandCard(
+          item,
+          // TODO
+          () {
+            print(item.id);
+            createDio().patch('/news/${item.id}/', data: {"hidden": true}).then(
+                (value) =>
+                    Provider.of<Articles>(context, listen: false).setNews());
+          },
+          () {
+            createDio().delete('/news/${item.id}/').then((value) =>
+                Provider.of<Articles>(context, listen: false).setNews());
+          },
+        );
       }).toList());
       return ListView.builder(
           itemCount: list.length,

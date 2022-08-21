@@ -1,15 +1,22 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:math' hide log;
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/input.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 class AddEditArticleScreen extends StatefulWidget {
   AddEditArticleScreen({Key? key}) : super(key: key);
@@ -19,18 +26,115 @@ class AddEditArticleScreen extends StatefulWidget {
 }
 
 class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
+  TextEditingController name =
+      TextEditingController(text: Get.arguments?.name ?? '');
+  TextEditingController description =
+      TextEditingController(text: Get.arguments?.description ?? '');
+  TextEditingController order =
+      TextEditingController(text: '${Get.arguments?.order ?? ''}');
   final ImagePicker _picker = ImagePicker();
-  List<File?> images = [];
+  List<MyFile> images = [];
   File? cover;
-  var articleId = Get.arguments;
+  ArticleType? item = Get.arguments;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (item != null && item!.photos.isNotEmpty) {
+        List<MyFile> newImages = [];
+        for (var e in item!.photos) {
+          Uint8List bytes =
+              (await NetworkAssetBundle(Uri.parse(e["image"])).load(e["image"]))
+                  .buffer
+                  .asUint8List();
+          newImages.add(MyFile(bytes: bytes, id: e["id"].toString()));
+          // newImages.add(File.fromRawPath(bytes));
+        }
+        ;
+        setState(() {
+          images = newImages;
+        });
+      }
+    });
+  }
+
+  String generateRandomString(int len) {
+    var r = Random();
+    return String.fromCharCodes(
+        List.generate(len, (index) => r.nextInt(33) + 89));
+  }
+
   @override
   Widget build(BuildContext context) {
-    ArticleType? article = Provider.of<Articles>(context).getNews(articleId);
+    // Provider.of<Articles>(context).getNews(articleId);
     return CustomScaffold(
       noPadding: true,
       scrollable: true,
+      bottomNavigationBar: BottomPanel(
+        child: BrandButton(
+          text: '${item != null ? 'Сохранить' : 'Опубликовать'}',
+          onPressed: () async {
+            if (item != null) {
+              List photos = [];
+              for (var e in images) {
+                print('${e.id}   ${e.file} ${e.bytes}');
+                if (e.file != null) {
+                  var value = await e.file!;
+                  photos.add({e.id: e.isModified ? '' : 'o'});
+                } else {
+                  photos.add({e.id: e.isModified ? '' : 'o'});
+                }
+              }
+              ;
+              FormData newPhotos =
+                  FormData.fromMap({for (var e in photos) e.key: e.value});
+              var data = {
+                "title": name.text,
+                "description": description.text,
+                "order": order.text,
+                "photos": newPhotos
+              };
+              log(photos.toString());
+              createDio().patch(
+                '/news/${item!.id}/',
+                data: data,
+              );
+            } else {
+              Map newPhotos = {};
+              newPhotos.addEntries(images.map((e) {
+                if (e.file != null) {
+                  return MapEntry(
+                      e.id,
+                      e.isModified
+                          ? base64Encode(e.file!.readAsBytesSync())
+                          : 'o');
+                }
+                if (e.bytes != null) {
+                  return MapEntry(
+                      e.id, e.isModified ? base64Encode(e.bytes!) : 'o');
+                }
+                return MapEntry(
+                    e.id,
+                    e.isModified
+                        ? base64Encode(e.bytes != null
+                            ? e.bytes!
+                            : e.file!.readAsBytesSync())
+                        : 'o');
+              }));
+              var data = {
+                "title": name.text,
+                "description": description.text,
+                "order": order.text,
+                "photos": newPhotos
+              };
+              createDio().post('/news/', data: data);
+            }
+          },
+        ),
+      ),
       appBar: AppHeader(
-        text: '${articleId != null ? 'Редактирование' : 'Создание'} новости',
+        text: '${item != null ? 'Редактирование' : 'Создание'} новости',
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +159,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 ),
                 Input(
                   label: 'Название',
-                  defaultText: "${article != null ? article.name : ""}",
+                  controller: name,
                 ),
                 SizedBox(
                   height: 32,
@@ -72,7 +176,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 ),
                 Input(
                   label: 'Описание',
-                  defaultText: "${article != null ? article.description : ""}",
+                  controller: description,
                 ),
                 SizedBox(
                   height: 32,
@@ -92,6 +196,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                     setState(() {
                       cover = null;
                     });
+                    //  TODO
                   },
                   onTap: () async {
                     final XFile? image =
@@ -104,22 +209,30 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                     height: 132,
                     width: double.maxFinite,
                     decoration: BoxDecoration(
-                        color: Color(0xFFFBF7F7),
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                    child: cover != null
-                        ? Image.file(
-                            cover!,
-                            height: 132,
-                            width: double.maxFinite,
-                          )
-                        : Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 133, vertical: 28),
-                            child: BrandIcon(
-                              icon: 'upload',
-                              color: Color(0xFFE1D6D6),
-                            ),
-                          ),
+                      color: Color(0xFFFBF7F7),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      child: cover != null
+                          ? Image.file(
+                              cover!,
+                              height: 132,
+                              width: double.maxFinite,
+                            )
+                          : item?.cover != null
+                              ? Image.network(
+                                  item?.cover,
+                                  fit: BoxFit.cover,
+                                )
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 133, vertical: 28),
+                                  child: BrandIcon(
+                                    icon: 'upload',
+                                    color: Color(0xFFE1D6D6),
+                                  ),
+                                ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -146,40 +259,49 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 children: [
-                  images.length < 3
-                      ? GestureDetector(
-                          onTap: () async {
-                            final XFile? image = await _picker.pickImage(
-                                source: ImageSource.gallery);
-                            var newImages = [...images];
-                            newImages.add(File(image!.path));
-                            setState(() {
-                              images = newImages;
-                            });
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 16, left: 16),
-                            height: 132,
-                            width: 132,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFFBF7F7),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                            child: Center(
-                              child: BrandIcon(
-                                icon: 'plus',
-                                height: 36,
-                                width: 36,
-                                color: Color(0xFFE1D6D6),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(),
+                  // images.length < 3
+                  //     ?
+
+                  //  добавление
+
+                  GestureDetector(
+                    onTap: () async {
+                      final XFile? image =
+                          await _picker.pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        var newImages = [...images];
+                        newImages.add(MyFile(
+                            file: File(image.path),
+                            id: generateRandomString(10),
+                            isModified: true));
+                        setState(() {
+                          images = newImages;
+                        });
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 16, left: 16),
+                      height: 132,
+                      width: 132,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFBF7F7),
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: Center(
+                        child: BrandIcon(
+                          icon: 'plus',
+                          height: 36,
+                          width: 36,
+                          color: Color(0xFFE1D6D6),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // : Container(),
                   ListView.builder(
+                    reverse: true,
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: 3,
+                    itemCount: images.length < 1 ? 0 : images.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onLongPress: () {
@@ -192,11 +314,17 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                         onTap: () async {
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.gallery);
-                          var newImages = [...images];
-                          newImages[index] = File(image!.path);
-                          setState(() {
-                            images = newImages;
-                          });
+                          if (image != null) {
+                            List<MyFile> newImages = [...images];
+                            // Замена
+                            newImages[index] = MyFile(
+                                file: File(image.path),
+                                id: images[index].id,
+                                isModified: true);
+                            setState(() {
+                              images = newImages;
+                            });
+                          }
                         },
                         child: Container(
                             margin: EdgeInsets.only(right: 16),
@@ -209,7 +337,11 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                             child: images.isEmpty ||
                                     !images.asMap().containsKey(index)
                                 ? null
-                                : Image.file(images[index]!)),
+                                : images[index].bytes != null
+                                    ? Image.memory(
+                                        images[index].bytes!,
+                                      )
+                                    : Image.file(images[index].file!)),
                       );
                     },
                   ),
@@ -237,13 +369,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 ),
                 Input(
                   label: 'Номер (1, 2, 3 и т.п.)',
-                  defaultText: "${article != null ? article.id : ""}",
-                ),
-                SizedBox(
-                  height: 98,
-                ),
-                BrandButton(
-                  text: '${articleId != null ? 'Сохранить' : 'Опубликовать'}',
+                  controller: order,
                 ),
                 SizedBox(
                   height: 29,
@@ -255,4 +381,16 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
       ),
     );
   }
+}
+
+class MyFile {
+  final String id;
+  final Uint8List? bytes;
+  final File? file;
+  bool isModified;
+  void modify() {
+    this.isModified = true;
+  }
+
+  MyFile({required this.id, this.bytes, this.file, this.isModified = false});
 }

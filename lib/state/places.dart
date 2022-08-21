@@ -1,75 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Places extends ChangeNotifier {
-  List<PlaceType> _places = [
-    PlaceType(
-        id: "123adssdad3",
-        name: "Зал №1",
-        description:
-            "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
-        address: 'Москва, Большая Дмитровка, д.9',
-        trainers: [
-          Trainer(
-              id: '121',
-              fio: "Глухарев Глухарь Глухарьевич",
-              category: "Возрастная группа 7-14 лет",
-              daysOfWeek: "Вт, Чт, Сб",
-              time: "09:00 - 10:30"),
-          Trainer(
-              id: '123',
-              fio: "Иванов Иван Иванович",
-              category: "Возрастная группа 7-14 лет",
-              daysOfWeek: "Вт, Чт, Сб",
-              time: "09:00 - 10:30"),
-        ]),
-    PlaceType(
-        id: "123adssdad",
-        name: "Зал №2",
-        description:
-            "Приглашаем тебя покататься с нами по городу! Компания веселая! Обещаем, что будет весело, ждем тебя с нетерпением!!!",
-        address: 'Москва, Большая Дмитровка, д.9',
-        trainers: [
-          Trainer(
-              id: '121',
-              fio: "Глухарев Глухарь Глухарьевич",
-              category: "Возрастная группа 7-14 лет",
-              daysOfWeek: "Вт, Чт, Сб",
-              time: "09:00 - 10:30"),
-          Trainer(
-              id: '123',
-              fio: "Иванов Иван Иванович",
-              category: "Возрастная группа 7-14 лет",
-              daysOfWeek: "Вт, Чт, Сб",
-              time: "09:00 - 10:30"),
-        ])
-  ];
-  List<Trainer> _trainers = [
-    Trainer(
-        id: '121',
-        fio: "Глухарев Глухарь Глухарьевич",
-        category: "Возрастная группа 7-14 лет",
-        daysOfWeek: "Вт, Чт, Сб",
-        time: "09:00 - 10:30"),
-    Trainer(
-        id: '123',
-        fio: "Иванов Иван Иванович",
-        category: "Возрастная группа 7-14 лет",
-        daysOfWeek: "Вт, Чт, Сб",
-        time: "09:00 - 10:30"),
-    Trainer(
-        id: '124',
-        fio: "Глухарев Глухарь Глухарьевич222",
-        category: "Возрастная группа 7-14 лет",
-        daysOfWeek: "Вт, Чт, Сб",
-        time: "09:00 - 10:30")
-  ];
+import '../utils/dio.dart';
+
+class PlacesState extends ChangeNotifier {
+  List<PlaceType> _places = [];
+  List<Trainer> _trainers = [];
 
   List<PlaceType> get places => _places;
   List<Trainer> get trainers => _trainers;
 
-  void setPlaces(List<PlaceType> events) {
-    _places = events;
+  void setPlaces({List<PlaceType>? data}) {
+    if (data != null)
+      _places = data;
+    else {
+      createDio().get('/gyms/').then((value) {
+        print(value.data);
+        List<PlaceType> newList = [
+          ...value.data.where((el) => !el["hidden"]).map((e) {
+            // DateTime newDate = DateTime.parse(e["created_at"]);
+            return PlaceType(
+                id: e["id"],
+                name: e["name"],
+                description: e["description"],
+                address: e["address"],
+                order: e["order"] ?? e["number"]);
+          }).toList()
+        ];
+        _places = newList;
+        notifyListeners();
+      });
+    }
+    notifyListeners();
   }
 
   PlaceType? getPlaces(id) {
@@ -94,15 +56,19 @@ class Places extends ChangeNotifier {
 class PlaceType {
   final String id;
   final String name;
+  final String? cover;
   final String address;
   final String description;
   final List<Trainer>? trainers;
+  final int? order;
   PlaceType(
       {required this.id,
       required this.name,
+      this.cover,
       required this.address,
       required this.description,
-      this.trainers});
+      this.trainers,
+      this.order});
 }
 
 class Trainer {

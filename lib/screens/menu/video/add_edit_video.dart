@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grandmaster/state/videos.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/input.dart';
+import 'package:provider/provider.dart';
 
-class AddVideoScreen extends StatefulWidget {
-  AddVideoScreen({Key? key}) : super(key: key);
+class AddEditVideoScreen extends StatefulWidget {
+  AddEditVideoScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddVideoScreen> createState() => _AddVideoScreenState();
+  State<AddEditVideoScreen> createState() => _AddEditVideoScreenState();
 }
 
-class _AddVideoScreenState extends State<AddVideoScreen> {
+class _AddEditVideoScreenState extends State<AddEditVideoScreen> {
+  TextEditingController name =
+      TextEditingController(text: Get.arguments["name"] ?? '');
+  TextEditingController link =
+      TextEditingController(text: Get.arguments["link"] ?? '');
+  TextEditingController order =
+      TextEditingController(text: Get.arguments["order"] ?? '');
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -21,11 +31,42 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
       bottomNavigationBar: BottomPanel(
         withShadow: false,
         child: BrandButton(
-          text: 'Опубликовать',
+          text: Get.arguments != null ? 'Сохранить' : 'Опубликовать',
+          onPressed: () {
+            Map data = {
+              "title": name.text,
+              "link": link.text,
+              "order": order.text
+            };
+            if (Get.arguments != null) {
+              if (Get.arguments["title"] == name.text) data.remove('title');
+              if (Get.arguments["link"] == link.text) data.remove('link');
+              if (Get.arguments["order"] == order.text) data.remove('order');
+              createDio()
+                  .patch(
+                '/videos/${Get.arguments["id"]}/',
+                data: data,
+              )
+                  .then((value) {
+                Provider.of<VideosState>(context, listen: false).setVideos();
+                Get.back();
+              });
+            } else {
+              createDio()
+                  .post(
+                '/videos/',
+                data: data,
+              )
+                  .then((value) {
+                Provider.of<VideosState>(context, listen: false).setVideos();
+                Get.back();
+              });
+            }
+          },
         ),
       ),
       appBar: AppHeader(
-        text: 'Создание видео',
+        text: Get.arguments != null ? 'Редактирование видео' : 'Создание видео',
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -47,6 +88,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
             ),
             Input(
               label: 'Название',
+              controller: name,
             ),
             SizedBox(
               height: 32,
@@ -63,6 +105,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
             ),
             Input(
               label: 'Ссылка',
+              controller: link,
             ),
             SizedBox(
               height: 32,
@@ -79,6 +122,7 @@ class _AddVideoScreenState extends State<AddVideoScreen> {
             ),
             Input(
               label: 'Номер (1, 2, 3 и т.п.)',
+              controller: order,
             )
           ],
         ),

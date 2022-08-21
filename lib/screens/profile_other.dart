@@ -52,7 +52,7 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen>
               height: 24,
             ),
             Text(
-              author.name,
+              author.fullName,
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

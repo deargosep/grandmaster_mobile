@@ -14,7 +14,7 @@ class EditScheduleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<PlaceType> places = Provider.of<Places>(context).places;
+    List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
         .map((e) => OptionType(e.name, '/schedule/groups', arguments: e))
         .toList();
