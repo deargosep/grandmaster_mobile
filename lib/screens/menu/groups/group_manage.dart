@@ -43,7 +43,6 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
                 : false,
         };
       });
-      print(checkboxes);
       setState(() {
         isLoading = false;
       });
@@ -72,13 +71,17 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
           text: 'Продолжить',
           onPressed: () {
             // TODO: check
-            var checked = checkboxes?.entries
+            List<int> checked = checkboxes!.entries
                 .where((element) => element.value)
-                .map((e) => e.key.split('_')[0])
+                .map((e) => int.parse(e.key.split('_')[0]))
                 .toList();
             createDio()
-                .patch('/sport_groups/${item.id}/', data: {"id": checked}).then(
-              (value) => Get.back(),
+                .patch('/sport_groups/${item.id}/fetch_members/', data: checked)
+                .then(
+              (value) {
+                Provider.of<GroupsState>(context, listen: false).setGroups();
+                Get.back();
+              },
             );
           },
         )),

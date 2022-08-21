@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
 
 import '../utils/dio.dart';
 
@@ -35,7 +36,12 @@ class GroupsState extends ChangeNotifier {
                 id: e["id"],
                 name: e["name"],
                 trainer: e["trainer"],
-                members: e["members"],
+                members: [
+                  ...e["members"]
+                      .map((e) =>
+                          MinimalUser(full_name: e["full_name"], id: e["id"]))
+                      .toList()
+                ],
                 maxAge: e["max_age"],
                 minAge: e["min_age"]);
           }).toList()
@@ -63,7 +69,7 @@ class GroupType {
   final name;
   final int minAge;
   final int maxAge;
-  final List members;
+  final List<MinimalUser> members;
   final int? trainer;
 
   GroupType(

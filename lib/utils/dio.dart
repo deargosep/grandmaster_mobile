@@ -18,7 +18,6 @@ Dio createDio() {
       if (value.getString('access') != null) {
         options.headers.addAll({
           "Authorization": "Bearer ${value.getString('access')}",
-          "content-type": "multipart/form-data"
         });
       }
     });
