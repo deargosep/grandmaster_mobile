@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:grandmaster/state/payments.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/tabbar_switch.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../widgets/top_tab.dart';
 
@@ -24,7 +26,7 @@ class _PaymentScreenState extends State<PaymentScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<PaymentsState>(context).setPayments();
+      Provider.of<PaymentsState>(context, listen: false).setPayments();
     });
     controller = TabController(vsync: this, length: 2);
     controller.addListener(() {
@@ -93,7 +95,7 @@ class _Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isOverTime() {
-      return DateTime.now().isAfter(item.paymentEnd);
+      return DateTime.now().isAfter(item.must_be_paid_at);
     }
 
     Color getColor() {
@@ -140,7 +142,7 @@ class _Payment extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          item.name,
+                          item.purpose,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -159,7 +161,7 @@ class _Payment extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                'Оплатить до: ${DateFormat('d.MM.y').format(item.paymentEnd)}',
+                                'Оплатить до: ${DateFormat('d.MM.y').format(item.must_be_paid_at)}',
                                 maxLines: 1,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500,
@@ -169,7 +171,7 @@ class _Payment extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '${item.price} ₽',
+                      '${item.amount}.00 ₽',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -179,37 +181,50 @@ class _Payment extends StatelessWidget {
                 ),
               ),
               !item.paid
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                          height: 43,
-                          decoration: BoxDecoration(
-                              color: getColor(),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Center(
-                              child: Text(
-                            'Оплатить',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: getTextColor()),
-                          )),
-                        ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                      ],
+                  ? GestureDetector(
+                      onTap: () {
+                        createDio()
+                            .get('/invoices/pay_bill/${item.id}/')
+                            .then((value) {
+                          print(value.data);
+                          launchUrl(Uri.parse(value.data["confirmation_url"]),
+                              mode: LaunchMode.externalApplication);
+                          Provider.of<PaymentsState>(context, listen: false)
+                              .setPayments();
+                        });
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            height: 43,
+                            decoration: BoxDecoration(
+                                color: getColor(),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Center(
+                                child: Text(
+                              'Оплатить',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: getTextColor()),
+                            )),
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                        ],
+                      ),
                     )
                   : Container(),
             ],
           ),
         ),
-        Divider(),
+        !item.paid ? Divider() : Container(),
         SizedBox(
           height: 16,
         )

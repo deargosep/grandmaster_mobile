@@ -92,18 +92,21 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           SizedBox(
                             height: 32,
                           ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Фотографии',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            ),
-                          ),
+                          item.photos.isNotEmpty
+                              ? Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Фотографии',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                )
+                              : Container(),
                           SizedBox(
                             height: 16,
                           ),
@@ -130,7 +133,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                       BorderRadius.all(Radius.circular(15)),
                                   child: Image.network(
                                     photo["image"],
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.cover,
                                   ),
                                 ));
                           },

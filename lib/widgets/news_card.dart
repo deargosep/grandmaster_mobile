@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,7 @@ class NewsCard extends StatelessWidget {
           color: Colors.white,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image cover
             Container(
@@ -33,42 +35,49 @@ class NewsCard extends StatelessWidget {
               child: item.cover != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                      child: Image.network(
-                        item.cover,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : null,
+                      child: LoadingImage(item.cover))
+                  : Center(
+                      child: Text('Нет картинки'),
+                    ),
             ),
             // meta info
-            Padding(
+            Container(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
               child: Column(
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      item.name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.secondary),
+                    child: Container(
+                      height: 23,
+                      child: Text(
+                        item.name,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
             // description
-            Padding(
+            Container(
               padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-              child: Text(
-                item.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFAC9595)),
+              child: Container(
+                height: 33,
+                child: Text(
+                  item.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFFAC9595)),
+                ),
               ),
             ),
             SizedBox(

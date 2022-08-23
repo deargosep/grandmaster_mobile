@@ -18,6 +18,7 @@ class PlacesJournalScreen extends StatelessWidget {
         .map((e) => OptionType(e.name, '/journal/groups', arguments: e))
         .toList();
     return CustomScaffold(
+        scrollable: true,
         noTopPadding: true,
         bottomNavigationBar: BottomPanel(
           withShadow: false,

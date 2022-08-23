@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -43,7 +44,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Залы',
-          icon: isModer() ? 'plus' : null,
+          icon: isModer() ? 'plus' : '',
           iconOnTap: isModer()
               ? () {
                   Get.toNamed('/places/add');
@@ -98,10 +99,14 @@ class PlaceCard extends StatelessWidget {
             // Image cover
             Container(
               height: 132,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-            ), // TODO: should be an Image (backend)
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                child: item.cover != null
+                    ? LoadingImage(item.cover!)
+                    : Container(),
+              ),
+            ),
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
@@ -142,13 +147,17 @@ class PlaceCard extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      item.address,
-                      // "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: color),
+                    Container(
+                      width: 279,
+                      child: Text(
+                        item.address,
+                        maxLines: 1,
+                        // "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: color),
+                      ),
                     )
                   ],
                 ),
@@ -178,24 +187,34 @@ class PlaceCard extends StatelessWidget {
                       child: Stack(
                         children: [
                           CircleAvatar(
-                              radius: 15,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary),
+                            radius: 15,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
+                                child: Avatar(item.trainers[0].photo)),
+                          ),
                           Positioned(
                             left: 20,
                             child: CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryContainer),
+                              radius: 15,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
+                              child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(100)),
+                                  child: Avatar(item.trainers[1].photo)),
+                            ),
                           ),
-                          Positioned(
-                            left: 40,
-                            child: CircleAvatar(
-                                radius: 15,
-                                backgroundColor:
-                                    Theme.of(context).primaryColor),
-                          ),
+                          // Positioned(
+                          //   left: 40,
+                          //   child: CircleAvatar(
+                          //       radius: 15,
+                          //       backgroundColor: Theme.of(context).primaryColor,
+                          //       child: Image.network(item.trainers[0].photo)),
+                          // ),
                         ],
                       ),
                     ),

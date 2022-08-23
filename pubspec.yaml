@@ -47,6 +47,8 @@ dependencies:
   dio: ^4.0.6
   shared_preferences: ^2.0.15
   url_launcher: ^6.1.5
+  skeletons: ^0.0.3
+  masked_text: ^1.0.2
 
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"

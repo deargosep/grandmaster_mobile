@@ -26,9 +26,12 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // List<User> users = Provider.of<UserState>(context, listen: false).list;
-      List<User> groupUsers = Get.arguments.members;
+      List<MinimalUser> groupUsers = Get.arguments.members;
+      print(groupUsers);
       setState(() {
-        checkboxes = {for (var v in groupUsers) v.fullName: false};
+        checkboxes = {
+          for (var v in groupUsers) '${v.id}_${v.full_name}': false
+        };
       });
     });
   }
@@ -47,6 +50,7 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
 
     return CustomScaffold(
         noTopPadding: true,
+        scrollable: true,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
@@ -56,8 +60,8 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
             text: 'Сохранить',
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 16,

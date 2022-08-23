@@ -13,7 +13,7 @@ class QREvents extends StatelessWidget {
         ),
         body: Container(
           child: Image.asset(
-            'assets/images/test_qr.png',
+            'assets/images/event_qr.png',
             height: 313,
             width: 313,
           ),

@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -13,6 +10,14 @@ import 'package:grandmaster/widgets/input.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Map numbers = {
+  "parent": '+7 (918) 546-85-81',
+  "child": '+7 (928) 900-06-80',
+  "moderator": "+7 (951) 525-16-25",
+  "trainer": "+7 (938) 115-54-47",
+  "payment": "+7 (900) 126-16-92"
+};
+
 class AuthRegisterScreen extends StatefulWidget {
   const AuthRegisterScreen({Key? key}) : super(key: key);
 
@@ -21,12 +26,16 @@ class AuthRegisterScreen extends StatefulWidget {
 }
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
-  late TextEditingController phoneNumber =
-      TextEditingController(text: '+79515251625');
+  TextEditingController phoneNumber =
+      TextEditingController(text: numbers["payment"]);
+  bool isLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isLoaded = false;
+    });
     SharedPreferences.getInstance().then((value) {
       if (value.getString('access') != null) {
         createDio()
@@ -46,16 +55,21 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                 options: Options(headers: {"Authorization": null}));
           }
         });
+      } else {
+        setState(() {
+          isLoaded = true;
+        });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarIconBrightness: Platform.operatingSystem == 'ios'
-            ? Brightness.dark
-            : Brightness.light));
+    if (!isLoaded)
+      return CustomScaffold(
+          body: Center(
+        child: Logo(),
+      ));
     return CustomScaffold(
         body: Column(
       children: [
@@ -71,7 +85,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
         SizedBox(
           height: 32,
         ),
-        Input(
+        InputPhone(
           label: 'Номер телефона',
           controller: phoneNumber,
         ),
@@ -81,14 +95,18 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             type: 'primary',
             onPressed: () {
               SharedPreferences.getInstance().then((value) => value.clear());
+              var number = phoneNumber.text
+                  .replaceAll(' ', '')
+                  .replaceAll(')', '')
+                  .replaceAll('(', '')
+                  .replaceAll('-', '');
               createDio()
                   .post('/auth/send_code/',
                       data: {
-                        "phone_number": phoneNumber.text,
+                        "phone_number": number,
                       },
                       options: Options(headers: {}))
-                  .then((value) =>
-                      Get.toNamed('/code', arguments: phoneNumber.text));
+                  .then((value) => Get.toNamed('/code', arguments: number));
             }),
         SizedBox(
           height: 16,

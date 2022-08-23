@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:get/get.dart';
@@ -82,6 +81,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => LearningsState()),
     ],
     child: GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       transitionDuration: Duration.zero,
       getPages: [
         // auth

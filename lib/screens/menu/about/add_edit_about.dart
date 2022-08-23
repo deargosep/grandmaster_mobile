@@ -26,7 +26,7 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
   File? cover;
   AboutType? item = Get.arguments;
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.name ?? '');
+      TextEditingController(text: Get.arguments?.purpose ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController order =

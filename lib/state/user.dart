@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:intl/intl.dart';
 
 class UserState extends ChangeNotifier {
@@ -60,6 +61,11 @@ class UserState extends ChangeNotifier {
       default:
         return 'guest';
     }
+  }
+
+  Future<User> getUser(id) async {
+    var response = await createDio().get('/users/${id}/');
+    return convertMapToUser(response.data[0]);
   }
 
   User convertMapToUser(Map data) {

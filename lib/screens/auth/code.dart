@@ -45,7 +45,9 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         ),
         Input(
           controller: controller,
+          keyboardType: TextInputType.number,
           label: 'Код',
+          maxLength: 5,
         ),
         SizedBox(
           height: 32,
@@ -68,6 +70,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 var data = value.data;
                 log(data.toString());
                 Provider.of<UserState>(context, listen: false).setUser(data);
+                FocusManager.instance.primaryFocus?.unfocus();
                 Get.toNamed('/bar', arguments: 1);
               });
             });

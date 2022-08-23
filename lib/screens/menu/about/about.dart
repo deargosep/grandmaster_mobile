@@ -110,14 +110,8 @@ class AboutCard extends StatelessWidget {
           // Image cover
           Container(
             height: 132,
-            child: item.cover != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    child: Image.network(
-                      item.cover,
-                      fit: BoxFit.cover,
-                    ))
-                : Container(),
+            width: double.infinity,
+            child: item.cover != null ? LoadingImage(item.cover) : Container(),
           ), // TODO: should be an Image (backend)
           // meta info
           Padding(

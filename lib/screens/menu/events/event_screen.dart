@@ -43,6 +43,10 @@ class _EventScreenState extends State<EventScreen> {
           0;
     }
 
+    bool isClosed() {
+      return DateTime.now().isAfter(item.timeDateEnd);
+    }
+
     return CustomScaffold(
       noPadding: true,
       scrollable: true,
@@ -50,7 +54,8 @@ class _EventScreenState extends State<EventScreen> {
           withShadow: false,
           height: zapisan ? 148.0 : 85.0,
           child: getRole() == 'moderator' ||
-                  (getRole() == 'sportsmen' && item.closed)
+                  (getRole() == 'sportsmen' &&
+                      item.timeDateEnd.isAfter(DateTime.now()))
               ? Container()
               : Column(
                   children: [
@@ -79,14 +84,14 @@ class _EventScreenState extends State<EventScreen> {
                         // if not trainer or parent (multiple students)
                         if (getRole() != 'trainer' && !hasChildren()) {
                           if (zapisan) {
-                            if (item.closed) {
+                            if (isClosed()) {
                               // посмотреть список
                               Get.toNamed('/events/list', arguments: {
                                 "item": item,
                                 "options": {"type": "view"}
                               });
                             }
-                            if (!item.closed) {
+                            if (!isClosed()) {
                               // отменить запись
                               if (mounted)
                                 setState(() {
@@ -138,13 +143,13 @@ class _EventScreenState extends State<EventScreen> {
                                       'Вы успешно записались на мероприятие');
                             }
                             if (hasMoreThanOneChild()) {
-                              if (item.closed) {
+                              if (isClosed()) {
                                 Get.toNamed('/events/list', arguments: {
                                   "item": item,
                                   "options": {"type": "view"}
                                 });
                               }
-                              if (!item.closed) {
+                              if (!isClosed()) {
                                 if (mounted)
                                   setState(() {
                                     zapisan = true;
@@ -160,7 +165,7 @@ class _EventScreenState extends State<EventScreen> {
                       },
                       text: !hasChildren() && getRole() != 'trainer'
                           ? zapisan
-                              ? item.closed
+                              ? isClosed()
                                   ? 'Посмотреть список'
                                   : 'Отменить запись'
                               : 'Записаться'
@@ -182,8 +187,10 @@ class _EventScreenState extends State<EventScreen> {
         children: [
           Container(
             height: 220,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
+            width: double.infinity,
+            child: Image.network(
+              item.cover,
+              fit: BoxFit.cover,
             ),
           ),
           Container(
@@ -203,7 +210,7 @@ class _EventScreenState extends State<EventScreen> {
                       children: [
                         Row(
                           children: [
-                            BrandPill(item.closed),
+                            BrandPill(isClosed()),
                             Spacer(),
                             getRole() == 'moderator'
                                 ? BrandIcon(
@@ -338,7 +345,7 @@ class _EventScreenState extends State<EventScreen> {
                                       .secondaryContainer),
                             ),
                             Text(
-                              " ${DateFormat('d.MM.y').format(item.registerEnd)} в ${DateFormat('Hm').format(item.registerEnd)}",
+                              " ${DateFormat('d.MM.y').format(item.timeDateEnd)} в ${DateFormat('Hm').format(item.timeDateEnd)}",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,

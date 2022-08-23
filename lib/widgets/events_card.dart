@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
@@ -27,10 +28,11 @@ class EventCard extends StatelessWidget {
             // Image cover
             Container(
               height: 132,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-            ), // TODO: should be an Image (backend)
+              width: double.infinity,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  child: LoadingImage(item.cover)),
+            ),
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
@@ -95,7 +97,7 @@ class EventCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: BrandPill(item.closed),
+              child: BrandPill(DateTime.now().isAfter(item.timeDateEnd)),
             )
           ],
         ),

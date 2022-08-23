@@ -30,7 +30,7 @@ class GroupsState extends ChangeNotifier {
       createDio().get('/sport_groups/').then((value) {
         print(value);
         List<GroupType> newList = [
-          ...value.data.map((e) {
+          ...value.data.where((e) => e["name"] != "Путешественники").map((e) {
             // DateTime newDate = DateTime.parse(e["created_at"]);
             return GroupType(
                 id: e["id"],

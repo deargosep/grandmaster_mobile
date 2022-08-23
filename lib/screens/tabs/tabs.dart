@@ -6,8 +6,10 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
 import 'package:grandmaster/screens/tabs/home/home.dart';
 import 'package:grandmaster/screens/tabs/menu/menu.dart';
-import 'package:grandmaster/screens/tabs/profile/profile.dart';
+import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/widgets/bottom_bar.dart';
+
+import 'menu/menu.dart';
 
 class BarScreen extends StatefulWidget {
   const BarScreen({Key? key}) : super(key: key);
@@ -25,7 +27,7 @@ class _BarScreenState extends State<BarScreen> {
     //Chat
     ChatsScreen(),
     //Profile
-    ProfileScreen()
+    MyProfileScreen()
   ];
 
   void _onItemTapped(int index) {

@@ -6,6 +6,7 @@ import 'package:grandmaster/screens/menu/learnings/learnings.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/utils/dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../screens/menu/places/places.dart';
 import '../state/user.dart';
@@ -136,7 +137,7 @@ class BrandCard extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            border: type == 'learning'
+            border: type == 'learning' || type == 'videos'
                 ? null
                 : Border(
                     bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
@@ -149,5 +150,25 @@ class BrandCard extends StatelessWidget {
             child: getCard()),
       ),
     );
+  }
+}
+
+class LoadingImage extends StatelessWidget {
+  const LoadingImage(this.url, {Key? key}) : super(key: key);
+  final String url;
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(url, fit: BoxFit.cover,
+        loadingBuilder: (context, child, loading) {
+      if (loading == null)
+        return ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(15)), child: child);
+      return Skeleton(
+          isLoading: true,
+          skeleton: SkeletonLine(
+            style: SkeletonLineStyle(height: 132, width: double.infinity),
+          ),
+          child: child);
+    });
   }
 }

@@ -17,6 +17,8 @@ class CheckboxesList extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         itemCount: checkboxes?.length,
         itemBuilder: (context, index) {
+          if (checkboxes?.keys.elementAt(index).split('_')[1].trim() == '')
+            return Container();
           return Column(
             children: [
               BrandCheckboxListTile(

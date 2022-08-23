@@ -80,7 +80,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 BorderRadius.all(Radius.circular(10))),
                         child: snapshot.data?.data[i["code"]] != null
                             ? Image.network(snapshot.data?.data[i["code"]])
-                            : null,
+                            : Center(
+                                child: Text(
+                                "Нет документа",
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              )),
                       );
                     },
                   );

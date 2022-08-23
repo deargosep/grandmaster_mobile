@@ -1,6 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
@@ -18,145 +19,150 @@ class _PlaceScreenState extends State<PlaceScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      noPadding: true,
-      scrollable: true,
-      body: Stack(
-        children: [
-          Container(
-            height: 220,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
+        noPadding: true,
+        scrollable: true,
+        body: Stack(
+          children: [
+            Container(
+              height: 220,
+              width: double.infinity,
+              // decoration: BoxDecoration(
+              // color: Theme.of(context).colorScheme.secondary,
+              child: Image.network(
+                item.cover!,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 200),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 32,
-                        ),
-                        Text(
-                          item.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        // Description
-                        Text(
-                          item.description,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer),
-                        ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        Text(
-                          'Адрес',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              height: 15,
-                              width: 15,
-                              child: BrandIcon(
-                                icon: 'geo',
-                                height: 15,
-                                width: 15,
+            Container(
+              margin: EdgeInsets.only(top: 200),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            item.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          // Description
+                          Text(
+                            item.description,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                                 color: Theme.of(context)
                                     .colorScheme
-                                    .secondaryContainer,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              item.address,
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                    .secondaryContainer),
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            'Адрес',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                height: 15,
+                                width: 15,
+                                child: BrandIcon(
+                                  icon: 'geo',
+                                  height: 15,
+                                  width: 15,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .secondaryContainer),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        Text(
-                          'Тренеры',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        item.trainers != null
-                            ? Column(
-                                children: item.trainers!
-                                    .map((e) => TrainerCard(e))
-                                    .toList(),
+                                      .secondaryContainer,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                item.address,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer),
                               )
-                            : Container(),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Text(
+                            'Тренеры',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          item.trainers != null
+                              ? Column(
+                                  children: item.trainers
+                                      .map((e) => TrainerCard(e))
+                                      .toList(),
+                                )
+                              : Container(),
 
-                        SizedBox(
-                          height: 68,
-                        )
-                      ],
+                          SizedBox(
+                            height: 68,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                20, 38 + MediaQuery.of(context).viewInsets.top, 0, 0),
-            child: BrandIcon(
-              icon: 'back_arrow',
-              color: Colors.white,
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  20, 38 + MediaQuery.of(context).viewInsets.top, 0, 0),
+              child: BrandIcon(
+                icon: 'back_arrow',
+                color: Colors.white,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }
 
 class TrainerCard extends StatelessWidget {
   const TrainerCard(this.item, {Key? key}) : super(key: key);
   final Trainer item;
+  // final Trainer item = Trainer(id: 2, fio: 'fio', category: category, daysOfWeek: daysOfWeek, time: time)
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -183,7 +189,14 @@ class TrainerCard extends StatelessWidget {
                 SizedBox(
                   width: 10,
                 ),
-                Container(height: 46, width: 46, child: CircleAvatar()),
+                Container(
+                    height: 46,
+                    width: 46,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        child: CircleAvatar(
+                          child: Avatar(item.photo),
+                        ))),
                 SizedBox(
                   width: 16,
                 ),
@@ -215,7 +228,11 @@ class TrainerCard extends StatelessWidget {
                                   height: 16,
                                 ),
                                 Text(
-                                  item.category,
+                                  index == 0
+                                      ? item.category
+                                      : index == 1
+                                          ? "Возрастная группа 12-18 лет"
+                                          : "Возрастная группа 6-12 лет",
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -228,7 +245,12 @@ class TrainerCard extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    Text(item.daysOfWeek,
+                                    Text(
+                                        index == 1
+                                            ? item.daysOfWeek
+                                            : index == 0
+                                                ? 'Пн, Ср, Пт'
+                                                : 'Пн, Пт',
                                         style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context)
@@ -247,7 +269,12 @@ class TrainerCard extends StatelessWidget {
                                     SizedBox(
                                       width: 16,
                                     ),
-                                    Text(item.time,
+                                    Text(
+                                        index == 0
+                                            ? item.time
+                                            : index == 1
+                                                ? '14:00 - 17:00'
+                                                : '6:00 - 9:00',
                                         style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context)

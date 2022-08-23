@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomBar extends StatelessWidget {
   BottomBar({Key? key, required this.onTap, required this.currentIndex})
@@ -49,6 +51,10 @@ class BottomBar extends StatelessWidget {
             GestureDetector(
                 onTap: () {
                   onTap(3);
+                },
+                onLongPress: () {
+                  SharedPreferences.getInstance().then((value) =>
+                      value.clear().then((value) => Get.offAllNamed('/')));
                 },
                 child:
                     BottomBarItem(icon: 'profile', active: currentIndex == 3)),

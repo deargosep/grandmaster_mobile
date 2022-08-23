@@ -24,7 +24,7 @@ class _AddEditPlaceState extends State<AddEditPlace> {
   File? cover;
   PlaceType? item = Get.arguments;
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.name ?? '');
+      TextEditingController(text: Get.arguments?.purpose ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController address =

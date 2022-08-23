@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
-      scrollable: true,
+      // scrollable: true,
       appBar: AppHeader(
         text: 'Новости',
         withBack: false,
@@ -34,11 +34,7 @@ class HomeScreen extends StatelessWidget {
           Get.toNamed('/add_edit_article');
         },
       ),
-      body: Column(
-        children: [
-          Content(),
-        ],
-      ),
+      body: Content(),
     );
   }
 }
@@ -65,23 +61,27 @@ class _ContentState extends State<Content> {
     var list = Provider.of<Articles>(context, listen: true).news;
     // var user = Provider.of<UserState>(context);
     if (list.isNotEmpty) {
-      return Column(
-          children: list.map((item) {
-        return BrandCard(
-          item,
-          // TODO
-          () {
-            print(item.id);
-            createDio().patch('/news/${item.id}/', data: {"hidden": true}).then(
-                (value) =>
+      return ListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            var item = list[index];
+            return BrandCard(
+              item,
+              // TODO
+              () {
+                print(item.id);
+                createDio().patch('/news/${item.id}/', data: {
+                  "hidden": true
+                }).then((value) =>
                     Provider.of<Articles>(context, listen: false).setNews());
-          },
-          () {
-            createDio().delete('/news/${item.id}/').then((value) =>
-                Provider.of<Articles>(context, listen: false).setNews());
-          },
-        );
-      }).toList());
+              },
+              () {
+                createDio().delete('/news/${item.id}/').then((value) =>
+                    Provider.of<Articles>(context, listen: false).setNews());
+              },
+            );
+          });
       return ListView.builder(
           itemCount: list.length,
           itemBuilder: (context, index) {
@@ -91,7 +91,7 @@ class _ContentState extends State<Content> {
             );
           });
     }
-    return Center(child: Text('Пока что событий нет'));
+    return Center(child: CircularProgressIndicator());
   }
 }
 

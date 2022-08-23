@@ -66,24 +66,6 @@ class _VideosScreenState extends State<VideosScreen> {
       return user.role == 'moderator';
     }
 
-    void getData() {
-      createDio().get('/videos/').then((value) {
-        List<Video> newList = [
-          ...value.data.map((e) {
-            DateTime newDate = DateTime.parse(e["created_at"]);
-            return Video(
-                id: e["id"],
-                name: e["title"],
-                createdAt: newDate,
-                link: e["link"]);
-          }).toList()
-        ];
-        print(newList);
-        Provider.of<VideosState>(context, listen: false)
-            .setVideos(data: newList);
-      });
-    }
-
     List videos = context.watch<VideosState>().videos;
     // var videos = Provider.of<VideosState>(context, listen: true).videos;
     return CustomScaffold(
@@ -134,7 +116,7 @@ class VideoCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final url = Uri.parse(item.link);
-        launchUrl(url);
+        launchUrl(url, mode: LaunchMode.externalApplication);
       },
       child: Container(
         height: 219,
@@ -167,6 +149,8 @@ class VideoCard extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   item.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,

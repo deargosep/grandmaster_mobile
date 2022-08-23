@@ -18,12 +18,14 @@ class PlacesScheduleScreen extends StatelessWidget {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
               height: 16,

@@ -24,7 +24,7 @@ class _LearningsScreenState extends State<LearningsScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<LearningsState>(context, listen: false).setLearnings();
+      // Provider.of<LearningsState>(context, listen: false).setLearnings();
     });
   }
 
@@ -39,10 +39,11 @@ class _LearningsScreenState extends State<LearningsScreen> {
 
     return CustomScaffold(
         noPadding: true,
+        scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Учебные материалы',
-          icon: isModer() ? 'plus' : null,
+          icon: isModer() ? 'plus' : '',
           iconOnTap: isModer()
               ? () {
                   Get.toNamed('/learnings/add');
@@ -61,7 +62,7 @@ class _LearningsScreenState extends State<LearningsScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Uri url = Uri.parse(e.link);
-                        launchUrl(url);
+                        launchUrl(url, mode: LaunchMode.externalApplication);
                       },
                       child: BrandCard(
                         e,

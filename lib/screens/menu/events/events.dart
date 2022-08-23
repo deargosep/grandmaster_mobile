@@ -18,6 +18,7 @@ class EventsScreen extends StatelessWidget {
     var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
+      scrollable: true,
       bottomNavigationBar: BottomBarWrap(currentTab: 0),
       appBar: AppHeader(
         text: 'Мероприятия',
@@ -28,23 +29,29 @@ class EventsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(children: [
-              // List
-              Content(),
-              SizedBox(
-                height: 97,
-              )
-            ]),
-          ),
+          Content(),
         ],
       ),
     );
   }
 }
 
-class Content extends StatelessWidget {
+class Content extends StatefulWidget {
   const Content({Key? key}) : super(key: key);
+
+  @override
+  State<Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<EventsState>(context, listen: false).setEvents();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +68,7 @@ class Content extends StatelessWidget {
         );
       }).toList());
     }
-    return Center(child: Text('Пока что событий нет'));
+    return Center(child: CircularProgressIndicator());
   }
 }
 

@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
 import 'package:grandmaster/state/user.dart';
-import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../../../widgets/input.dart';
 
@@ -28,21 +30,21 @@ class _ChatScreenState extends State<ChatScreen> {
   // late final currentUser = Provider.of<UserState>(context).user.username;
   ChatData chat = Get.arguments;
 
+  List<MessageType> messages = [
+    MessageType(
+        user: "Руслан Игоревич",
+        text: "Как у тебя дела?",
+        timedate: DateTime.now().subtract(Duration(days: 2))),
+  ];
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // messages[
+      //     Provider.of<UserState>(context, listen: false).user.fullName;
+    });
   }
-
-  List<MessageType> messages = [
-    MessageType(
-        user: "HotLine",
-        text: "Как у всех дела?",
-        timedate: DateTime.now().subtract(Duration(days: 2))),
-    MessageType(
-        user: "HotLine2",
-        text: "Все гуд, спасибо!",
-        timedate: DateTime.now().subtract(Duration(days: 1))),
-  ];
 
   List months = [
     'января',
@@ -61,11 +63,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     void onChangedSM(newMessages) {
-      showErrorSnackbar('Не удалось отправить сообщение');
+      // showErrorSnackbar('Не удалось отправить сообщение');
 
-      // setState(() {
-      //   messages = newMessages;
-      // });
+      setState(() {
+        messages = newMessages;
+      });
+      Timer(Duration(seconds: 3), () {
+        var newMessages = [...messages];
+        newMessages.add(MessageType(
+            user: 'Руслан Игоревич', text: '👍', timedate: DateTime.now()));
+        setState(() {
+          messages = newMessages;
+        });
+      });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -171,7 +181,8 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMine() {
-      return item.user == "HotLine2";
+      return item.user ==
+          Provider.of<UserState>(context, listen: false).user.fullName;
     }
 
     return Row(
@@ -180,13 +191,11 @@ class Message extends StatelessWidget {
         !isMine() ? Container() : Spacer(),
         isMine()
             ? Container()
-            : Container(
-                height: 38,
-                width: 38,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    child: CircleAvatar()),
-              ),
+            : ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+                child: CircleAvatar(
+                  child: Image.asset('assets/images/avatar.jpeg'),
+                )),
         isMine()
             ? Container()
             : SizedBox(
@@ -238,10 +247,11 @@ class Message extends StatelessWidget {
         !isMine()
             ? Container()
             : Container(
-                height: 38,
-                width: 38,
-                child: CircleAvatar(),
-              ),
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+                child: Avatar(Provider.of<UserState>(context).user.photo!)),
       ],
     );
   }
@@ -323,7 +333,9 @@ class _Header extends StatelessWidget {
             SizedBox(
               width: 26,
             ),
-            Container(height: 50, width: 50, child: CircleAvatar()),
+            ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
+                child: Image.asset('assets/images/avatar.jpeg')),
             SizedBox(
               width: 16,
             ),
@@ -377,4 +389,27 @@ class MessageType {
   String text;
   DateTime timedate;
   MessageType({required this.user, required this.text, required this.timedate});
+}
+
+class Avatar extends StatelessWidget {
+  const Avatar(this.url, {Key? key}) : super(key: key);
+  final String url;
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
+        child: Image.network(
+          Provider.of<UserState>(context).user.photo!,
+          loadingBuilder: (context, child, ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Skeleton(
+              isLoading: true,
+              skeleton: SkeletonAvatar(
+                style: SkeletonAvatarStyle(shape: BoxShape.circle),
+              ),
+              child: Container(),
+            );
+          },
+        ));
+  }
 }

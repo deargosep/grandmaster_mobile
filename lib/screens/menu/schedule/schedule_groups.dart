@@ -7,8 +7,22 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/bottombar_wrap.dart';
 
-class GroupsScheduleScreen extends StatelessWidget {
+class GroupsScheduleScreen extends StatefulWidget {
   const GroupsScheduleScreen({Key? key}) : super(key: key);
+
+  @override
+  State<GroupsScheduleScreen> createState() => _GroupsScheduleScreenState();
+}
+
+class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<GroupsState>(context, listen: false).setGroups();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +32,13 @@ class GroupsScheduleScreen extends StatelessWidget {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
         ),
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 16,
-            ),
             Text(
               'Выберите группу',
               style: TextStyle(

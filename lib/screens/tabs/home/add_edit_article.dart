@@ -27,7 +27,7 @@ class AddEditArticleScreen extends StatefulWidget {
 
 class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.name ?? '');
+      TextEditingController(text: Get.arguments?.purpose ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController order =

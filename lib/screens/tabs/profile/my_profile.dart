@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/user.dart';
-import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,7 +40,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserState>(context).user;
-    bool hasAnyNulls() {
+    bool isAdmitted() {
       return !user.admitted;
       // var passport = user.passport;
       // bool isNull = false;
@@ -104,7 +104,6 @@ class _MyProfileScreenState extends State<MyProfileScreen>
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
-        bottomNavigationBar: BottomBarWrap(currentTab: 3),
         noPadding: true,
         body: ListView(
           children: [
@@ -120,12 +119,10 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                     height: 136,
                     width: 136,
                     child: CircleAvatar(
-                      child: user.photo != null
-                          ? ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              child: Image.network(user.photo!))
-                          : null,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        child: user.photo != null ? Avatar(user.photo!) : null,
+                      ),
                     ))),
             SizedBox(
               height: 16,
@@ -142,7 +139,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
               height: 33,
             ),
             Text(
-              'Спортивная квалификация: текст',
+              'Спортивная квалификация: ${user.passport.sport_qualification ?? 'Нет'}',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Theme.of(context).colorScheme.secondaryContainer,
@@ -152,7 +149,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
               height: 8,
             ),
             Text(
-              'Техническая квалификация: текст',
+              'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Theme.of(context).colorScheme.secondaryContainer,
@@ -161,28 +158,33 @@ class _MyProfileScreenState extends State<MyProfileScreen>
             SizedBox(
               height: 24,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    height: 18,
-                    width: 18,
-                    child: CircleAvatar(
-                      backgroundColor: hasAnyNulls() ? red : green,
-                    )),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  hasAnyNulls() ? 'Не допущен' : 'Допущен',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
+            Provider.of<UserState>(context, listen: false).user.role !=
+                    'trainer'
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          height: 18,
+                          width: 18,
+                          child: CircleAvatar(
+                            backgroundColor: isAdmitted() ? red : green,
+                          )),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        isAdmitted() ? 'Не допущен' : 'Допущен',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  )
+                : Container(),
             SizedBox(
               height: 24,
             ),
@@ -199,7 +201,8 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                     text: 'Информация',
                   ),
                   TopTab(
-                    text: 'Паспорт спортсмена',
+                    text:
+                        'Паспорт ${Provider.of<UserState>(context, listen: false).user.role == 'trainer' ? '' : "спортсмена"}',
                   )
                 ],
               ),
@@ -208,7 +211,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
               height: 32,
             ),
             Container(
-              height: controller.index == 0 ? 300 : 2062,
+              height: controller.index == 0 ? 300 : 1389,
               child: TabBarView(
                   controller: controller,
                   physics: NeverScrollableScrollPhysics(),
@@ -256,7 +259,7 @@ class PassportInfo extends StatelessWidget {
                       : '',
                 ),
                 _Item(
-                  name: "Телефон спортсмена",
+                  name: "Телефон",
                   value: passport.phoneNumber,
                 ),
               ],
@@ -281,10 +284,6 @@ class PassportInfo extends StatelessWidget {
                 _Item(
                   name: "Ведомство",
                   value: passport.vedomstvo,
-                ),
-                _Item(
-                  name: "Тренер",
-                  value: passport.trainer,
                 ),
                 _Item(
                   name: "Место тренировок",
@@ -334,10 +333,6 @@ class PassportInfo extends StatelessWidget {
                   value: passport.address,
                 ),
                 _Item(
-                  name: "Место учебы (город, школа)",
-                  value: passport.school,
-                ),
-                _Item(
                   name: "Медицинская справка / Дата окончания",
                   value: passport.med_spravka_date,
                 ),
@@ -348,68 +343,68 @@ class PassportInfo extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            height: 32 - 24,
-          ),
-          Divider(),
-          SizedBox(
-            height: 32,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Item(
-                  name: "Отец (ФИО)",
-                  value: passport.father_fio,
-                ),
-                _Item(
-                  name: "Отец (дата рождения)",
-                  value: passport.father_birthday,
-                ),
-                _Item(
-                  name: "Отец (телефон)",
-                  value: passport.father_phoneNumber,
-                ),
-                _Item(
-                  name: "Отец (e-mail)",
-                  value: passport.father_email,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 32 - 24,
-          ),
-          Divider(),
-          SizedBox(
-            height: 32,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Item(
-                  name: "Мать (ФИО)",
-                  value: passport.mother_fio,
-                ),
-                _Item(
-                  name: "Мать (дата рождения)",
-                  value: passport.mother_birthday,
-                ),
-                _Item(
-                  name: "Мать (телефон)",
-                  value: passport.mother_phoneNumber,
-                ),
-                _Item(
-                  name: "Мать (e-mail)",
-                  value: passport.mother_email,
-                ),
-              ],
-            ),
-          ),
+          // SizedBox(
+          //   height: 32 - 24,
+          // ),
+          // Divider(),
+          // SizedBox(
+          //   height: 32,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       _Item(
+          //         name: "Отец (ФИО)",
+          //         value: passport.father_fio,
+          //       ),
+          //       _Item(
+          //         name: "Отец (дата рождения)",
+          //         value: passport.father_birthday,
+          //       ),
+          //       _Item(
+          //         name: "Отец (телефон)",
+          //         value: passport.father_phoneNumber,
+          //       ),
+          //       _Item(
+          //         name: "Отец (e-mail)",
+          //         value: passport.father_email,
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 32 - 24,
+          // ),
+          // Divider(),
+          // SizedBox(
+          //   height: 32,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       _Item(
+          //         name: "Мать (ФИО)",
+          //         value: passport.mother_fio,
+          //       ),
+          //       _Item(
+          //         name: "Мать (дата рождения)",
+          //         value: passport.mother_birthday,
+          //       ),
+          //       _Item(
+          //         name: "Мать (телефон)",
+          //         value: passport.mother_phoneNumber,
+          //       ),
+          //       _Item(
+          //         name: "Мать (e-mail)",
+          //         value: passport.mother_email,
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(
             height: 95 - 24,
           ),

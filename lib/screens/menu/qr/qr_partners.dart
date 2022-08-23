@@ -13,7 +13,7 @@ class QRPartners extends StatelessWidget {
         ),
         body: Container(
           child: Image.asset(
-            'assets/images/test_qr.png',
+            'assets/images/partners_qr.png',
             height: 313,
             width: 313,
           ),
