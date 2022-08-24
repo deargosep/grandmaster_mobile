@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -72,7 +73,14 @@ class UserState extends ChangeNotifier {
     return User(
         id: data["id"],
         parents: data["parents"],
-        children: data["children"],
+        children: <MinimalUser>[
+          ...data["children"]
+              .map((e) => MinimalUser(
+                    fullName: e["full_name"],
+                    id: e["id"],
+                  ))
+              .toList()
+        ],
         documentsUrl: data["documents"],
         photo: data["photo"],
         admitted: data["admitted"],
@@ -133,10 +141,12 @@ class UserState extends ChangeNotifier {
         ));
   }
 
-  void setUser(data) {
+  Future<void> setUser(data) async {
+    var completer = new Completer();
     log(data.toString());
     User user = convertMapToUser(data);
     _user = user;
+    completer.complete();
   }
 
   /// Removes all items from the cart.
@@ -243,7 +253,7 @@ class User {
   final lastName;
   final middleName;
   final registration_date;
-  final List children;
+  final List<MinimalUser> children;
   final List parents;
   Passport passport;
   final String? photo;
@@ -275,7 +285,7 @@ class User {
 }
 
 class MinimalUser {
-  final full_name;
+  final fullName;
   final id;
-  MinimalUser({required this.full_name, required this.id});
+  MinimalUser({required this.fullName, required this.id});
 }

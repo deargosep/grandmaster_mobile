@@ -1,16 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/bottombar_wrap.dart';
 import '../../../widgets/images/brand_icon.dart';
 
-class ChildProfileScreen extends StatelessWidget {
+class ChildProfileScreen extends StatefulWidget {
   const ChildProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ChildProfileScreen> createState() => _ChildProfileScreenState();
+}
+
+class _ChildProfileScreenState extends State<ChildProfileScreen> {
+  late final User user;
+  bool isLoaded = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isLoaded = false;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      createDio().get('/users/${Get.arguments.id}/').then((value) {
+        var e = value.data;
+        print(e);
+        setState(() {
+          user = Provider.of<UserState>(context, listen: false)
+              .convertMapToUser(e);
+          isLoaded = true;
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = Get.arguments;
+    if (!isLoaded)
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     return Scaffold(
         bottomNavigationBar: BottomBarWrap(
           currentTab: 3,
@@ -43,7 +77,11 @@ class ChildProfileScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(100)),
-                              child: CircleAvatar())),
+                              child: user.photo == null
+                                  ? CircleAvatar(
+                                      backgroundColor: Colors.black12,
+                                    )
+                                  : Avatar(user.photo!))),
                       SizedBox(
                         height: 16,
                       ),
@@ -83,80 +121,78 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.secondaryContainer;
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Дата рождения',
-            style: TextStyle(color: color),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            user.birthday != null
-                ? DateFormat('d.MM.y').format(user.birthday!)
-                : '',
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.secondary),
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          Text(
-            'Номер телефона',
-            style: TextStyle(color: color),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            "${user.phoneNumber ?? "Нет"}",
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.secondary),
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          Text(
-            'Страна',
-            style: TextStyle(color: color),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            user.country,
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.secondary),
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          Text(
-            'Город',
-            style: TextStyle(color: color),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            user.city,
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.secondary),
-          ),
-        ],
-      ),
+    return ListView(
+      shrinkWrap: true,
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Дата рождения',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.birthday != null
+              ? DateFormat('d.MM.y').format(user.birthday!)
+              : '',
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Номер телефона',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          "${user.phoneNumber ?? "Нет"}",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Страна',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.country,
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Город',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.city,
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+      ],
     );
   }
 }

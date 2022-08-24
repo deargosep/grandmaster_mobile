@@ -40,7 +40,6 @@ class _PlacesScreenState extends State<PlacesScreen> {
 
     return CustomScaffold(
         noPadding: true,
-        scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Залы',
@@ -51,29 +50,30 @@ class _PlacesScreenState extends State<PlacesScreen> {
                 }
               : null,
         ),
-        body: Column(
-          children: [
-            ...items.map((e) => GestureDetector(
-                  onTap: () {
-                    Get.toNamed('/places', arguments: e);
-                  },
-                  child: BrandCard(
-                    e,
-                    // TODO
-                    () {
-                      createDio()
-                          .patch('/gyms/${e.id}/', data: {"hidden": true});
-                      Provider.of<PlacesState>(context).setPlaces();
+        body: RefreshIndicator(
+          onRefresh: Provider.of<PlacesState>(context, listen: false).setPlaces,
+          child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/places', arguments: items[index]);
                     },
-                    () {
-                      createDio().delete('/gyms/${e.id}/');
-                      Provider.of<PlacesState>(context).setPlaces();
-                    },
+                    child: BrandCard(
+                      items[index],
+                      // TODO
+                      () {
+                        createDio().patch('/gyms/${items[index].id}/',
+                            data: {"hidden": true});
+                        Provider.of<PlacesState>(context).setPlaces();
+                      },
+                      () {
+                        createDio().delete('/gyms/${items[index].id}/');
+                        Provider.of<PlacesState>(context).setPlaces();
+                      },
 
-                    type: 'places',
-                  ),
-                ))
-          ],
+                      type: 'places',
+                    ),
+                  )),
         ));
   }
 }

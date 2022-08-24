@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grandmaster/state/places.dart';
+import 'package:grandmaster/state/schedules.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
@@ -18,15 +19,18 @@ class EditScheduleScreen extends StatelessWidget {
     List<OptionType> list = places
         .map((e) => OptionType(e.name, '/schedule/groups', arguments: e))
         .toList();
-    Map<String, List<String>> schedule = {
-      "Понедельник": ['10:30', '10:30'],
-      "Вторник": [],
-      "Среда": ['10:30', '12:30'],
-      "Четверг": ['10:30', '12:30'],
-      "Пятница": [],
-      "Суббота": ['10:30', '12:30'],
-      "Воскресенье": ['10:30', '12:30']
-    };
+    // Map<String, List<String>> schedule = {
+    //   "Понедельник": ['10:30', '10:30'],
+    //   "Вторник": [],
+    //   "Среда": ['10:30', '12:30'],
+    //   "Четверг": ['10:30', '12:30'],
+    //   "Пятница": [],
+    //   "Суббота": ['10:30', '12:30'],
+    //   "Воскресенье": ['10:30', '12:30']
+    // };
+
+    ScheduleType schedule = Provider.of<ScheduleState>(context).schedule;
+
     return CustomScaffold(
         noTopPadding: true,
         bottomNavigationBar: BottomPanel(

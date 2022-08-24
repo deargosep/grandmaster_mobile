@@ -84,26 +84,30 @@ class _VideosScreenState extends State<VideosScreen> {
             padding: const EdgeInsets.only(top: 24),
             child: Align(
               alignment: Alignment.topCenter,
-              child: ListView.builder(
-                  // shrinkWrap: true,
-                  // itemCount: videos.length,
-                  itemCount: videos.length,
-                  itemBuilder: (context, index) {
-                    return BrandCard(videos[index],
-                        type: 'videos',
-                        withPadding: false,
-                        key: Key(videos[index].id.toString()), () {
-                      createDio().patch('/videos/${videos[index].id}/',
-                          data: {"hidden": true});
-                    }, () {
-                      createDio()
-                          .delete('/videos/${videos[index].id}/')
-                          .then((value) {
-                        Provider.of<VideosState>(context, listen: false)
-                            .setVideos();
+              child: RefreshIndicator(
+                onRefresh:
+                    Provider.of<VideosState>(context, listen: false).setVideos,
+                child: ListView.builder(
+                    // shrinkWrap: true,
+                    // itemCount: videos.length,
+                    itemCount: videos.length,
+                    itemBuilder: (context, index) {
+                      return BrandCard(videos[index],
+                          type: 'videos',
+                          withPadding: false,
+                          key: Key(videos[index].id.toString()), () {
+                        createDio().patch('/videos/${videos[index].id}/',
+                            data: {"hidden": true});
+                      }, () {
+                        createDio()
+                            .delete('/videos/${videos[index].id}/')
+                            .then((value) {
+                          Provider.of<VideosState>(context, listen: false)
+                              .setVideos();
+                        });
                       });
-                    });
-                  }),
+                    }),
+              ),
             )));
   }
 }

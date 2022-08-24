@@ -24,7 +24,7 @@ class _LearningsScreenState extends State<LearningsScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // Provider.of<LearningsState>(context, listen: false).setLearnings();
+      Provider.of<LearningsState>(context, listen: false).setLearnings();
     });
   }
 
@@ -39,7 +39,6 @@ class _LearningsScreenState extends State<LearningsScreen> {
 
     return CustomScaffold(
         noPadding: true,
-        scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Учебные материалы',
@@ -52,38 +51,36 @@ class _LearningsScreenState extends State<LearningsScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 24,
-              ),
-              ...items.map((e) => Container(
-                    margin: EdgeInsets.only(bottom: 16),
-                    child: GestureDetector(
-                      onTap: () {
-                        Uri url = Uri.parse(e.link);
-                        launchUrl(url, mode: LaunchMode.externalApplication);
-                      },
-                      child: BrandCard(
-                        e,
-                        withPadding: false,
-                        type: 'learning',
-                        () {
-                          createDio().patch('/instructions/${e.id}/',
-                              data: {"hidden": true});
-                          Provider.of<LearningsState>(context).setLearnings();
+          child: RefreshIndicator(
+            onRefresh: Provider.of<LearningsState>(context, listen: false)
+                .setLearnings,
+            child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) => Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          Uri url = Uri.parse(items[index].link);
+                          launchUrl(url, mode: LaunchMode.externalApplication);
                         },
-                        () {
-                          createDio().delete('/instructions/${e.id}/');
-                          Provider.of<LearningsState>(context).setLearnings();
-                        },
+                        child: BrandCard(
+                          items[index],
+                          withPadding: false,
+                          type: 'learning',
+                          () {
+                            createDio().patch(
+                                '/instructions/${items[index].id}/',
+                                data: {"hidden": true});
+                            Provider.of<LearningsState>(context).setLearnings();
+                          },
+                          () {
+                            createDio()
+                                .delete('/instructions/${items[index].id}/');
+                            Provider.of<LearningsState>(context).setLearnings();
+                          },
+                        ),
                       ),
-                    ),
-                  )),
-              SizedBox(
-                height: 16,
-              )
-            ],
+                    )),
           ),
         ));
   }

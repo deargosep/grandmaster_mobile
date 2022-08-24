@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -28,16 +29,17 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
   Widget build(BuildContext context) {
     List<GroupType> groups = Provider.of<GroupsState>(context).groups;
     List<OptionType> list = groups
-        .map((e) => OptionType(e.name, '/schedule/table', arguments: e))
+        .map((e) => OptionType(e.name, '/schedule/table',
+            arguments: {"placeId": Get.arguments, "groupId": e.id}))
         .toList();
     return CustomScaffold(
         noTopPadding: true,
-        scrollable: true,
+        // scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
         ),
-        body: Column(
+        body: ListView(
           children: [
             Text(
               'Выберите группу',

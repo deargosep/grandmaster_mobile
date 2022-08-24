@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
 import 'package:grandmaster/screens/tabs/home/home.dart';
 import 'package:grandmaster/screens/tabs/menu/menu.dart';
-import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
+import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/widgets/bottom_bar.dart';
 
 import 'menu/menu.dart';
@@ -27,7 +24,7 @@ class _BarScreenState extends State<BarScreen> {
     //Chat
     ChatsScreen(),
     //Profile
-    MyProfileScreen()
+    ProfileScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -38,10 +35,6 @@ class _BarScreenState extends State<BarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarIconBrightness: Platform.operatingSystem == 'ios'
-            ? Brightness.dark
-            : Brightness.light));
     return Scaffold(
         // backgroundColor: Color(0xFFEAEAEA),
         body: Center(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
@@ -13,6 +14,9 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<UserState>(context).user.children.isEmpty) {
+      return MyProfileScreen();
+    }
     List<OptionType> optionList = [
       OptionType('Мой профиль', '/my_profile', type: 'primary'),
       ...Provider.of<UserState>(context, listen: false)

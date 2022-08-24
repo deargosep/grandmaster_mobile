@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -32,7 +34,8 @@ class PaymentsState extends ChangeNotifier {
 
   List<PaymentType> get payments => _payments;
 
-  void setPayments() {
+  Future<void> setPayments() async {
+    var completer = new Completer();
     createDio().get('/invoices/current_bills/').then((value) {
       List<PaymentType> newList = [
         ...value.data.map((e) {
@@ -52,6 +55,7 @@ class PaymentsState extends ChangeNotifier {
       ];
       _payments = newList;
       notifyListeners();
+      completer.complete();
     });
     // _payments = ;
   }

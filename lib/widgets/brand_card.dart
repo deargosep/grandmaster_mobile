@@ -66,7 +66,7 @@ class BrandCard extends StatelessWidget {
         case 'news':
           return '/add_edit_article';
         case 'events':
-          return '/add_edit_event';
+          return '/events/add';
         //  TODO
         case 'learning':
           return "/learnings/add";

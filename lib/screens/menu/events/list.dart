@@ -1,5 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -11,6 +12,7 @@ import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/groups.dart';
+import '../../../utils/dio.dart';
 
 class EventMembersListScreen extends StatefulWidget {
   const EventMembersListScreen({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class EventMembersListScreen extends StatefulWidget {
 
 class _EventMembersListScreenState extends State<EventMembersListScreen> {
   Map<String, bool>? checkboxes;
+  late List sportsmens;
 
   @override
   void initState() {
@@ -39,7 +42,7 @@ class _EventMembersListScreenState extends State<EventMembersListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    EventType item = Get.arguments["item"];
+    // EventType item = Get.arguments["item"];
     var options = Get.arguments["options"];
     void changeCheckbox(value) {
       setState(() {
@@ -98,7 +101,8 @@ class _Add extends StatefulWidget {
 }
 
 class _AddState extends State<_Add> {
-  Map<String, bool>? checkboxes;
+  late Map<String, bool> checkboxes;
+  bool isLoaded = false;
 
   @override
   void initState() {
@@ -107,13 +111,16 @@ class _AddState extends State<_Add> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GroupsState>(context, listen: false).setSportsmens();
-      List sportsmens =
-          Provider.of<GroupsState>(context, listen: false).sportsmens;
-      setState(() {
-        checkboxes = {
-          for (var v in sportsmens) '${v["id"]}_${v["full_name"]}': false,
-        };
+      Provider.of<GroupsState>(context, listen: false)
+          .setSportsmens()
+          .then((value) {
+        List sportsmens = value;
+        setState(() {
+          checkboxes = {
+            for (var v in sportsmens) '${v["id"]}_${v["full_name"]}': false,
+          };
+          isLoaded = true;
+        });
       });
     });
   }
@@ -126,18 +133,39 @@ class _AddState extends State<_Add> {
       });
     }
 
+    FormData formData = Get.arguments["formData"];
+
     return CustomScaffold(
         bottomNavigationBar: BottomPanel(
-          child: BrandButton(text: 'Записать'),
+          child: BrandButton(
+            text: 'Записать',
+            onPressed: () {
+              FormData newFormData = formData;
+              List members = checkboxes.entries
+                  .where((element) => element.value)
+                  .toList()
+                  .map((e) => e.key.split('_')[0])
+                  .toList();
+              newFormData.fields.add(MapEntry("members", members.toString()));
+              createDio()
+                  .post('/events/',
+                      data: newFormData,
+                      options: Options(contentType: 'multipart/form-data'))
+                  .then((value) {
+                Provider.of<EventsState>(context, listen: false).setEvents();
+                Get.back();
+                Get.back();
+              });
+            },
+          ),
           withShadow: false,
         ),
         appBar: AppHeader(
           text: 'Записать спортсменов',
         ),
         noTopPadding: true,
-        scrollable: true,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 8,
@@ -152,10 +180,12 @@ class _AddState extends State<_Add> {
             SizedBox(
               height: 32,
             ),
-            CheckboxesList(
-              changeCheckbox: changeCheckbox,
-              checkboxes: checkboxes,
-            ),
+            !isLoaded
+                ? Center(child: CircularProgressIndicator())
+                : CheckboxesList(
+                    changeCheckbox: changeCheckbox,
+                    checkboxes: checkboxes,
+                  ),
           ],
         ));
   }

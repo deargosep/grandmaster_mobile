@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Map numbers = {
   "parent": '+7 (918) 546-85-81',
   "child": '+7 (928) 900-06-80',
-  "moderator": "+7 (951) 525-16-25",
+  "moderator": "+7 (900) 133-78-68",
   "trainer": "+7 (938) 115-54-47",
   "payment": "+7 (900) 126-16-92"
 };
@@ -36,9 +36,14 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     setState(() {
       isLoaded = false;
     });
-    SharedPreferences.getInstance().then((value) {
-      if (value.getString('access') != null) {
-        createDio()
+    SharedPreferences.getInstance().then((sp) {
+      if (sp.getString('access') != null) {
+        createDio(errHandler: (DioError err) {
+          print(err);
+          setState(() {
+            isLoaded = true;
+          });
+        })
             .get(
           '/users/self/',
         )
@@ -46,13 +51,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
           if (value.statusCode == 200) {
             Provider.of<UserState>(context, listen: false).setUser(value.data);
             Get.offAllNamed('/bar', arguments: 1);
-          }
-        }, onError: (err) {
-          print(err);
-          if (err.statusCode == 401) {
-            createDio().post('/auth/token/refresh/',
-                data: {"refresh": value.getString('refresh')},
-                options: Options(headers: {"Authorization": null}));
           }
         });
       } else {
@@ -85,7 +83,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
         SizedBox(
           height: 32,
         ),
-        InputPhone(
+        InputDate(
           label: 'Номер телефона',
           controller: phoneNumber,
         ),

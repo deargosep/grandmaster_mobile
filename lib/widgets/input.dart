@@ -86,6 +86,7 @@ class Input extends StatelessWidget {
                   ))
               : null,
           alignLabelWithHint: true,
+          counterText: '',
           labelText: label ?? '',
           border: OutlineInputBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(10),
@@ -102,16 +103,72 @@ class Input extends StatelessWidget {
   }
 }
 
+class InputDate extends StatefulWidget {
+  const InputDate({Key? key, this.controller, this.label}) : super(key: key);
+  final TextEditingController? controller;
+  final String? label;
+
+  @override
+  State<InputDate> createState() => _InputDateState();
+}
+
+class _InputDateState extends State<InputDate> {
+  @override
+  Widget build(BuildContext context) {
+    return MaskedTextField(
+      mask: "##.##.####",
+      controller: widget.controller ?? null,
+      maxLength: "##.##.####".length,
+      keyboardType: TextInputType.datetime,
+      style: TextStyle(
+          color: Color(
+            0xFF927474,
+          ),
+          fontWeight: FontWeight.w500),
+      decoration: InputDecoration(
+        // contentPadding: height != null
+        //     ? centerText
+        //     ? EdgeInsets.fromLTRB(20, 10.0, 20.0, 10.0)
+        //     : EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
+        //     : centerText
+        //     ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
+        //     : null,
+        // suffixIcon: icon != null
+        //     ? Transform.scale(
+        //     scale: 0.45,
+        //     child: BrandIcon(
+        //       icon: icon,
+        //       onTapCalendar: onTapCalendar,
+        //       onTap: onTap,
+        //     ))
+        //     : null,
+        alignLabelWithHint: true,
+        counterText: '',
+        labelText: widget.label ?? '',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            width: 0,
+            style: BorderStyle.none,
+          ),
+        ),
+        filled: true,
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+      ),
+    );
+  }
+}
+
 class InputPhone extends StatefulWidget {
   const InputPhone({Key? key, this.controller, this.label}) : super(key: key);
   final TextEditingController? controller;
   final String? label;
 
   @override
-  State<InputPhone> createState() => _InputPhoneState();
+  State<InputDate> createState() => _InputDateState();
 }
 
-class _InputPhoneState extends State<InputPhone> {
+class _InputPhoneState extends State<InputDate> {
   @override
   Widget build(BuildContext context) {
     return MaskedTextField(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,41 +12,38 @@ class PlacesState extends ChangeNotifier {
   List<PlaceType> get places => _places;
   List<Trainer> get trainers => _trainers;
 
-  void setPlaces({List<PlaceType>? data}) {
-    if (data != null)
-      _places = data;
-    else {
-      createDio().get('/gyms/').then((value) {
-        print(value.data);
-        List<PlaceType> newList = [
-          ...value.data.where((el) => !el["hidden"]).map((e) {
-            print(e);
-            // DateTime newDate = DateTime.parse(e["created_at"]);
-            return PlaceType(
-                id: e["id"].toString(),
-                name: e["title"],
-                description: e["description"],
-                cover: e["cover"],
-                address: e["address"],
-                trainers: [
-                  ...e["trainers"]
-                      .map((el) => Trainer(
-                          id: el["id"].toString(),
-                          photo: el["photo"],
-                          fio: el["full_name"],
-                          category: 'Возрастная группа 7-14 лет',
-                          daysOfWeek: 'Вт, Чт, Сб',
-                          time: '09:00 - 10:30'))
-                      .toList()
-                ],
-                order: e["order"] ?? e["number"]);
-          }).toList()
-        ];
-        _places = newList;
-        notifyListeners();
-      });
-    }
-    notifyListeners();
+  Future<void> setPlaces({List<PlaceType>? data}) async {
+    var completer = new Completer();
+    createDio().get('/gyms/').then((value) {
+      print(value.data);
+      List<PlaceType> newList = [
+        ...value.data.where((el) => !el["hidden"]).map((e) {
+          print(e);
+          // DateTime newDate = DateTime.parse(e["created_at"]);
+          return PlaceType(
+              id: e["id"].toString(),
+              name: e["title"],
+              description: e["description"],
+              cover: e["cover"],
+              address: e["address"],
+              trainers: [
+                ...e["trainers"]
+                    .map((el) => Trainer(
+                        id: el["id"].toString(),
+                        photo: el["photo"],
+                        fio: el["full_name"],
+                        category: 'Возрастная группа 7-14 лет',
+                        daysOfWeek: 'Вт, Чт, Сб',
+                        time: '09:00 - 10:30'))
+                    .toList()
+              ],
+              order: e["order"] ?? e["number"]);
+        }).toList()
+      ];
+      _places = newList;
+      notifyListeners();
+      completer.complete();
+    });
   }
 
   PlaceType? getPlaces(id) {

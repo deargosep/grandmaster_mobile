@@ -29,10 +29,14 @@ class AboutScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView(children: [
-              // List
-              Content()
-            ]),
+            child: RefreshIndicator(
+              onRefresh:
+                  Provider.of<AboutState>(context, listen: false).setAbout,
+              child: ListView(children: [
+                // List
+                Content()
+              ]),
+            ),
           ),
         ],
       ),

@@ -18,12 +18,12 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-  final EventType item = Get.arguments;
-  bool zapisan = false;
-  bool added = false;
-
   @override
   Widget build(BuildContext context) {
+    EventType item = Get.arguments;
+    item = Provider.of<EventsState>(context)
+        .events
+        .firstWhere((element) => element.id == item.id);
     String getRole() {
       return Provider.of<UserState>(context, listen: false).user.role;
     }
@@ -43,9 +43,9 @@ class _EventScreenState extends State<EventScreen> {
           0;
     }
 
-    bool isClosed() {
-      return DateTime.now().isAfter(item.timeDateEnd);
-    }
+    bool zapisan = item.members.firstWhereOrNull(
+            (element) => Provider.of<UserState>(context).user.id) !=
+        null;
 
     return CustomScaffold(
       noPadding: true,
@@ -54,8 +54,7 @@ class _EventScreenState extends State<EventScreen> {
           withShadow: false,
           height: zapisan ? 148.0 : 85.0,
           child: getRole() == 'moderator' ||
-                  (getRole() == 'sportsmen' &&
-                      item.timeDateEnd.isAfter(DateTime.now()))
+                  (getRole() == 'sportsmen' && !item.open)
               ? Container()
               : Column(
                   children: [
@@ -84,19 +83,15 @@ class _EventScreenState extends State<EventScreen> {
                         // if not trainer or parent (multiple students)
                         if (getRole() != 'trainer' && !hasChildren()) {
                           if (zapisan) {
-                            if (isClosed()) {
+                            if (!item.open) {
                               // посмотреть список
                               Get.toNamed('/events/list', arguments: {
                                 "item": item,
                                 "options": {"type": "view"}
                               });
                             }
-                            if (!isClosed()) {
+                            if (item.open) {
                               // отменить запись
-                              if (mounted)
-                                setState(() {
-                                  zapisan = false;
-                                });
                             }
                           }
 
@@ -143,13 +138,13 @@ class _EventScreenState extends State<EventScreen> {
                                       'Вы успешно записались на мероприятие');
                             }
                             if (hasMoreThanOneChild()) {
-                              if (isClosed()) {
+                              if (!item.open) {
                                 Get.toNamed('/events/list', arguments: {
                                   "item": item,
                                   "options": {"type": "view"}
                                 });
                               }
-                              if (!isClosed()) {
+                              if (item.open) {
                                 if (mounted)
                                   setState(() {
                                     zapisan = true;
@@ -165,7 +160,7 @@ class _EventScreenState extends State<EventScreen> {
                       },
                       text: !hasChildren() && getRole() != 'trainer'
                           ? zapisan
-                              ? isClosed()
+                              ? !item.open
                                   ? 'Посмотреть список'
                                   : 'Отменить запись'
                               : 'Записаться'
@@ -210,7 +205,7 @@ class _EventScreenState extends State<EventScreen> {
                       children: [
                         Row(
                           children: [
-                            BrandPill(isClosed()),
+                            BrandPill(!item.open),
                             Spacer(),
                             getRole() == 'moderator'
                                 ? BrandIcon(

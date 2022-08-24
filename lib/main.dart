@@ -55,6 +55,7 @@ import 'package:grandmaster/state/learnings.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/payments.dart';
 import 'package:grandmaster/state/places.dart';
+import 'package:grandmaster/state/schedules.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/state/videos.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -79,6 +80,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => VideosState()),
       ChangeNotifierProvider(create: (context) => AboutState()),
       ChangeNotifierProvider(create: (context) => LearningsState()),
+      ChangeNotifierProvider(create: (context) => ScheduleState()),
     ],
     child: GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -126,7 +128,7 @@ void main() {
         ),
         GetPage(
           name: '/events/add',
-          page: () => AddEventScreen(),
+          page: () => AddEditEventScreen(),
         ),
         GetPage(name: '/event', page: () => EventScreen()),
         GetPage(

@@ -52,7 +52,7 @@ class MenuScreen extends StatelessWidget {
       if (user.role == 'student') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
-          OptionType('Расписание', links["schedule"]!),
+          // OptionType('Расписание', links["schedule"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Залы', links["places"]!),
           OptionType('QR коды', links["qr"]!),
@@ -64,7 +64,7 @@ class MenuScreen extends StatelessWidget {
           OptionType('Мероприятия', links["events"]!),
           OptionType('Учебные файлы', links["learning"]!),
           OptionType('Журнал посещений', links["visits"]!),
-          OptionType('Расписание', links["schedule"]!),
+          // OptionType('Расписание', links["schedule"]!),
           OptionType('Залы', links["places"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('QR коды', links["qr"]!),

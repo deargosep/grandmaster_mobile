@@ -24,6 +24,7 @@ class EventCard extends StatelessWidget {
           color: Colors.white,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image cover
             Container(
@@ -97,7 +98,7 @@ class EventCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: BrandPill(DateTime.now().isAfter(item.timeDateEnd)),
+              child: BrandPill(!item.open),
             )
           ],
         ),

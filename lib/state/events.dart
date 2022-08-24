@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,32 +12,30 @@ class EventsState extends ChangeNotifier {
   List<EventType> get events => _events;
 
   void setEvents({List<EventType>? data}) {
-    if (data != null)
-      _events = data;
-    else {
-      createDio().get('/events/').then((value) {
-        print(value);
-        List<EventType> newList = [
-          ...value.data["results"]
-              .where((el) => el["hidden"] == null || !el["hidden"])
-              .map((e) {
-            // DateTime newDate = DateTime.parse(e["created_at"]);
-            return EventType(
-                id: e["id"],
-                name: e["name"],
-                description: e["description"],
-                address: e["address"],
-                timeDateStart: DateTime.parse(e["start_date"]),
-                timeDateEnd: DateTime.parse(e["end_date"]),
-                cover: e["cover"]);
-          }).toList()
-        ];
-        print(newList);
-        _events = newList;
-        notifyListeners();
-      });
-    }
-    notifyListeners();
+    var completer = new Completer();
+    createDio().get('/events/').then((value) {
+      List<EventType> newList = [
+        ...value.data["results"]
+            .where((el) => el["hidden"] == null || !el["hidden"])
+            .map((e) {
+          log(e.toString());
+          // DateTime newDate = DateTime.parse(e["created_at"]);
+          return EventType(
+              id: e["id"],
+              name: e["name"],
+              description: e["description"],
+              address: e["address"],
+              timeDateStart: DateTime.parse(e["start_date"]),
+              timeDateEnd: DateTime.parse(e["end_date"]),
+              cover: e["cover"],
+              open: e["open"],
+              order: e["number"]);
+        }).toList()
+      ];
+      _events = newList;
+      notifyListeners();
+      completer.complete();
+    });
   }
 
   EventType? getEvents(id) {
@@ -57,6 +58,8 @@ class EventType {
   final address;
   final List members;
   final String cover;
+  final order;
+  final bool open;
   EventType(
       {required this.id,
       required this.name,
@@ -65,6 +68,8 @@ class EventType {
       required this.description,
       required this.address,
       required this.cover,
+      required this.order,
+      required this.open,
       members})
       : members = members ?? [];
 }

@@ -32,33 +32,36 @@ class _GroupsScreenState extends State<GroupsScreen> {
         list.map((e) => OptionType(e.name, '/group', arguments: e)).toList();
     var user = Provider.of<UserState>(context).user;
     return CustomScaffold(
-        scrollable: true,
+        // scrollable: true,
         appBar: AppHeader(
           text: 'Группы спортсменов',
         ),
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
-        body: Column(
-          children: [
-            user.role == 'trainer'
-                ? Option(
-                    text: 'Создать группу',
-                    type: 'create',
-                    noArrow: true,
-                    onTap: () {
-                      Get.toNamed('/groups/add');
-                    },
-                  )
-                : Container(),
-            user.role == 'trainer'
-                ? SizedBox(
-                    height: 16,
-                  )
-                : Container(),
-            ListOfOptions(
-              list: listOptions,
-              noArrow: true,
-            )
-          ],
+        body: RefreshIndicator(
+          onRefresh: Provider.of<GroupsState>(context, listen: false).setGroups,
+          child: ListView(
+            children: [
+              user.role == 'trainer'
+                  ? Option(
+                      text: 'Создать группу',
+                      type: 'create',
+                      noArrow: true,
+                      onTap: () {
+                        Get.toNamed('/groups/add');
+                      },
+                    )
+                  : Container(),
+              user.role == 'trainer'
+                  ? SizedBox(
+                      height: 16,
+                    )
+                  : Container(),
+              ListOfOptions(
+                list: listOptions,
+                noArrow: true,
+              )
+            ],
+          ),
         ));
   }
 }

@@ -47,8 +47,13 @@ class _GroupScreenState extends State<GroupScreen> {
       });
     }
 
+    var list = context
+        .watch<GroupsState>()
+        .groups
+        .firstWhere((element) => item.id == element.id)
+        .members;
+
     return CustomScaffold(
-        scrollable: true,
         noHorPadding: true,
         appBar: AppHeader(
           text: item.name,
@@ -57,38 +62,41 @@ class _GroupScreenState extends State<GroupScreen> {
             Get.toNamed('/group/manage', arguments: item);
           },
         ),
-        body: Column(
-            children: context
-                .watch<GroupsState>()
-                .groups
-                .firstWhere((element) => item.id == element.id)
-                .members
-                .map((e) => Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      child: Slidable(
-                          key: UniqueKey(),
-                          endActionPane: ActionPane(
-                              extentRatio: 0.1,
-                              motion: ScrollMotion(),
-                              children: [
-                                BrandIcon(
-                                  icon: 'decline',
-                                  color: Colors.black,
-                                  height: 18,
-                                  width: 18,
-                                  onTap: () {
-                                    removeMember(e.id);
-                                  },
-                                ),
-                              ]),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Option(
-                              text: e.full_name,
-                              noArrow: true,
-                            ),
-                          )),
-                    ))
-                .toList()));
+        body: RefreshIndicator(
+          onRefresh: Provider.of<GroupsState>(context, listen: false).setGroups,
+          child: ListView.builder(
+              itemCount: context
+                  .watch<GroupsState>()
+                  .groups
+                  .firstWhere((element) => item.id == element.id)
+                  .members
+                  .length,
+              itemBuilder: (context, index) => Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    child: Slidable(
+                        key: UniqueKey(),
+                        endActionPane: ActionPane(
+                            extentRatio: 0.1,
+                            motion: ScrollMotion(),
+                            children: [
+                              BrandIcon(
+                                icon: 'decline',
+                                color: Colors.black,
+                                height: 18,
+                                width: 18,
+                                onTap: () {
+                                  removeMember(list[index].id);
+                                },
+                              ),
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Option(
+                            text: list[index].fullName,
+                            noArrow: true,
+                          ),
+                        )),
+                  )),
+        ));
   }
 }

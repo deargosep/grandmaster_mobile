@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -9,19 +10,57 @@ import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/input.dart';
 import 'package:grandmaster/widgets/select_list.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class AddEventScreen extends StatefulWidget {
-  AddEventScreen({Key? key}) : super(key: key);
+import '../../../state/events.dart';
+import '../../../utils/dio.dart';
+
+class AddEditEventScreen extends StatefulWidget {
+  AddEditEventScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddEventScreen> createState() => _AddEventScreenState();
+  State<AddEditEventScreen> createState() => _AddEditEventScreenState();
 }
 
-class _AddEventScreenState extends State<AddEventScreen> {
+class _AddEditEventScreenState extends State<AddEditEventScreen> {
   final ImagePicker _picker = ImagePicker();
-  List<File?> images = [];
+
+  TextEditingController name =
+      TextEditingController(text: Get.arguments?.name ?? '');
+  TextEditingController description =
+      TextEditingController(text: Get.arguments?.description ?? '');
+  TextEditingController address = TextEditingController(
+      text: Get.arguments?.address == 'Нет адреса'
+          ? ''
+          : Get.arguments?.address ?? '');
+  TextEditingController dateStart = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('d.MM.y').format(Get.arguments?.timeDateStart)
+          : '');
+  TextEditingController timeStart = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('H:m').format(Get.arguments?.timeDateStart)
+          : '');
+  TextEditingController dateEnd = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('d.MM.y').format(Get.arguments?.timeDateEnd)
+          : '');
+  TextEditingController timeEnd = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('H:m').format(Get.arguments?.timeDateEnd)
+          : '');
+  TextEditingController order =
+      TextEditingController(text: Get.arguments?.order.toString());
+
+  EventType? item = Get.arguments;
+  // List<File?> images = [];
   File? cover;
-  String select = 'Открытое';
+  String select = Get.arguments != null
+      ? Get.arguments.open
+          ? 'Открытое'
+          : 'Закрытое'
+      : 'Открытое';
   final list = ['Открытое', 'Закрытое'];
   @override
   Widget build(BuildContext context) {
@@ -35,7 +74,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
       noPadding: true,
       scrollable: true,
       appBar: AppHeader(
-        text: 'Создание мероприятия',
+        text: item != null ? 'Редактирование записи' : 'Создание мероприятия',
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -57,6 +96,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
             ),
             Input(
               label: 'Название',
+              controller: name,
             ),
             SizedBox(
               height: 32,
@@ -73,6 +113,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
             ),
             Input(
               label: 'Описание',
+              controller: description,
             ),
             SizedBox(
               height: 32,
@@ -89,6 +130,32 @@ class _AddEventScreenState extends State<AddEventScreen> {
             ),
             Input(
               label: 'Адрес',
+              controller: address,
+            ),
+            SizedBox(
+              height: 32,
+            ),
+            Text(
+              'Дата и время начала мероприятия',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.secondary),
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            InputDate(
+              label: 'Дата',
+              controller: dateStart,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Input(
+              label: 'Время',
+              controller: timeStart,
+              maxLength: 5,
             ),
             SizedBox(
               height: 32,
@@ -103,14 +170,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
             SizedBox(
               height: 24,
             ),
-            Input(
+            InputDate(
               label: 'Дата',
+              controller: dateEnd,
             ),
             SizedBox(
               height: 16,
             ),
             Input(
               label: 'Время',
+              controller: timeEnd,
+              maxLength: 5,
             ),
             SizedBox(
               height: 32,
@@ -150,14 +220,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         height: 132,
                         width: double.maxFinite,
                       )
-                    : Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 133, vertical: 28),
-                        child: BrandIcon(
-                          icon: 'upload',
-                          color: Color(0xFFE1D6D6),
-                        ),
-                      ),
+                    : item != null
+                        ? Image.network(item!.cover)
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 133, vertical: 28),
+                            child: BrandIcon(
+                              icon: 'upload',
+                              color: Color(0xFFE1D6D6),
+                            ),
+                          ),
               ),
             ),
             SizedBox(
@@ -189,14 +261,48 @@ class _AddEventScreenState extends State<AddEventScreen> {
             ),
             Input(
               label: 'Номер (1, 2, 3 и т.п.)',
+              controller: order,
             ),
             SizedBox(
               height: 98,
             ),
             BrandButton(
-              text: 'Опубликовать',
-              onPressed: () {
-                Get.toNamed('/places/add/trainers');
+              text: item != null ? 'Сохранить' : 'Опубликовать',
+              onPressed: () async {
+                Map<String, dynamic> data = {
+                  "name": name.text,
+                  "description": description.text,
+                  "start_date": DateFormat('d.MM.y - H:m')
+                      .parse('${dateStart.text} - ${timeStart.text}')
+                      .toString(),
+                  "end_date": DateFormat('d.MM.y - H:m')
+                      .parse('${dateStart.text} - ${timeStart.text}')
+                      .toString(),
+                  "address": address.text,
+                  "open": select == 'Открытое' ? 'true' : 'false',
+                  "order": order.text,
+                  "hidden": false
+                };
+                FormData formData = FormData.fromMap(data);
+                if (cover != null) {
+                  formData = await getFormFromFile(cover!, 'cover', data);
+                }
+                if (item != null) {
+                  createDio()
+                      .patch('/events/${item?.id}/',
+                          data: formData,
+                          options: Options(contentType: 'multipart/form-data'))
+                      .then((value) {
+                    Get.back();
+                    Provider.of<EventsState>(context, listen: false)
+                        .setEvents();
+                  });
+                } else {
+                  Get.toNamed('/events/list', arguments: {
+                    "options": {"type": 'add'},
+                    "formData": formData
+                  });
+                }
               },
             ),
             SizedBox(

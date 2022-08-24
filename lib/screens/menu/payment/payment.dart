@@ -70,14 +70,22 @@ class _PaymentScreenState extends State<PaymentScreen>
                   controller: controller,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    Column(
-                        children: payments
-                            .map(((e) => !e.paid ? _Payment(e) : Container()))
+                    RefreshIndicator(
+                      onRefresh:
+                          Provider.of<PaymentsState>(context).setPayments,
+                      child: ListView(
+                          children: payments
+                              .map(((e) => !e.paid ? _Payment(e) : Container()))
+                              .toList()),
+                    ),
+                    RefreshIndicator(
+                      onRefresh:
+                          Provider.of<PaymentsState>(context).setPayments,
+                      child: ListView(
+                        children: (payments
+                            .map((e) => e.paid ? _Payment(e) : Container())
                             .toList()),
-                    Column(
-                      children: (payments
-                          .map((e) => e.paid ? _Payment(e) : Container())
-                          .toList()),
+                      ),
                     )
                   ],
                 ),

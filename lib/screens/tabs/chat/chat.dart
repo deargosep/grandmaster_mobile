@@ -399,7 +399,7 @@ class Avatar extends StatelessWidget {
     return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
         child: Image.network(
-          Provider.of<UserState>(context).user.photo!,
+          url,
           loadingBuilder: (context, child, ImageChunkEvent? loadingProgress) {
             if (loadingProgress == null) return child;
             return Skeleton(

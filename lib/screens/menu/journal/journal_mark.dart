@@ -29,9 +29,7 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
       List<MinimalUser> groupUsers = Get.arguments.members;
       print(groupUsers);
       setState(() {
-        checkboxes = {
-          for (var v in groupUsers) '${v.id}_${v.full_name}': false
-        };
+        checkboxes = {for (var v in groupUsers) '${v.id}_${v.fullName}': false};
       });
     });
   }

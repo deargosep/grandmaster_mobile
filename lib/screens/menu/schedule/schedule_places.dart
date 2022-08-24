@@ -7,25 +7,39 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/bottombar_wrap.dart';
 
-class PlacesScheduleScreen extends StatelessWidget {
+class PlacesScheduleScreen extends StatefulWidget {
   const PlacesScheduleScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PlacesScheduleScreen> createState() => _PlacesScheduleScreenState();
+}
+
+class _PlacesScheduleScreenState extends State<PlacesScheduleScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<PlacesState>(context, listen: false).setPlaces();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
-        .map((e) => OptionType(e.name, '/schedule/groups', arguments: e))
+        .map((e) => OptionType(e.name, '/schedule/groups', arguments: e.id))
         .toList();
     return CustomScaffold(
         noTopPadding: true,
-        scrollable: true,
+        // scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
               height: 16,

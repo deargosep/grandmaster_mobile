@@ -1,40 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/places.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/input.dart';
-import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
-class TableScheduleScreen extends StatelessWidget {
+import '../../../state/schedules.dart';
+
+class TableScheduleScreen extends StatefulWidget {
   TableScheduleScreen({Key? key}) : super(key: key);
 
   @override
+  State<TableScheduleScreen> createState() => _TableScheduleScreenState();
+}
+
+class _TableScheduleScreenState extends State<TableScheduleScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var placeId = Get.arguments["placeId"];
+      var groupId = Get.arguments["groupId"];
+      Provider.of<ScheduleState>(context, listen: false)
+          .setSchedule(placeId, groupId);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<PlaceType> places = Provider.of<PlacesState>(context).places;
-    List<OptionType> list = places
-        .map((e) => OptionType(e.name, '/schedule/groups', arguments: e))
-        .toList();
-    Map<String, List<String>> schedule = {
-      "Понедельник": ['10:30', '12:30'],
-      "Вторник": [],
-      "Среда": ['10:30', '12:30'],
-      "Четверг": ['10:30', '12:30'],
-      "Пятница": [],
-      "Суббота": ['10:30', '12:30'],
-      "Воскресенье": ['10:30', '12:30']
-    };
+    // Map<String, List<String>> schedule = {
+    //   "Понедельник": ['10:30', '12:30'],
+    //   "Вторник": [],
+    //   "Среда": ['10:30', '12:30'],
+    //   "Четверг": ['10:30', '12:30'],
+    //   "Пятница": [],
+    //   "Суббота": ['10:30', '12:30'],
+    //   "Воскресенье": ['10:30', '12:30']
+    // };
+    ScheduleType schedule = Provider.of<ScheduleState>(context).schedule;
     return CustomScaffold(
         noTopPadding: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
-          icon: 'settings',
-          iconOnTap: () {
-            Get.toNamed('/schedule/edit');
-          },
+          icon: Provider.of<UserState>(context).user.role == 'trainer'
+              ? 'settings'
+              : '',
+          iconOnTap: Provider.of<UserState>(context).user.role == 'trainer'
+              ? () {
+                  Get.toNamed('/schedule/edit');
+                }
+              : null,
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +106,7 @@ class TimePill extends StatelessWidget {
 
 class Schedule extends StatelessWidget {
   Schedule(this.schedule, {Key? key, this.editMode = false}) : super(key: key);
-  final Map<String, List<String>> schedule;
+  final ScheduleType schedule;
   final bool editMode;
   final daysOfWeek = [
     'Понедельник',
@@ -100,65 +119,66 @@ class Schedule extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 129,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: daysOfWeek
-                  .map((e) => Container(
-                      margin: EdgeInsets.only(bottom: 16), child: TimePill(e)))
-                  .toList()),
-        ),
-        Container(
-            width: 168,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: daysOfWeek
-                  .map((e) => editMode
-                      ? Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            children: schedule[e]!.isNotEmpty
-                                ? [
-                                    TimePill(schedule[e]![0], editMode: true),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    TimePill(schedule[e]![1], editMode: true),
-                                  ]
-                                : [
-                                    TimePill('', editMode: true),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    TimePill('', editMode: true)
-                                  ],
-                          ),
-                        )
-                      : schedule[e]!.isNotEmpty
-                          ? Container(
-                              margin: EdgeInsets.only(bottom: 16),
-                              child: Row(
-                                children: [
-                                  TimePill(schedule[e]![0]),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  TimePill(schedule[e]![1]),
-                                ],
-                              ),
-                            )
-                          : Container(
-                              height: 37,
-                              margin: EdgeInsets.only(bottom: 16),
-                            ))
-                  .toList(),
-            ))
-      ],
-    );
+    return Container();
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   crossAxisAlignment: CrossAxisAlignment.start,
+    //   children: [
+    //     Container(
+    //       width: 129,
+    //       child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: daysOfWeek
+    //               .map((e) => Container(
+    //                   margin: EdgeInsets.only(bottom: 16), child: TimePill(e)))
+    //               .toList()),
+    //     ),
+    //     Container(
+    //         width: 168,
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: daysOfWeek
+    //               .map((e) => editMode
+    //                   ? Container(
+    //                       margin: EdgeInsets.only(bottom: 16),
+    //                       child: Row(
+    //                         children: schedule[e]!.isNotEmpty
+    //                             ? [
+    //                                 TimePill(schedule[e]![0], editMode: true),
+    //                                 SizedBox(
+    //                                   width: 16,
+    //                                 ),
+    //                                 TimePill(schedule[e]![1], editMode: true),
+    //                               ]
+    //                             : [
+    //                                 TimePill('', editMode: true),
+    //                                 SizedBox(
+    //                                   width: 16,
+    //                                 ),
+    //                                 TimePill('', editMode: true)
+    //                               ],
+    //                       ),
+    //                     )
+    //                   : schedule[e]!.isNotEmpty
+    //                       ? Container(
+    //                           margin: EdgeInsets.only(bottom: 16),
+    //                           child: Row(
+    //                             children: [
+    //                               TimePill(schedule[e]![0]),
+    //                               SizedBox(
+    //                                 width: 16,
+    //                               ),
+    //                               TimePill(schedule[e]![1]),
+    //                             ],
+    //                           ),
+    //                         )
+    //                       : Container(
+    //                           height: 37,
+    //                           margin: EdgeInsets.only(bottom: 16),
+    //                         ))
+    //               .toList(),
+    //         ))
+    //   ],
+    // );
   }
 }

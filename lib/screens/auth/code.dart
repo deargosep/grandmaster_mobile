@@ -71,7 +71,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 log(data.toString());
                 Provider.of<UserState>(context, listen: false).setUser(data);
                 FocusManager.instance.primaryFocus?.unfocus();
-                Get.toNamed('/bar', arguments: 1);
+                Get.offAllNamed('/bar', arguments: 1);
               });
             });
           },
