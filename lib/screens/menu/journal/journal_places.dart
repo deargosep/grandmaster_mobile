@@ -29,8 +29,7 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
   Widget build(BuildContext context) {
     List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
-        .map((e) =>
-            OptionType(e.id.toString(), '/journal/groups', arguments: e.id))
+        .map((e) => OptionType(e.name, '/journal/groups', arguments: e.id))
         .toList();
     return CustomScaffold(
         noTopPadding: true,

@@ -18,7 +18,6 @@ class PlacesState extends ChangeNotifier {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
-          print(e);
           return PlaceType(
               id: e["id"].toString(),
               name: e["title"],

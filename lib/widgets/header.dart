@@ -124,7 +124,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               ? padding
               : withPadding
                   ? EdgeInsets.fromLTRB(
-                      20, 40 + MediaQuery.of(context).viewInsets.top, 20, 0)
+                      20, 32 + MediaQuery.of(context).viewInsets.top, 20, 0)
                   : EdgeInsets.all(0),
           child: Row(
             children: [

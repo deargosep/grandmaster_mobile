@@ -21,7 +21,6 @@ class _QRScreenState extends State<QRScreen> {
       var data1 = value1.data["data"];
       createDio().get('/qrcodes/for_events/').then((value2) {
         var data2 = value2.data["data"];
-        print('${data1},${data2}');
         setState(() {
           list = [
             OptionType('Для мероприятий', '/qr/events', arguments: data2),

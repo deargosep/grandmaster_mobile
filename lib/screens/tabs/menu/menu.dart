@@ -82,14 +82,14 @@ class MenuScreen extends StatelessWidget {
     }
 
     return CustomScaffold(
-      scrollable: true,
+      // scrollable: true,
       appBar: AppHeader(
         text: 'Меню пользователя',
         withBack: false,
       ),
       padding: EdgeInsets.only(left: 20, right: 20, top: 16),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [ListOfOptions(list: getList())],
       ),
     );
