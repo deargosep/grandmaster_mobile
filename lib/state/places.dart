@@ -25,23 +25,30 @@ class PlacesState extends ChangeNotifier {
               description: e["description"],
               cover: e["cover"],
               address: e["address"],
-              trainers: [
+              trainers: <Trainer>[
                 ...e["trainers"]
                     .map((el) => Trainer(
                             id: el["id"].toString(),
                             photo: el["photo"],
                             fio: el["full_name"],
-                            schedules: [
+                            schedules: <TrainerSchedule>[
                               ...el["schedules"]
                                   .map((e) => TrainerSchedule(
-                                      minAge: e["min_age"],
-                                      maxAge: e["max_age"],
-                                      items: e["items"]
-                                          .map((et) => TScheduleTime(
-                                              startTime: et["start_time"],
-                                              finishTime: et["finish_time"],
-                                              daysOfWeek: et["weekdays"]))
-                                          .toList()))
+                                          minAge: e["min_age"],
+                                          maxAge: e["max_age"],
+                                          items: <TScheduleTime>[
+                                            ...e["items"]
+                                                .map((et) =>
+                                                    TScheduleTime(
+                                                        startTime:
+                                                            et["start_time"],
+                                                        finishTime:
+                                                            et["finish_time"],
+                                                        daysOfWeek: <String>[
+                                                          ...et["weekdays"]
+                                                        ]))
+                                                .toList()
+                                          ]))
                                   .toList()
                             ]))
                     .toList()

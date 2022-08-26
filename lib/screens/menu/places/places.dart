@@ -190,17 +190,32 @@ class PlaceCard extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(100)),
                               child: item.trainers[0].photo != null
-                                  ? Avatar(item.trainers[0].photo!)
+                                  ? Avatar(
+                                      item.trainers[0].photo!,
+                                      height: 30,
+                                      width: 30,
+                                    )
                                   : Container()),
-                          Positioned(
-                            left: 20,
-                            child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100)),
-                                child: item.trainers[1].photo != null
-                                    ? Avatar(item.trainers[1].photo!)
-                                    : Container()),
-                          ),
+                          ...item.trainers.map((e) {
+                            var index = item.trainers.indexOf(e);
+                            if (index == 0) return Container();
+                            return Positioned(
+                                left: index == 1
+                                    ? 20
+                                    : index == 2
+                                        ? 40
+                                        : 60,
+                                child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(100)),
+                                    child: e.photo != null
+                                        ? Avatar(
+                                            e.photo!,
+                                            height: 30,
+                                            width: 30,
+                                          )
+                                        : Container()));
+                          }).toList()
                           // Positioned(
                           //   left: 40,
                           //   child: CircleAvatar(

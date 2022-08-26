@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +13,6 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../widgets/tabbar_switch.dart';
 import '../../../widgets/top_tab.dart';
-import 'child_profile.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({Key? key, this.showPassport = false})
@@ -98,7 +98,11 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100)),
                                 child: user.photo != null
-                                    ? Avatar(user.photo!)
+                                    ? Avatar(
+                                        user.photo!,
+                                        height: 136,
+                                        width: 136,
+                                      )
                                     : null,
                               ),
                             ))),

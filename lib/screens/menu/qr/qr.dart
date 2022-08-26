@@ -38,6 +38,10 @@ class _QRScreenState extends State<QRScreen> {
         appBar: AppHeader(
           text: 'QR коды',
         ),
-        body: ListOfOptions(list: list));
+        body: list.isNotEmpty
+            ? ListOfOptions(list: list)
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }

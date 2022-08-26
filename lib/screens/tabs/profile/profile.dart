@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/state/user.dart';
-import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,17 +14,18 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<UserState>(context).user.children.isEmpty) {
+    User user = Provider.of<UserState>(context, listen: false).user;
+    if (user.children.isEmpty) {
       return MyProfileScreen();
     }
     List<OptionType> optionList = [
-      OptionType('Мой профиль', '/my_profile', type: 'primary'),
+      OptionType('Мой профиль', '/my_profile',
+          type: 'primary', arguments: user),
       ...Provider.of<UserState>(context, listen: false)
           .user
           .children
           .map((e) => OptionType(e.fullName, '/child_profile', arguments: e)),
     ];
-    var user = Provider.of<UserState>(context).user;
     return Scaffold(
         body: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -50,45 +51,85 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class _ListOfOptions extends StatelessWidget {
-  const _ListOfOptions({Key? key, required this.user}) : super(key: key);
+class Info extends StatelessWidget {
+  Info({Key? key, required this.user}) : super(key: key);
   final User user;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final color = Theme.of(context).colorScheme.secondaryContainer;
+    return ListView(
+      shrinkWrap: true,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Option(
-            text: "Мой профиль",
-            onTap: () {
-              Get.toNamed('/my_profile', arguments: user);
-            },
-            type: 'primary'),
-        ListView.builder(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            itemCount: Provider.of<UserState>(context).user.children.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Option(
-                    text: Provider.of<UserState>(context)
-                        .user
-                        .children[index]
-                        .fullName,
-                    onTap: () {
-                      Get.toNamed('/child_profile',
-                          arguments:
-                              Provider.of<UserState>(context, listen: false)
-                                  .user
-                                  .children[index]);
-                    },
-                  ),
-                ],
-              );
-            }),
+        Text(
+          'Дата рождения',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.birthday != null
+              ? DateFormat('d.MM.y').format(user.birthday!)
+              : '',
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Номер телефона',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          "${user.phoneNumber ?? "Нет"}",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: user.phoneNumber != null
+                  ? Color(0xFF2674E9)
+                  : Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Страна',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.country ?? "Нет",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
+        SizedBox(
+          height: 24,
+        ),
+        Text(
+          'Город',
+          style: TextStyle(color: color),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(
+          user.city ?? "Нет",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
       ],
     );
   }

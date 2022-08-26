@@ -6,6 +6,8 @@ import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
+import '../schedule/schedule_table.dart';
+
 class PlaceScreen extends StatefulWidget {
   PlaceScreen({Key? key}) : super(key: key);
 
@@ -180,6 +182,7 @@ class TrainerCard extends StatelessWidget {
       ),
       child: ExpandablePanel(
           theme: ExpandableThemeData(
+              iconSize: item.schedules!.isNotEmpty ? null : 0,
               iconColor: Theme.of(context).colorScheme.secondary,
               iconPadding: EdgeInsets.only(top: 27, right: 14)),
           header: Padding(
@@ -195,7 +198,13 @@ class TrainerCard extends StatelessWidget {
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         child: CircleAvatar(
-                          child: Avatar(item.photo!),
+                          child: item.photo != null
+                              ? Avatar(
+                                  item.photo!,
+                                  height: 46,
+                                  width: 46,
+                                )
+                              : null,
                         ))),
                 SizedBox(
                   width: 16,
@@ -226,7 +235,7 @@ class TrainerCard extends StatelessWidget {
                               height: 16,
                             ),
                             Text(
-                              'todo',
+                              'Возрастная группа ${e.minAge}-${e.maxAge} лет',
                               style: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -239,7 +248,10 @@ class TrainerCard extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text('',
+                                Text(
+                                    '${e.items.map((e) => e.daysOfWeek.map((e) => getDay(e)))}'
+                                        .replaceAll('(', '')
+                                        .replaceAll(')', ''),
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: Theme.of(context)
@@ -258,7 +270,8 @@ class TrainerCard extends StatelessWidget {
                                 SizedBox(
                                   width: 16,
                                 ),
-                                Text('',
+                                Text(
+                                    '${e.items.first.startTime} - ${e.items.first.finishTime}',
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: Theme.of(context)

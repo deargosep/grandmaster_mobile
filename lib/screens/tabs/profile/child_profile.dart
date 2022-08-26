@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/utils/dio.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
@@ -80,7 +80,11 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
                                   ? CircleAvatar(
                                       backgroundColor: Colors.black12,
                                     )
-                                  : Avatar(user.photo!))),
+                                  : Avatar(
+                                      user.photo!,
+                                      height: 136,
+                                      width: 136,
+                                    ))),
                       SizedBox(
                         height: 16,
                       ),
@@ -111,89 +115,5 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
             ],
           ),
         ));
-  }
-}
-
-class Info extends StatelessWidget {
-  Info({Key? key, required this.user}) : super(key: key);
-  final User user;
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.secondaryContainer;
-    return ListView(
-      shrinkWrap: true,
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Дата рождения',
-          style: TextStyle(color: color),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          user.birthday != null
-              ? DateFormat('d.MM.y').format(user.birthday!)
-              : '',
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Номер телефона',
-          style: TextStyle(color: color),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          "${user.phoneNumber ?? "Нет"}",
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: user.phoneNumber != null
-                  ? Color(0xFF2674E9)
-                  : Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Страна',
-          style: TextStyle(color: color),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          user.country,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-        SizedBox(
-          height: 24,
-        ),
-        Text(
-          'Город',
-          style: TextStyle(color: color),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          user.city,
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
-        ),
-      ],
-    );
   }
 }

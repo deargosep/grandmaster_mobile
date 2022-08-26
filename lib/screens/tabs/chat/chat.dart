@@ -251,7 +251,11 @@ class Message extends StatelessWidget {
                 width: 50,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(100))),
-                child: Avatar(Provider.of<UserState>(context).user.photo!)),
+                child: Avatar(
+                  Provider.of<UserState>(context).user.photo!,
+                  height: 50,
+                  width: 50,
+                )),
       ],
     );
   }
@@ -391,22 +395,30 @@ class MessageType {
 }
 
 class Avatar extends StatelessWidget {
-  const Avatar(this.url, {Key? key}) : super(key: key);
+  const Avatar(this.url, {Key? key, this.height, this.width}) : super(key: key);
   final String url;
+  final double? height;
+  final double? width;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(100)),
         child: Image.network(
           url,
+          height: height,
+          width: width,
           loadingBuilder: (context, child, ImageChunkEvent? loadingProgress) {
             if (loadingProgress == null) return child;
-            return Skeleton(
-              isLoading: true,
-              skeleton: SkeletonAvatar(
-                style: SkeletonAvatarStyle(shape: BoxShape.circle),
+            return Container(
+              height: height,
+              width: width,
+              child: Skeleton(
+                isLoading: true,
+                skeleton: SkeletonAvatar(
+                  style: SkeletonAvatarStyle(shape: BoxShape.circle),
+                ),
+                child: Container(),
               ),
-              child: Container(),
             );
           },
         ));

@@ -295,3 +295,45 @@ class TimePill extends StatelessWidget {
     );
   }
 }
+
+String getDay(String day) {
+  switch (day) {
+    case 'monday':
+      return 'Пн';
+    case 'tuesday':
+      return 'Вт';
+    case 'wednesday':
+      return 'Ср';
+    case 'thursday':
+      return "Чт";
+    case 'friday':
+      return "Пт";
+    case 'saturday':
+      return "Сб";
+    case 'sunday':
+      return "Вс";
+    default:
+      return '';
+  }
+}
+
+String getDayReverse(String day) {
+  switch (day) {
+    case 'Понедельник':
+      return 'monday';
+    case 'Вторник':
+      return 'tuesday';
+    case 'Среда':
+      return 'friday';
+    case 'Четверг':
+      return 'thursday';
+    case 'Пятница':
+      return 'friday';
+    case 'Суббота':
+      return 'saturday';
+    case 'Воскресенье':
+      return 'sunday';
+    default:
+      return '';
+  }
+}

@@ -34,7 +34,11 @@ class SomeoneProfile extends StatelessWidget {
                         height: 136,
                         width: 136,
                         child: user.photo != null
-                            ? Avatar(user.photo!)
+                            ? Avatar(
+                                user.photo!,
+                                height: 136,
+                                width: 136,
+                              )
                             : Container()),
                     SizedBox(
                       height: 16,
