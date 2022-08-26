@@ -15,10 +15,8 @@ class PlacesState extends ChangeNotifier {
   Future<void> setPlaces({List<PlaceType>? data}) async {
     var completer = new Completer();
     createDio().get('/gyms/').then((value) {
-      print(value.data);
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
-          print(e);
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return PlaceType(
               id: e["id"].toString(),
@@ -44,14 +42,31 @@ class PlacesState extends ChangeNotifier {
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   PlaceType? getPlaces(id) {
     return _places.firstWhereOrNull((element) => element.id == id);
   }
 
-  void setTrainers(List<Trainer> events) {
-    _trainers = events;
+  Future<void> setTrainers() async {
+    var completer = new Completer();
+    createDio().get('/sport_groups/trainers/').then((value) {
+      List<Trainer> newList = [
+        ...value.data.map((e) {
+          // DateTime newDate = DateTime.parse(e["created_at"]);
+          return Trainer(
+            id: e["id"].toString(),
+            fio: e["full_name"],
+          );
+        }).toList()
+      ];
+      _trainers = newList;
+      notifyListeners();
+      completer.complete();
+    });
+    return completer.future;
+    // _trainers = events;
   }
 
   Trainer? getTrainers(id) {
@@ -86,15 +101,15 @@ class PlaceType {
 class Trainer {
   final String id;
   final String fio;
-  final String photo;
-  final String category;
-  final String daysOfWeek;
-  final String time;
+  final String? photo;
+  final String? category;
+  final String? daysOfWeek;
+  final String? time;
   Trainer(
       {required this.id,
       required this.fio,
-      required this.photo,
-      required this.category,
-      required this.daysOfWeek,
-      required this.time});
+      this.photo,
+      this.category,
+      this.daysOfWeek,
+      this.time});
 }

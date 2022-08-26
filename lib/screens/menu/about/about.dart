@@ -93,7 +93,7 @@ class _ContentState extends State<Content> {
       //       );
       //     });
     }
-    return Center(child: Text('Пока что событий нет'));
+    return Center(child: CircularProgressIndicator());
   }
 }
 

@@ -273,7 +273,6 @@ class _SendMessageState extends State<SendMessage> {
   Widget build(BuildContext context) {
     void sendMessage(String text) {
       controller.clear();
-      print(text);
       // TODO: use actual user
       var localMessages = <MessageType>[
         ...widget.messages,
@@ -397,7 +396,7 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
+        borderRadius: BorderRadius.all(Radius.circular(100)),
         child: Image.network(
           url,
           loadingBuilder: (context, child, ImageChunkEvent? loadingProgress) {

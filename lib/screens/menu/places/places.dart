@@ -193,7 +193,9 @@ class PlaceCard extends StatelessWidget {
                             child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100)),
-                                child: Avatar(item.trainers[0].photo)),
+                                child: item.trainers[0].photo != null
+                                    ? Avatar(item.trainers[0].photo!)
+                                    : Container()),
                           ),
                           Positioned(
                             left: 20,
@@ -205,7 +207,9 @@ class PlaceCard extends StatelessWidget {
                               child: ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(100)),
-                                  child: Avatar(item.trainers[1].photo)),
+                                  child: item.trainers[1].photo != null
+                                      ? Avatar(item.trainers[1].photo!)
+                                      : Container()),
                             ),
                           ),
                           // Positioned(

@@ -52,7 +52,6 @@ class LearningsState extends ChangeNotifier {
     createDio().get('/instructions/').then((value) {
       List<LearningType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
-          print(e);
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return LearningType(
               id: e["id"],
@@ -62,11 +61,11 @@ class LearningsState extends ChangeNotifier {
               link: e["link"]);
         }).toList()
       ];
-      print(newList);
       _learnings = newList;
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   /// Removes all items from the cart.

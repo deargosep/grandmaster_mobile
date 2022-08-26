@@ -27,7 +27,6 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       createDio().get('/users/${Get.arguments.id}/').then((value) {
         var e = value.data;
-        print(e);
         setState(() {
           user = Provider.of<UserState>(context, listen: false)
               .convertMapToUser(e);
@@ -156,7 +155,9 @@ class Info extends StatelessWidget {
           style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary),
+              color: user.phoneNumber != null
+                  ? Color(0xFF2674E9)
+                  : Theme.of(context).colorScheme.secondary),
         ),
         SizedBox(
           height: 24,

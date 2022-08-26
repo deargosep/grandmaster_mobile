@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/groups.dart';
+import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/state/visit_log.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/checkboxes_list.dart';
 import 'package:grandmaster/widgets/header.dart';
-
-import '../../../state/user.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MarkJournalScreen extends StatefulWidget {
   const MarkJournalScreen({Key? key}) : super(key: key);
@@ -25,17 +29,38 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // List<User> users = Provider.of<UserState>(context, listen: false).list;
-      List<MinimalUser> groupUsers = Get.arguments.members;
-      print(groupUsers);
-      setState(() {
-        checkboxes = {for (var v in groupUsers) '${v.id}_${v.fullName}': false};
+      // var members = [];
+      // createDio()
+      //     .get('/visit_log/?gym=${placeId}&sport_group=${groupId}')
+      //     .then((value) {
+      //   print(value);
+      // });
+      Provider.of<GroupsState>(context, listen: false)
+          .setSportsmens()
+          .then((value) {
+        List<MinimalUser> users =
+            Provider.of<GroupsState>(context, listen: false).sportsmens;
+        List<MinimalUser> groupUsers = [
+          ...Get.arguments["attending"]
+              .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
+              .toList()
+        ];
+        // print(groupUsers);
+        setState(() {
+          checkboxes = {
+            for (var v in users)
+              '${v.id}_${v.fullName}': groupUsers
+                      .firstWhereOrNull((element) => element.id == v.id) !=
+                  null
+          };
+        });
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    VisitLogType visitLog = Provider.of<VisitLogState>(context).visitLog;
     // List<GroupType> groups = Provider.of<GroupsState>(context).groups;
     // List<OptionType> list = groups
     //     .map((e) => OptionType(e.name, '/schedule/table', arguments: e))
@@ -56,6 +81,19 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
           withShadow: false,
           child: BrandButton(
             text: 'Сохранить',
+            onPressed: () {
+              createDio().post(
+                  '/visit_log/?gym=${visitLog.gym}&sport_group=${visitLog.group}',
+                  data: {
+                    "attending": checkboxes?.entries
+                        .where((element) => element.value)
+                        .map((e) => e.key.split('_')[0])
+                        .toList()
+                  }).then((value) {
+                Get.back();
+                Get.back();
+              });
+            },
           ),
         ),
         body: ListView(
@@ -66,11 +104,11 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
             ),
             Row(
               children: [
-                Pill('22.06.2022'),
+                Pill(DateFormat('d.MM.y').format(visitLog.datetime)),
                 SizedBox(
                   width: 16,
                 ),
-                Pill('10:30'),
+                Pill(visitLog.start_time),
               ],
             ),
             SizedBox(

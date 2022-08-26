@@ -39,9 +39,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
           .setSportsmens()
           .then((value) {
         setState(() {
-          checkboxes = {
-            for (var v in value) '${v["id"]}_${v["full_name"]}': false
-          };
+          checkboxes = {for (var v in value) '${v.id}_${v.fullName}': false};
         });
       });
     });

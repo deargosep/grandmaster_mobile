@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
 
 import '../utils/dio.dart';
 
@@ -11,11 +12,11 @@ class EventsState extends ChangeNotifier {
 
   List<EventType> get events => _events;
 
-  void setEvents({List<EventType>? data}) {
+  Future setEvents({List<EventType>? data}) {
     var completer = new Completer();
     createDio().get('/events/').then((value) {
       List<EventType> newList = [
-        ...value.data["results"]
+        ...value.data
             .where((el) => el["hidden"] == null || !el["hidden"])
             .map((e) {
           log(e.toString());
@@ -29,13 +30,15 @@ class EventsState extends ChangeNotifier {
               timeDateEnd: DateTime.parse(e["end_date"]),
               cover: e["cover"],
               open: e["open"],
-              order: e["number"]);
+              order: e["number"],
+              members: <MinimalUser>[...e["members"]]);
         }).toList()
       ];
       _events = newList;
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   EventType? getEvents(id) {
@@ -56,7 +59,7 @@ class EventType {
   final DateTime timeDateEnd;
   final description;
   final address;
-  final List members;
+  final List<MinimalUser> members;
   final String cover;
   final order;
   final bool open;

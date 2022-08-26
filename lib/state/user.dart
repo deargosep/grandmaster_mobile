@@ -147,6 +147,7 @@ class UserState extends ChangeNotifier {
     User user = convertMapToUser(data);
     _user = user;
     completer.complete();
+    return completer.future;
   }
 
   /// Removes all items from the cart.

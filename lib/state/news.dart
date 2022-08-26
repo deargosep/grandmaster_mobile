@@ -14,7 +14,7 @@ class Articles extends ChangeNotifier {
     var completer = new Completer();
     createDio().get('/news/').then((value) {
       List<ArticleType> newList = [
-        ...value.data["results"].where((el) => !el["hidden"]).map((e) {
+        ...value.data.where((el) => !el["hidden"]).map((e) {
           DateTime newDate = DateTime.parse(e["created_at"]);
           return ArticleType(
               id: e["id"],
@@ -27,11 +27,11 @@ class Articles extends ChangeNotifier {
               order: e["order"]);
         }).toList()
       ];
-      print(newList);
       _news = newList;
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   ArticleType? getNews(id) {

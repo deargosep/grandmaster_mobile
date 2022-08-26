@@ -72,7 +72,6 @@ class _ContentState extends State<Content> {
                 item,
                 // TODO
                 () {
-                  print(item.id);
                   createDio().patch('/news/${item.id}/', data: {
                     "hidden": true
                   }).then((value) =>

@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:developer';
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' hide log;
 import 'dart:typed_data';
@@ -7,7 +6,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart' hide FormData;
+import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -17,6 +16,7 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/input.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class AddEditArticleScreen extends StatefulWidget {
   AddEditArticleScreen({Key? key}) : super(key: key);
@@ -27,7 +27,7 @@ class AddEditArticleScreen extends StatefulWidget {
 
 class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.purpose ?? '');
+      TextEditingController(text: Get.arguments?.name ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController order =
@@ -73,65 +73,67 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
       scrollable: true,
       bottomNavigationBar: BottomPanel(
         child: BrandButton(
-          text: '${item != null ? 'Сохранить' : 'Опубликовать'}',
-          onPressed: () async {
-            if (item != null) {
-              List photos = [];
-              for (var e in images) {
-                print('${e.id}   ${e.file} ${e.bytes}');
-                if (e.file != null) {
-                  var value = await e.file!;
-                  photos.add({e.id: e.isModified ? '' : 'o'});
-                } else {
-                  photos.add({e.id: e.isModified ? '' : 'o'});
-                }
+            text: '${item != null ? 'Сохранить' : 'Опубликовать'}',
+            onPressed: () async {
+              Map<String, dynamic> data = {
+                "title": name.text,
+                "description": description.text,
+                "order": order.text,
+                "hidden": false
+              };
+              if (cover != null) {
+                var coverfile = await MultipartFile.fromFile(cover!.path);
+                data.addAll({"cover": coverfile});
               }
-              ;
-              FormData newPhotos =
-                  FormData.fromMap({for (var e in photos) e.key: e.value});
-              var data = {
-                "title": name.text,
-                "description": description.text,
-                "order": order.text,
-                "photos": newPhotos
-              };
-              log(photos.toString());
-              createDio().patch(
-                '/news/${item!.id}/',
-                data: data,
-              );
-            } else {
-              Map newPhotos = {};
-              newPhotos.addEntries(images.map((e) {
-                if (e.file != null) {
-                  return MapEntry(
-                      e.id,
-                      e.isModified
-                          ? base64Encode(e.file!.readAsBytesSync())
-                          : 'o');
+              Future<List<Map<String, dynamic>>> getList() async {
+                List<Map<String, dynamic>> list = [];
+                for (var e in images) {
+                  var file;
+                  if (e.file == null) {
+                    list.add(
+                        {"id": e.id, "file": "jn", "isModified": e.isModified});
+                  } else {
+                    file = await MultipartFile.fromFile(e.file!.path,
+                        filename: e.file!.path.split('/').last);
+                    list.add(
+                        {"file": file, "id": e.id, "isModified": e.isModified});
+                  }
                 }
-                if (e.bytes != null) {
-                  return MapEntry(
-                      e.id, e.isModified ? base64Encode(e.bytes!) : 'o');
-                }
+                return list;
+              }
+
+              List<Map<String, dynamic>> photosL = await getList();
+              Iterable<MapEntry<String, dynamic>> photos = photosL.map((e) {
                 return MapEntry(
-                    e.id,
-                    e.isModified
-                        ? base64Encode(e.bytes != null
-                            ? e.bytes!
-                            : e.file!.readAsBytesSync())
-                        : 'o');
-              }));
-              var data = {
-                "title": name.text,
-                "description": description.text,
-                "order": order.text,
-                "photos": newPhotos
-              };
-              createDio().post('/news/', data: data);
-            }
-          },
-        ),
+                    item?.photos.firstWhereOrNull(
+                                (element) => element["id"] == e["id"]) !=
+                            null
+                        ? generateRandomString(5)
+                        : e["id"],
+                    e["isModified"] ? e["file"] : 'o');
+              });
+              data.addEntries(photos);
+              FormData newData = FormData.fromMap(data);
+              if (item != null) {
+                createDio()
+                    .patch('/news/${item!.id}/',
+                        data: newData,
+                        options: Options(contentType: 'multipart/form-data'))
+                    .then((value) {
+                  Get.back();
+                  Provider.of<Articles>(context, listen: false).setNews();
+                });
+              } else {
+                createDio()
+                    .post('/news/',
+                        data: newData,
+                        options: Options(contentType: 'multipart/form-data'))
+                    .then((value) {
+                  Get.back();
+                  Provider.of<Articles>(context, listen: false).setNews();
+                });
+              }
+            }),
       ),
       appBar: AppHeader(
         text: '${item != null ? 'Редактирование' : 'Создание'} новости',

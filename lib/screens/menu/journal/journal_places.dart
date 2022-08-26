@@ -8,17 +8,31 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
-class PlacesJournalScreen extends StatelessWidget {
+class PlacesJournalScreen extends StatefulWidget {
   const PlacesJournalScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PlacesJournalScreen> createState() => _PlacesJournalScreenState();
+}
+
+class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<PlacesState>(context, listen: false).setPlaces();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
-        .map((e) => OptionType(e.name, '/journal/groups', arguments: e))
+        .map((e) =>
+            OptionType(e.id.toString(), '/journal/groups', arguments: e.id))
         .toList();
     return CustomScaffold(
-        scrollable: true,
         noTopPadding: true,
         bottomNavigationBar: BottomPanel(
           withShadow: false,
@@ -32,8 +46,8 @@ class PlacesJournalScreen extends StatelessWidget {
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 16,

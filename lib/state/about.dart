@@ -14,7 +14,6 @@ class AboutState extends ChangeNotifier {
     createDio().get('/club_content/').then((value) {
       List<AboutType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
-          print(e);
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return AboutType(
               id: e["id"],
@@ -28,6 +27,7 @@ class AboutState extends ChangeNotifier {
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   // AboutType? getNews(id) {

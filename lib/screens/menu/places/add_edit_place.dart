@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
@@ -24,7 +26,7 @@ class _AddEditPlaceState extends State<AddEditPlace> {
   File? cover;
   PlaceType? item = Get.arguments;
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.purpose ?? '');
+      TextEditingController(text: Get.arguments?.name ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController address =
@@ -45,52 +47,46 @@ class _AddEditPlaceState extends State<AddEditPlace> {
         child: BrandButton(
           text: 'Далее',
           onPressed: () async {
-            Map data = {
-              // "name": name.text,
-              // "description": description.text,
-              // "number": order.text,
+            Map<String, dynamic> data = {
+              "title": name.text,
+              "description": description.text,
+              "address": address.text,
+              "order": order.text,
               "hidden": false
             };
-            // if (cover != null) {
-            //   final Uint8List? compressedCover = await testCompressFile(cover!);
-            //   if (compressedCover != null) {
-            //     data["cover"] = base64Encode(compressedCover);
-            //   }
-            // }
+            FormData formData = FormData.fromMap(data);
+            if (cover != null) {
+              formData = await getFormFromFile(cover!, 'cover', data);
+            }
             if (item != null) {
-              if (name.text != item!.name) {
-                data.addAll({"name": name.text});
-              }
-              if (description.text != item!.description) {
-                data.addAll({"description": description.text});
-              }
-              if (address.text != item!.address) {
-                data.addAll({"address": address.text});
-              }
-              if (order.text.toString() != item!.order.toString()) {
-                data.addAll({"number": order.text});
-              }
-              data.addAll({"editMode": true});
+              Get.toNamed('/places/add/trainers', arguments: {
+                "formData": formData,
+                "editMode": true,
+                "id": item?.id
+              });
               // createDio()
-              //     .patch('/gyms/${item!.id}/', data: data)
+              //     .patch('/gyms/${item?.id}/',
+              //         data: formData,
+              //         options: Options(contentType: 'multipart/form-data'))
               //     .then((value) {
-              //   Provider.of<PlacesState>(context, listen: false).setPlaces();
               //   Get.back();
+              //   Provider.of<PlacesState>(context, listen: false).setPlaces();
               // });
             } else {
-              data.addAll({
-                "name": name.text,
-                "description": description.text,
-                "address": address.text,
-                "number": order.text,
-                "editMode": false
+              Get.toNamed('/places/add/trainers', arguments: {
+                "formData": formData,
+                "editMode": false,
+                "id": item?.id
               });
-              // createDio().post('/gyms/', data: data).then((value) {
-              //   Provider.of<PlacesState>(context, listen: false).setPlaces();
+              // createDio()
+              //     .post('/gyms/${item?.id}/',
+              //     data: formData,
+              //     options: Options(contentType: 'multipart/form-data'))
+              //     .then((value) {
               //   Get.back();
+              //   Provider.of<PlacesState>(context, listen: false).setPlaces();
               // });
             }
-            Get.toNamed('/places/add/trainers', arguments: data);
           },
         ),
       ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 import '../state/user.dart';
 
 class SomeoneProfile extends StatelessWidget {
   const SomeoneProfile({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     User user = Get.arguments;
@@ -30,7 +30,12 @@ class SomeoneProfile extends StatelessWidget {
                 left: 0,
                 child: Column(
                   children: [
-                    Container(height: 136, width: 136, child: CircleAvatar()),
+                    Container(
+                        height: 136,
+                        width: 136,
+                        child: user.photo != null
+                            ? Avatar(user.photo!)
+                            : Container()),
                     SizedBox(
                       height: 16,
                     ),

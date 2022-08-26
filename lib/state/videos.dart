@@ -22,11 +22,11 @@ class VideosState extends ChangeNotifier {
               link: e["link"]);
         }).toList()
       ];
-      print(newList);
       _videos = newList;
+      completer.complete();
       notifyListeners();
     });
-    completer.complete();
+    return completer.future;
   }
 
   /// Removes all items from the cart.

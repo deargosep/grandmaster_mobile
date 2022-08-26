@@ -194,7 +194,6 @@ class _Payment extends StatelessWidget {
                         createDio()
                             .get('/invoices/pay_bill/${item.id}/')
                             .then((value) {
-                          print(value.data);
                           launchUrl(Uri.parse(value.data["confirmation_url"]),
                               mode: LaunchMode.externalApplication);
                           Provider.of<PaymentsState>(context, listen: false)

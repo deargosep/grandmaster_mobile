@@ -57,6 +57,7 @@ class PaymentsState extends ChangeNotifier {
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
     // _payments = ;
   }
 

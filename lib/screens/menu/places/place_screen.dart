@@ -195,7 +195,7 @@ class TrainerCard extends StatelessWidget {
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         child: CircleAvatar(
-                          child: Avatar(item.photo),
+                          child: Avatar(item.photo!),
                         ))),
                 SizedBox(
                   width: 16,
@@ -229,7 +229,7 @@ class TrainerCard extends StatelessWidget {
                                 ),
                                 Text(
                                   index == 0
-                                      ? item.category
+                                      ? item.category!
                                       : index == 1
                                           ? "Возрастная группа 12-18 лет"
                                           : "Возрастная группа 6-12 лет",
@@ -247,7 +247,7 @@ class TrainerCard extends StatelessWidget {
                                   children: [
                                     Text(
                                         index == 1
-                                            ? item.daysOfWeek
+                                            ? item.daysOfWeek!
                                             : index == 0
                                                 ? 'Пн, Ср, Пт'
                                                 : 'Пн, Пт',
@@ -271,7 +271,7 @@ class TrainerCard extends StatelessWidget {
                                     ),
                                     Text(
                                         index == 0
-                                            ? item.time
+                                            ? item.time!
                                             : index == 1
                                                 ? '14:00 - 17:00'
                                                 : '6:00 - 9:00',

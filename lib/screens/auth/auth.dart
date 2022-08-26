@@ -38,8 +38,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     });
     SharedPreferences.getInstance().then((sp) {
       if (sp.getString('access') != null) {
-        createDio(errHandler: (DioError err) {
-          print(err);
+        createDio(errHandler: (DioError err, handler) {
           setState(() {
             isLoaded = true;
           });

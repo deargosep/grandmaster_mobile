@@ -1,4 +1,4 @@
-package com.example.grandmaster.grandmaster
+package com.grandmaster.grandmaster
 
 import io.flutter.embedding.android.FlutterActivity
 

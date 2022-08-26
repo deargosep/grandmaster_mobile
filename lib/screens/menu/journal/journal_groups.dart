@@ -1,18 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
+import 'package:grandmaster/state/visit_log.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
-class GroupsJournalScreen extends StatelessWidget {
+import '../../../utils/dio.dart';
+
+class GroupsJournalScreen extends StatefulWidget {
   const GroupsJournalScreen({Key? key}) : super(key: key);
+
+  @override
+  State<GroupsJournalScreen> createState() => _GroupsJournalScreenState();
+}
+
+class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<GroupsState>(context, listen: false).setGroups();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<GroupType> groups = Provider.of<GroupsState>(context).groups;
-    List<OptionType> list = groups
-        .map((e) => OptionType(e.name, '/journal/mark', arguments: e))
+    List<Column> list = groups
+        .map((e) => Column(
+              children: [
+                Option(
+                    text: e.id.toString(),
+                    onTap: () {
+                      var groupId = e.id;
+                      var placeId = Get.arguments;
+                      createDio(
+                              showSnackbar: false,
+                              errHandler: (err, handler) {
+                                if (err.response?.statusCode == 400) {
+                                  Get.defaultDialog(
+                                      title: 'Ошибка',
+                                      content:
+                                          Text("Журнал ещё нельзя создать!"));
+                                }
+                              })
+                          .get(
+                              '/visit_log/?gym=${placeId}&sport_group=${groupId}')
+                          .then((value) {
+                        // print(value);
+                        Provider.of<VisitLogState>(context, listen: false)
+                            .setVisitLog(placeId, groupId);
+                        Get.toNamed('/journal/mark', arguments: value.data);
+                      });
+                    }),
+                SizedBox(
+                  height: 16,
+                )
+              ],
+            ))
         .toList();
     return CustomScaffold(
         noTopPadding: true,
@@ -35,10 +83,7 @@ class GroupsJournalScreen extends StatelessWidget {
             SizedBox(
               height: 32,
             ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
+            ...list
           ],
         ));
   }

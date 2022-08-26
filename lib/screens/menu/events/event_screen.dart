@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/brand_pill.dart';
@@ -92,26 +93,39 @@ class _EventScreenState extends State<EventScreen> {
                             }
                             if (item.open) {
                               // отменить запись
+                              createDio().put(
+                                '/events/members/',
+                                data: {"members": []},
+                                queryParameters: {"event": item.id},
+                              );
                             }
                           }
 
                           if (!zapisan) {
                             // записаться
-                            if (mounted)
-                              setState(() {
-                                zapisan = true;
-                              });
-                            Get.toNamed('/success',
-                                arguments:
-                                    'Вы успешно записались на мероприятие');
+                            // if (mounted)
+                            //   setState(() {
+                            //     zapisan = true;
+                            //   });
+                            createDio().put('/events/members/',
+                                queryParameters: {
+                                  "event": item.id
+                                }).then((value) {
+                              Get.toNamed('/success',
+                                  arguments:
+                                      'Вы успешно записались на мероприятие');
+                            });
+                            // Get.toNamed('/success',
+                            //     arguments:
+                            //         'Вы успешно записались на мероприятие');
                           }
                         } else {
                           if (getRole() == "trainer") {
                             if (!zapisan) {
-                              if (mounted)
-                                setState(() {
-                                  zapisan = true;
-                                });
+                              // if (mounted)
+                              //   setState(() {
+                              //     zapisan = true;
+                              //   });
                               // add
                               Get.toNamed('/events/list', arguments: {
                                 "item": item,

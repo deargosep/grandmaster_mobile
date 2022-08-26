@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/about.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -26,7 +26,7 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
   File? cover;
   AboutType? item = Get.arguments;
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.purpose ?? '');
+      TextEditingController(text: Get.arguments?.name ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController order =
@@ -45,43 +45,33 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
         child: BrandButton(
           text: 'Далее',
           onPressed: () async {
-            Map data = {
-              // "name": name.text,
-              // "description": description.text,
-              // "number": order.text,
+            Map<String, dynamic> data = {
+              "name": name.text,
+              "description": description.text,
+              "order": order.text,
               "hidden": false
             };
+            FormData formData = FormData.fromMap(data);
             if (cover != null) {
-              // final Uint8List? compressedCover = await testCompressFile(cover!);
-              // if (compressedCover != null) {
-              data["cover"] = base64Encode(cover!.readAsBytesSync());
-              // }
+              formData = await getFormFromFile(cover!, 'cover', data);
             }
             if (item != null) {
-              if (name.text != item!.name) {
-                data.addAll({"name": name.text});
-              }
-              if (description.text != item!.description) {
-                data.addAll({"description": description.text});
-              }
-              if (order.text.toString() != item!.order.toString()) {
-                data.addAll({"number": order.text});
-              }
               createDio()
-                  .patch('/club_content/${item!.id}/', data: data)
+                  .patch('/club_content/${item?.id}/',
+                      data: formData,
+                      options: Options(contentType: 'multipart/form-data'))
                   .then((value) {
-                Provider.of<AboutState>(context, listen: false).setAbout();
                 Get.back();
+                Provider.of<AboutState>(context, listen: false).setAbout();
               });
             } else {
-              data.addAll({
-                "name": name.text,
-                "description": description.text,
-                "number": order.text,
-              });
-              createDio().post('/club_content/', data: data).then((value) {
-                Provider.of<AboutState>(context, listen: false).setAbout();
+              createDio()
+                  .post('/club_content/${item?.id}/',
+                      data: formData,
+                      options: Options(contentType: 'multipart/form-data'))
+                  .then((value) {
                 Get.back();
+                Provider.of<AboutState>(context, listen: false).setAbout();
               });
             }
           },
@@ -158,14 +148,14 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
                 decoration: BoxDecoration(
                     color: Color(0xFFFBF7F7),
                     borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: item?.cover != null
-                    ? Image.network(item?.cover)
-                    : cover != null
-                        ? Image.file(
-                            cover!,
-                            height: 132,
-                            width: double.maxFinite,
-                          )
+                child: cover != null
+                    ? Image.file(
+                        cover!,
+                        height: 132,
+                        width: double.maxFinite,
+                      )
+                    : item?.cover != null
+                        ? Image.network(item?.cover)
                         : Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 133, vertical: 28),

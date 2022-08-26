@@ -9,27 +9,28 @@ import '../utils/dio.dart';
 class GroupsState extends ChangeNotifier {
   List<GroupType> _groups = [];
 
-  List _sportsmens = [];
+  List<MinimalUser> _sportsmens = [];
 
-  Future<List> setSportsmens() async {
+  Future<List<MinimalUser>> setSportsmens() async {
     // var completer = new Completer();
     // log(data.toString());
     var response = await createDio().get('/sport_groups/sportsmen/');
-    print(response.data);
-    var data = response.data;
-    print(data);
+    List<MinimalUser> data = [
+      ...response.data
+          .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
+          .toList()
+    ];
     _sportsmens = data;
     notifyListeners();
     return data;
   }
 
   List<GroupType> get groups => _groups;
-  List get sportsmens => _sportsmens;
+  List<MinimalUser> get sportsmens => _sportsmens;
 
   Future<void> setGroups({List<GroupType>? data}) async {
     var completer = new Completer();
     createDio().get('/sport_groups/').then((value) {
-      print(value);
       List<GroupType> newList = [
         ...value.data.where((e) => e["name"] != "Путешественники").map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
@@ -51,6 +52,7 @@ class GroupsState extends ChangeNotifier {
       notifyListeners();
       completer.complete();
     });
+    return completer.future;
   }
 
   GroupType? getGroups(id) {

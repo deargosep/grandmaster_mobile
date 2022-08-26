@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
+import 'package:grandmaster/state/schedule.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/bottombar_wrap.dart';
@@ -27,10 +28,35 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var placeId = Get.arguments;
     List<GroupType> groups = Provider.of<GroupsState>(context).groups;
-    List<OptionType> list = groups
-        .map((e) => OptionType(e.name, '/schedule/table',
-            arguments: {"placeId": Get.arguments, "groupId": e.id}))
+    List<Column> list = groups
+        .map((e) => Column(
+              children: [
+                Option(
+                  text: e.id.toString(),
+                  onTap: () {
+                    Provider.of<ScheduleState>(context, listen: false)
+                        .setSchedule(Get.arguments, e.id, showSnackbar: false,
+                            errHandler: (err, handler) {
+                      if (err.response?.statusCode == 404) {
+                        Get.toNamed('/schedule/edit', arguments: {
+                          "placeId": placeId,
+                          "groupId": e.id,
+                          "createMode": true
+                        });
+                      }
+                    }).then((value) {
+                      Get.toNamed('/schedule/table',
+                          arguments: {"placeId": placeId, "groupId": e.id});
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 16,
+                )
+              ],
+            ))
         .toList();
     return CustomScaffold(
         noTopPadding: true,
@@ -51,10 +77,7 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
             SizedBox(
               height: 32,
             ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
+            ...list
           ],
         ));
   }

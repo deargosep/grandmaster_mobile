@@ -10,7 +10,9 @@ void showErrorSnackbar(String message) {
       backgroundColor: Colors.red, colorText: Colors.white);
 }
 
-Dio createDio({Function(DioError)? errHandler}) {
+Dio createDio(
+    {Function(DioError, ErrorInterceptorHandler)? errHandler,
+    showSnackbar = true}) {
   Dio dio = Dio(BaseOptions(baseUrl: "https://app.grandmaster.center"));
   dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
@@ -26,11 +28,14 @@ Dio createDio({Function(DioError)? errHandler}) {
       handler.reject(DioError(requestOptions: options, error: 'Add /'));
     return handler.next(options);
   }, onError: (error, handler) {
-    showErrorSnackbar(error.message);
+    if (showSnackbar) {
+      showErrorSnackbar(error.message);
+    }
     print('dio error: ${error.error}, WHY?: ${error.response?.data}');
-    if (errHandler != null) errHandler(error);
+    if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {
-      if (error.response?.data["code"] == 'token_not_valid') {
+      if (error.response?.data?["code"] != null &&
+          error.response?.data?["code"] == 'token_not_valid') {
         createDio()
             .post('/auth/token/refresh/',
                 data: {"refresh": sp.getString('refresh')},
@@ -53,11 +58,6 @@ Dio createDio({Function(DioError)? errHandler}) {
   return dio;
 }
 
-Future<Response> getDataDio(String endpoint) async {
-  var response = await createDio().get(endpoint);
-  return response;
-}
-
 Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
   String fileName = file.path.split('/').last;
   FormData formData = FormData.fromMap({
@@ -66,3 +66,19 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
   });
   return formData;
 }
+
+// Future<FormData> getFormFromFileArticle(
+//     List<MyFile> files, String photoKey, Map data) async {
+//   Iterable<MapEntry> listOfEntriesWithFiles = files.map((e) async {
+//     String fileName = e.file!.path.split('/').last;
+//     return MapEntry(
+//         e.id,
+//         e.isModified
+//             ? await MultipartFile.fromFile(e.file!.path, filename: fileName)
+//             : '');
+//   });
+//   Map<String, dynamic> map = {...data};
+//   map.addEntries(listOfEntriesWithFiles);
+//   FormData formData = FormData.fromMap(map);
+//   return formData;
+// }

@@ -46,7 +46,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Response>(
-        future: getDataDio(
+        future: createDio().get(
             Provider.of<UserState>(context, listen: false).user.documentsUrl!),
         builder: (context, snapshot) {
           return CustomScaffold(

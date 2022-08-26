@@ -8,14 +8,16 @@ import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../widgets/tabbar_switch.dart';
 import '../../../widgets/top_tab.dart';
 import 'child_profile.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
-
+  const MyProfileScreen({Key? key, this.showPassport = false})
+      : super(key: key);
+  final bool showPassport;
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
 }
@@ -38,7 +40,10 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   final red = Color(0xFFE44444);
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<UserState>(context).user;
+    User user = Provider.of<UserState>(context).user;
+    if (widget.showPassport) {
+      user = Get.arguments;
+    }
     bool isAdmitted() {
       return !user.admitted;
     }
@@ -69,134 +74,137 @@ class _MyProfileScreenState extends State<MyProfileScreen>
 
     return DefaultTabController(
       length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, value) {
-          return [
-            // SliverToBoxAdapter(child: _buildCarousel()),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 32,
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        // TODO: more realistic dialog
-                        getImage();
-                      },
-                      child: Container(
-                          height: 136,
-                          width: 136,
-                          child: CircleAvatar(
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              child: user.photo != null
-                                  ? Avatar(user.photo!)
-                                  : null,
-                            ),
-                          ))),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    user.fullName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
-                  SizedBox(
-                    height: 33,
-                  ),
-                  Text(
-                    'Спортивная квалификация: ${user.passport.sport_qualification ?? 'Нет'}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Provider.of<UserState>(context, listen: false).user.role !=
-                          'trainer'
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                height: 18,
-                                width: 18,
-                                child: CircleAvatar(
-                                  backgroundColor: isAdmitted() ? red : green,
-                                )),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              isAdmitted() ? 'Не допущен' : 'Допущен',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryContainer,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Divider(),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 32),
-                    child: TabsSwitch(
-                      controller: controller,
-                      children: [
-                        TopTab(
-                          text: 'Информация',
-                        ),
-                        TopTab(
-                          text:
-                              'Паспорт ${Provider.of<UserState>(context, listen: false).user.role == 'trainer' ? '' : "спортсмена"}',
-                        )
-                      ],
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, value) {
+            return [
+              // SliverToBoxAdapter(child: _buildCarousel()),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 32,
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-            controller: controller,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Info(
-                  user: user,
+                    GestureDetector(
+                        onTap: () {
+                          // TODO: more realistic dialog
+                          if (!widget.showPassport) getImage();
+                        },
+                        child: Container(
+                            height: 136,
+                            width: 136,
+                            child: CircleAvatar(
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
+                                child: user.photo != null
+                                    ? Avatar(user.photo!)
+                                    : null,
+                              ),
+                            ))),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      user.fullName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 33,
+                    ),
+                    Text(
+                      'Спортивная квалификация: ${user.passport.sport_qualification ?? 'Нет'}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                          fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                          fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    user.role != 'trainer'
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircleAvatar(
+                                    backgroundColor: isAdmitted() ? red : green,
+                                  )),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                isAdmitted() ? 'Не допущен' : 'Допущен',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Divider(),
+                    SizedBox(
+                      height: 32,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 32),
+                      child: TabsSwitch(
+                        controller: controller,
+                        children: [
+                          TopTab(
+                            text: 'Информация',
+                          ),
+                          TopTab(
+                            text:
+                                'Паспорт ${user.role == 'trainer' ? '' : "спортсмена"}',
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              PassportInfo(user: user)
-            ]),
+            ];
+          },
+          body: TabBarView(
+              controller: controller,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Info(
+                    user: user,
+                  ),
+                ),
+                PassportInfo(user: user)
+              ]),
+        ),
       ),
     );
   }
@@ -418,15 +426,28 @@ class _Item extends StatelessWidget {
         SizedBox(
           height: 8,
         ),
-        Text(
-          "${value ?? "Необходимо заполнить"}",
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: value != null
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).primaryColor),
-        ),
+        value != null && name.toLowerCase().contains('телефон')
+            ? GestureDetector(
+                onTap: () {
+                  launchUrlString('tel:${value}');
+                },
+                child: Text(
+                  "${value ?? "Необходимо заполнить"}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Color(0xFF2674E9)),
+                ),
+              )
+            : Text(
+                "${value ?? "Необходимо заполнить"}",
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: value != null
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).primaryColor),
+              ),
         SizedBox(
           height: 24,
         ),
