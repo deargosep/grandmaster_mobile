@@ -18,6 +18,7 @@ class PlacesState extends ChangeNotifier {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
+          print(e);
           return PlaceType(
               id: e["id"].toString(),
               name: e["title"],
@@ -27,12 +28,22 @@ class PlacesState extends ChangeNotifier {
               trainers: [
                 ...e["trainers"]
                     .map((el) => Trainer(
-                        id: el["id"].toString(),
-                        photo: el["photo"],
-                        fio: el["full_name"],
-                        category: 'Возрастная группа 7-14 лет',
-                        daysOfWeek: 'Вт, Чт, Сб',
-                        time: '09:00 - 10:30'))
+                            id: el["id"].toString(),
+                            photo: el["photo"],
+                            fio: el["full_name"],
+                            schedules: [
+                              ...el["schedules"]
+                                  .map((e) => TrainerSchedule(
+                                      minAge: e["min_age"],
+                                      maxAge: e["max_age"],
+                                      items: e["items"]
+                                          .map((et) => TScheduleTime(
+                                              startTime: et["start_time"],
+                                              finishTime: et["finish_time"],
+                                              daysOfWeek: et["weekdays"]))
+                                          .toList()))
+                                  .toList()
+                            ]))
                     .toList()
               ],
               order: e["order"] ?? e["number"]);
@@ -102,14 +113,29 @@ class Trainer {
   final String id;
   final String fio;
   final String? photo;
-  final String? category;
-  final String? daysOfWeek;
-  final String? time;
-  Trainer(
-      {required this.id,
-      required this.fio,
-      this.photo,
-      this.category,
-      this.daysOfWeek,
-      this.time});
+  final List<TrainerSchedule>? schedules;
+  Trainer({
+    required this.id,
+    required this.fio,
+    this.photo,
+    schedules,
+  }) : schedules = schedules ?? [];
+}
+
+class TrainerSchedule {
+  final int minAge;
+  final int maxAge;
+  final List<TScheduleTime> items;
+  TrainerSchedule(
+      {required this.minAge, required this.maxAge, required this.items});
+}
+
+class TScheduleTime {
+  final String startTime;
+  final String finishTime;
+  final List<String> daysOfWeek;
+  TScheduleTime(
+      {required this.startTime,
+      required this.finishTime,
+      required this.daysOfWeek});
 }

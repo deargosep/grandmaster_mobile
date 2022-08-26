@@ -186,31 +186,20 @@ class PlaceCard extends StatelessWidget {
                       width: 70,
                       child: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 15,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
+                          ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: item.trainers[0].photo != null
+                                  ? Avatar(item.trainers[0].photo!)
+                                  : Container()),
+                          Positioned(
+                            left: 20,
                             child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(100)),
-                                child: item.trainers[0].photo != null
-                                    ? Avatar(item.trainers[0].photo!)
+                                child: item.trainers[1].photo != null
+                                    ? Avatar(item.trainers[1].photo!)
                                     : Container()),
-                          ),
-                          Positioned(
-                            left: 20,
-                            child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                              child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100)),
-                                  child: item.trainers[1].photo != null
-                                      ? Avatar(item.trainers[1].photo!)
-                                      : Container()),
-                            ),
                           ),
                           // Positioned(
                           //   left: 40,

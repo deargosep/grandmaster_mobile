@@ -212,85 +212,69 @@ class TrainerCard extends StatelessWidget {
           collapsed: Container(),
           expanded: Column(
             children: [
-              ...List.generate(
-                  3,
-                  (index) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
+              ...item.schedules!.map((e) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 16,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Text(
+                              'todo',
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
                               children: [
+                                Text('',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryContainer)),
                                 SizedBox(
-                                  height: 16,
+                                  width: 11,
                                 ),
-                                Text(
-                                  index == 0
-                                      ? item.category!
-                                      : index == 1
-                                          ? "Возрастная группа 12-18 лет"
-                                          : "Возрастная группа 6-12 лет",
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryContainer,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500),
+                                Container(
+                                  width: 29,
+                                  height: 1,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
                                 ),
                                 SizedBox(
-                                  height: 8,
+                                  width: 16,
                                 ),
-                                Row(
-                                  children: [
-                                    Text(
-                                        index == 1
-                                            ? item.daysOfWeek!
-                                            : index == 0
-                                                ? 'Пн, Ср, Пт'
-                                                : 'Пн, Пт',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryContainer)),
-                                    SizedBox(
-                                      width: 11,
-                                    ),
-                                    Container(
-                                      width: 29,
-                                      height: 1,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryContainer,
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Text(
-                                        index == 0
-                                            ? item.time!
-                                            : index == 1
-                                                ? '14:00 - 17:00'
-                                                : '6:00 - 9:00',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondaryContainer))
-                                  ],
-                                ),
+                                Text('',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondaryContainer))
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          index != 2 ? Divider() : Container()
-                        ],
-                      ))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      // index != 2 ? Divider() : Container()
+                    ],
+                  ))
             ],
           )),
     );
