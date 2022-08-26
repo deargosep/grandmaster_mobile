@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/events.dart';
-import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
+import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/checkboxes_list.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
@@ -113,9 +113,7 @@ class _AddState extends State<_Add> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      List<MinimalUser> sportsmens =
-          await Provider.of<GroupsState>(context, listen: false)
-              .setSportsmens();
+      List<MinimalUser> sportsmens = item.members;
       // List sportsmens =
       //     Provider.of<GroupsState>(context, listen: false).sportsmens;
       // .events
@@ -123,7 +121,7 @@ class _AddState extends State<_Add> {
       // .members;
       setState(() {
         checkboxes = {
-          for (var v in sportsmens) '${v.id}_${v.fullName}': false,
+          for (var v in sportsmens) '${v.id}_${v.fullName}': v.marked!,
         };
         isLoaded = true;
       });
@@ -148,7 +146,7 @@ class _AddState extends State<_Add> {
               List members = checkboxes.entries
                   .where((element) => element.value)
                   .toList()
-                  .map((e) => e.key.split('_')[0])
+                  .map((e) => int.parse(e.key.split('_')[0]))
                   .toList();
               // formData?.fields.add(MapEntry("members", members.toString()));
               createDio().put(
@@ -210,16 +208,19 @@ class _EditState extends State<_Edit> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      List<MinimalUser> members = Get.arguments["item"].members;
+      List<MinimalUser> members = item.members;
       // List<MinimalUser?> users =
       //     await Provider.of<GroupsState>(context, listen: false)
       //         .setSportsmens();
       setState(() {
-        checkboxes = {for (var v in members) '${v.id}_${v.fullName}': false};
+        checkboxes = {
+          for (var v in members) '${v.id}_${v.fullName}': v.marked!
+        };
       });
     });
   }
 
+  EventType item = Get.arguments["item"];
   @override
   Widget build(BuildContext context) {
     void changeCheckbox(value) {
@@ -233,13 +234,16 @@ class _EditState extends State<_Edit> {
           child: BrandButton(
             text: 'Сохранить',
             onPressed: () {
-              createDio().patch('/events/${Get.arguments["item"].id}/', data: {
+              createDio().put('/events/members/?event=${item.id}', data: {
                 "members": checkboxes?.entries
                     .where((e) => e.value)
                     .toList()
-                    .map((e) => e.key.split('_')[0])
+                    .map((e) => int.parse(e.key.split('_')[0]))
                     .toList()
-              }).then((value) => Get.back());
+              }).then((value) {
+                Provider.of<EventsState>(context, listen: false).setEvents();
+                Get.back();
+              });
             },
           ),
           withShadow: false,
@@ -283,11 +287,21 @@ class _Choose extends StatefulWidget {
 class _ChooseState extends State<_Choose> {
   @override
   Widget build(BuildContext context) {
-    List<OptionType> list = Provider.of<UserState>(context)
+    EventType item = Get.arguments["item"];
+    List<Option> list = Provider.of<UserState>(context)
         .user
         .children
-        .map((e) => OptionType(e.fullName, '/success',
-            arguments: 'Вы успешно записались на мероприятие'))
+        .map((e) => Option(
+            text: e.fullName,
+            noArrow: true,
+            onTap: () {
+              createDio().put('/events/members/?event=${item.id}', data: {
+                "members": [e.id]
+              }).then((value) {
+                Get.back();
+                Provider.of<EventsState>(context, listen: false).setEvents();
+              });
+            }))
         .toList();
     return CustomScaffold(
         appBar: AppHeader(
@@ -301,10 +315,7 @@ class _ChooseState extends State<_Choose> {
             SizedBox(
               height: 8,
             ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
+            ...list
           ],
         ));
   }
@@ -320,8 +331,9 @@ class _View extends StatefulWidget {
 class _ViewState extends State<_View> {
   @override
   Widget build(BuildContext context) {
+    EventType item = Get.arguments["item"];
     List<OptionType> list =
-        Get.arguments["item"].members.map((e) => OptionType(e.fullName, ''));
+        item.members.map((e) => OptionType(e.fullName, '')).toList();
     return CustomScaffold(
         appBar: AppHeader(
           text: 'Просмотр участников',

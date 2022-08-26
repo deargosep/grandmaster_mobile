@@ -168,7 +168,7 @@ class _MyAppState extends State<MyApp> {
     // was a weidget that will be disposed of (ex. a navigation route change).
     if (!_initialUriIsHandled) {
       _initialUriIsHandled = true;
-      Get.snackbar('_handleInitialUri called', '');
+      // Get.snackbar('_handleInitialUri called', '');
       try {
         final uri = await getInitialUri();
         if (uri == null) {

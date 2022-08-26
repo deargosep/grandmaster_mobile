@@ -21,10 +21,10 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
-    EventType item = Get.arguments;
-    item = Provider.of<EventsState>(context)
+    EventType oldItem = Get.arguments;
+    EventType item = Provider.of<EventsState>(context)
         .events
-        .firstWhere((element) => element.id == item.id);
+        .firstWhere((element) => element.id == oldItem.id);
     String getRole() {
       return Provider.of<UserState>(context, listen: false).user.role;
     }
@@ -45,7 +45,7 @@ class _EventScreenState extends State<EventScreen> {
     }
 
     bool zapisan = item.members.firstWhereOrNull(
-            (element) => Provider.of<UserState>(context).user.id) !=
+            (element) => element.marked != null && element.marked!) !=
         null;
 
     return CustomScaffold(
@@ -143,10 +143,6 @@ class _EventScreenState extends State<EventScreen> {
 
                           if (hasChildren()) {
                             if (!hasMoreThanOneChild()) {
-                              if (mounted)
-                                setState(() {
-                                  zapisan = true;
-                                });
                               Get.toNamed('/success',
                                   arguments:
                                       'Вы успешно записались на мероприятие');
@@ -159,14 +155,17 @@ class _EventScreenState extends State<EventScreen> {
                                 });
                               }
                               if (item.open) {
-                                if (mounted)
-                                  setState(() {
-                                    zapisan = true;
+                                if (zapisan) {
+                                  Get.toNamed('/events/list', arguments: {
+                                    "item": item,
+                                    "options": {"type": "view"}
                                   });
-                                Get.toNamed('/events/list', arguments: {
-                                  "item": item,
-                                  "options": {"type": "choose"}
-                                });
+                                } else {
+                                  Get.toNamed('/events/list', arguments: {
+                                    "item": item,
+                                    "options": {"type": "choose"}
+                                  });
+                                }
                               }
                             }
                           }
@@ -180,8 +179,8 @@ class _EventScreenState extends State<EventScreen> {
                               : 'Записаться'
                           : zapisan
                               ? getRole() != 'trainer'
-                                  ? 'Редактировать список'
-                                  : 'Посмотреть список'
+                                  ? 'Посмотреть список'
+                                  : 'Редактировать список'
                               : hasMoreThanOneChild()
                                   ? 'Записать спортсменов'
                                   : 'Записаться',

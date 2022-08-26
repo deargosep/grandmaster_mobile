@@ -288,5 +288,6 @@ class User {
 class MinimalUser {
   final fullName;
   final id;
-  MinimalUser({required this.fullName, required this.id});
+  final bool? marked;
+  MinimalUser({required this.fullName, required this.id, this.marked});
 }

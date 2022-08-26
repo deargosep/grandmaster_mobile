@@ -31,7 +31,14 @@ class EventsState extends ChangeNotifier {
               cover: e["cover"],
               open: e["open"],
               order: e["number"],
-              members: <MinimalUser>[...e["members"]]);
+              members: <MinimalUser>[
+                ...e["members"]
+                    .map((e) => MinimalUser(
+                        fullName: e["full_name"],
+                        id: e["id"],
+                        marked: e["marked"]))
+                    .toList()
+              ]);
         }).toList()
       ];
       _events = newList;
