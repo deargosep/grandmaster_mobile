@@ -21,7 +21,9 @@ class InputCodeScreen extends StatefulWidget {
 }
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
-  TextEditingController controller = TextEditingController(text: '12345');
+  TextEditingController controller = TextEditingController(
+      // text: '12345'
+      );
   void initState() {
     super.initState();
   }

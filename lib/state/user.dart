@@ -7,16 +7,7 @@ import 'package:intl/intl.dart';
 
 class UserState extends ChangeNotifier {
   User _user = User(
-    id: "12222",
-    role: "trainer",
-    phoneNumber: '+79515251625',
-    fullName: 'Глухарев Глухарь Глухарьевич',
-    birthday: DateTime(2000, 6, 1),
-    gender: 'Мужчина',
-    age: 24,
-    country: "Россия",
-    city: "Москва",
-    registration_date: '03.06.2022',
+    role: 'guest',
     passport: Passport(),
   );
 
@@ -141,6 +132,10 @@ class UserState extends ChangeNotifier {
         ));
   }
 
+  void setUserCustom(User user) {
+    _user = user;
+  }
+
   Future<void> setUser(data) async {
     var completer = new Completer();
     log(data.toString());
@@ -263,7 +258,7 @@ class User {
   User(
       {this.id,
       this.documentsUrl,
-      required this.fullName,
+      this.fullName,
       this.firstName,
       this.lastName,
       this.middleName,
@@ -274,9 +269,9 @@ class User {
       // this.role = 'guest',
       this.gender,
       this.birthday,
-      required this.age,
-      required this.country,
-      required this.city,
+      this.age,
+      this.country,
+      this.city,
       this.registration_date,
       required this.passport,
       this.admitted = false,

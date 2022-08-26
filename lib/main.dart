@@ -54,6 +54,7 @@ import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/screens/tabs/tabs.dart';
 import 'package:grandmaster/state/about.dart';
+import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/state/learnings.dart';
@@ -217,6 +218,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => LearningsState()),
         ChangeNotifierProvider(create: (context) => VisitLogState()),
         ChangeNotifierProvider(create: (context) => ScheduleState()),
+        ChangeNotifierProvider(create: (context) => ChatsState()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

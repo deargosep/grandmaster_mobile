@@ -74,7 +74,6 @@ class MenuScreen extends StatelessWidget {
       }
       if (user.role == 'guest') {
         return <OptionType>[
-          OptionType('Залы', links["places"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomBar extends StatelessWidget {
@@ -42,22 +44,44 @@ class BottomBar extends StatelessWidget {
                 onTap: () {
                   onTap(1);
                 },
-                child: BottomBarItem(icon: 'home', active: currentIndex == 1)),
+                child: BottomBarItem(
+                  icon: 'home',
+                  active: currentIndex == 1,
+                )),
             GestureDetector(
-                onTap: () {
-                  onTap(2);
-                },
-                child: BottomBarItem(icon: 'chat', active: currentIndex == 2)),
+                onTap:
+                    Provider.of<UserState>(context, listen: false).user.role !=
+                            'guest'
+                        ? () {
+                            onTap(2);
+                          }
+                        : null,
+                child: BottomBarItem(
+                    icon: 'chat',
+                    active: currentIndex == 2,
+                    disabled: Provider.of<UserState>(context, listen: false)
+                            .user
+                            .role ==
+                        'guest')),
             GestureDetector(
-                onTap: () {
-                  onTap(3);
-                },
+                onTap:
+                    Provider.of<UserState>(context, listen: false).user.role !=
+                            'guest'
+                        ? () {
+                            onTap(3);
+                          }
+                        : null,
                 onLongPress: () {
                   SharedPreferences.getInstance().then((value) =>
                       value.clear().then((value) => Get.offAllNamed('/')));
                 },
-                child:
-                    BottomBarItem(icon: 'profile', active: currentIndex == 3)),
+                child: BottomBarItem(
+                    icon: 'profile',
+                    active: currentIndex == 3,
+                    disabled: Provider.of<UserState>(context, listen: false)
+                            .user
+                            .role ==
+                        'guest')),
           ],
         ),
       ),
@@ -66,10 +90,15 @@ class BottomBar extends StatelessWidget {
 }
 
 class BottomBarItem extends StatelessWidget {
-  BottomBarItem({Key? key, required this.icon, required this.active})
+  BottomBarItem(
+      {Key? key,
+      required this.icon,
+      required this.active,
+      this.disabled = false})
       : super(key: key);
-  String icon;
-  bool active;
+  final String icon;
+  final bool active;
+  final bool disabled;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -80,7 +109,11 @@ class BottomBarItem extends StatelessWidget {
         children: [
           BrandIcon(
             icon: icon,
-            color: active ? Theme.of(context).primaryColor : Color(0xFF9FA6BA),
+            color: active
+                ? Theme.of(context).primaryColor
+                : disabled
+                    ? Color(0xFF9FA6BA).withOpacity(0.7)
+                    : Color(0xFF9FA6BA),
             width: 26,
             height: 26,
           ),

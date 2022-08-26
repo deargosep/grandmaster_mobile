@@ -12,6 +12,7 @@ class TopTab extends StatelessWidget {
         child: Center(
             child: Text(
           text,
+          textAlign: TextAlign.center,
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
         )),
       ),

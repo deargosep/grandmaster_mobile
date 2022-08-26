@@ -13,7 +13,7 @@ void showErrorSnackbar(String message) {
 Dio createDio(
     {Function(DioError, ErrorInterceptorHandler)? errHandler,
     showSnackbar = true}) {
-  Dio dio = Dio(BaseOptions(baseUrl: "https://app.grandmaster.center"));
+  Dio dio = Dio(BaseOptions(baseUrl: "https://app.grandmaster.center/api"));
   dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
     SharedPreferences.getInstance().then((value) {
@@ -31,27 +31,28 @@ Dio createDio(
     if (showSnackbar) {
       showErrorSnackbar(error.message);
     }
-    print('dio error: ${error.error}, WHY?: ${error.response?.data}');
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {
-      if (error.response?.data?["code"] != null &&
-          error.response?.data?["code"] == 'token_not_valid') {
-        createDio()
-            .post('/auth/token/refresh/',
-                data: {"refresh": sp.getString('refresh')},
-                options: Options(headers: {"Authorization": null}))
-            .then((value) {
-          sp.setString('access', value.data["access"]);
-          sp.setString('refresh', value.data["refresh"]).then((value) {
-            createDio().get('/users/self/').then((value) {
-              Get.offAllNamed('/bar', arguments: 1);
+      if (error.response?.data.runtimeType != 'String') {
+        print('dio error: ${error.error}, WHY?: ${error.response?.data}');
+        if (error.response?.data?["code"] == 'token_not_valid') {
+          createDio()
+              .post('/auth/token/refresh/',
+                  data: {"refresh": sp.getString('refresh')},
+                  options: Options(headers: {"Authorization": null}))
+              .then((value) {
+            sp.setString('access', value.data["access"]);
+            sp.setString('refresh', value.data["refresh"]).then((value) {
+              createDio().get('/users/self/').then((value) {
+                Get.offAllNamed('/bar', arguments: 1);
+              });
             });
           });
-        });
-      }
-      if (error.response?.data["code"] == 'user_inactive') {
-        sp.clear();
-        Get.offAllNamed('/');
+        }
+        if (error.response?.data["code"] == 'user_inactive') {
+          sp.clear();
+          Get.offAllNamed('/');
+        }
       }
     });
   }));

@@ -10,6 +10,8 @@ import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class EventScreen extends StatefulWidget {
   EventScreen({Key? key}) : super(key: key);
@@ -223,6 +225,16 @@ class _EventScreenState extends State<EventScreen> {
                             getRole() == 'moderator'
                                 ? BrandIcon(
                                     icon: 'download',
+                                    onTap: () {
+                                      createDio()
+                                          .get(
+                                              '/events/reports/?event=${item.id}')
+                                          .then((value) {
+                                        launchUrlString(value.data["url"],
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      });
+                                    },
                                     color:
                                         Theme.of(context).colorScheme.secondary,
                                   )

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
-import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ChatsScreen extends StatefulWidget {
@@ -15,43 +13,18 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
-  bool seen = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ChatsState>(context, listen: false).setChats();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    ChatData chatData(index) {
-      if (index == 1) return ChatData(name: 'Ребята от 12-18', isGroup: true);
-      if (index == 2) return ChatData(name: '6-12 лет', isGroup: true);
-      if (index == 3)
-        return ChatData(name: 'Возрастная группа 7-14 лет', isGroup: true);
-      var user = Provider.of<UserState>(context, listen: false).user;
-      return ChatData(name: 'Руслан Игоревич', messages: [
-        MessageType(
-            user: user.fullName,
-            text: seen ? '👍' : 'Как у тебя дела?',
-            timedate: DateTime.now())
-      ]);
-      // switch (index) {
-      //   case 0:
-      //     return ChatData(name: "Игорь Федотов", isGroup: false);
-      //   case 1:
-      //     return ChatData(name: "Соревнования", isGroup: true, members: [
-      //       {"username": "Lisa"},
-      //       {"username": "Artem"},
-      //     ]);
-      //   case 2:
-      //     return ChatData(
-      //         name: "Группа 0401",
-      //         isGroup: true,
-      //         isSystem: true,
-      //         members: [
-      //           {"username": "Lisa"},
-      //           {"username": "Artem"},
-      //         ]);
-      //   default:
-      //     return ChatData(name: "Игорь Афотьев", isGroup: false);
-      // }
-    }
-
+    List chats = Provider.of<ChatsState>(context).chats;
     return CustomScaffold(
         noPadding: true,
         appBar: PreferredSize(
@@ -61,68 +34,31 @@ class _ChatsScreenState extends State<ChatsScreen> {
             icon: 'plus',
           ),
         ),
-        body: Column(
-          children: [
-            Divider(
-              height: 3,
-            ),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: ListView(children: [
-                    SizedBox(
-                      height: 16,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Get.toNamed('/chat', arguments: chatData(0));
-                          setState(() {
-                            seen = true;
-                          });
-                        },
-                        child: ChatTile(chatData(0))),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    ChatTile(chatData(1)),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    ChatTile(chatData(2)),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    ChatTile(chatData(3)),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 16,
-                    )
-                  ])),
-            )
-          ],
-        ));
+        body: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: ListView.builder(
+                itemCount: chats.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ChatTile(chats[index]),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 16,
+                      )
+                    ],
+                  );
+                })));
   }
 }
 
 class ChatTile extends StatelessWidget {
   const ChatTile(this.data, {Key? key}) : super(key: key);
 
-  final ChatData data;
+  final ChatType data;
 
   @override
   Widget build(BuildContext context) {
@@ -136,11 +72,9 @@ class ChatTile extends StatelessWidget {
               width: 60,
               child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(100)),
-                  child: data.name == 'Руслан Игоревич'
-                      ? Image.asset('assets/images/avatar.jpeg')
-                      : CircleAvatar(
-                          backgroundColor: Colors.black12,
-                        )),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black12,
+                  )),
             ),
             SizedBox(
               width: 16,
@@ -161,9 +95,7 @@ class ChatTile extends StatelessWidget {
                   height: 8,
                 ),
                 Text(
-                  data.messages.isNotEmpty
-                      ? data.messages.last.text
-                      : 'Всем привет!',
+                  data.lastMessage,
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.secondary),
                 )
@@ -179,18 +111,16 @@ class ChatTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                data.messages.isNotEmpty
-                    ? DateFormat('H:m').format(data.messages.last.timedate)
-                    : '15:24',
+                data.lastTime,
                 style:
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
-              !data.isSystem
+              data.type != 'system'
                   ? Container()
                   : SizedBox(
                       height: 8,
                     ),
-              !data.isSystem
+              data.unread == null
                   ? Container()
                   : Container(
                       height: 15,
@@ -201,7 +131,7 @@ class ChatTile extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                       ),
                       child: Center(
-                        child: Text('223',
+                        child: Text(data.unread.toString(),
                             style: TextStyle(color: Colors.white, height: 1.1)),
                       ),
                     ),

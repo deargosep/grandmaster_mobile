@@ -26,8 +26,9 @@ class AuthRegisterScreen extends StatefulWidget {
 }
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
-  TextEditingController phoneNumber =
-      TextEditingController(text: numbers["parent"]);
+  TextEditingController phoneNumber = TextEditingController(
+      // text: numbers["moderator"]
+      );
   bool isLoaded = false;
 
   @override
@@ -110,6 +111,8 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
         ),
         BrandButton(
             onPressed: () {
+              Provider.of<UserState>(context, listen: false)
+                  .setUserCustom(User(role: 'guest', passport: Passport()));
               Get.offAllNamed('/bar', arguments: 1);
             },
             text: 'Войти как гость',
