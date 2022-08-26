@@ -165,10 +165,10 @@ class InputPhone extends StatefulWidget {
   final String? label;
 
   @override
-  State<InputDate> createState() => _InputDateState();
+  State<InputPhone> createState() => _InputPhoneState();
 }
 
-class _InputPhoneState extends State<InputDate> {
+class _InputPhoneState extends State<InputPhone> {
   @override
   Widget build(BuildContext context) {
     return MaskedTextField(

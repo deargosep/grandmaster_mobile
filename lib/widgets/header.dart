@@ -123,8 +123,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
           padding: padding != null
               ? padding
               : withPadding
-                  ? EdgeInsets.fromLTRB(
-                      20, 32 + MediaQuery.of(context).viewInsets.top, 20, 0)
+                  ? EdgeInsets.fromLTRB(20, 0, 20, 0)
                   : EdgeInsets.all(0),
           child: Row(
             children: [
@@ -147,13 +146,18 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               Container(
                 width:
                     icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
-                child: Text(
-                  text ?? '',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Theme.of(context).colorScheme.secondary),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 35,
+                  ),
+                  child: Text(
+                    text ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
               ),
               Spacer(),

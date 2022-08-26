@@ -83,7 +83,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
         SizedBox(
           height: 32,
         ),
-        InputDate(
+        InputPhone(
           label: 'Номер телефона',
           controller: phoneNumber,
         ),
