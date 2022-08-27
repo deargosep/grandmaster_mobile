@@ -46,6 +46,7 @@ import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/success.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/chat/chat_create.dart';
+import 'package:grandmaster/screens/tabs/chat/chat_photo.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
 import 'package:grandmaster/screens/tabs/home/article_photos.dart';
 import 'package:grandmaster/screens/tabs/home/article_screen.dart';
@@ -312,6 +313,10 @@ class _MyAppState extends State<MyApp> {
           ),
           GetPage(name: '/chat', page: () => ChatScreen()),
           GetPage(name: '/chat/create', page: () => ChatCreateScreen()),
+          GetPage(
+            name: '/chat/photo',
+            page: () => ChatPhotoScreen(),
+          ),
           GetPage(
             name: '/members',
             page: () => MembersScreen(),

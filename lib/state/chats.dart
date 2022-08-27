@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:intl/intl.dart';
 
 import '../utils/dio.dart';
 
@@ -10,6 +14,16 @@ class ChatsState extends ChangeNotifier {
   List<ChatType> _chats = [];
 
   List<ChatType> get chats => _chats;
+
+  MessageType getMessagefromJson(data) {
+    var decoded = jsonDecode(data);
+    print(decoded);
+    return MessageType(
+        user: decoded["message"]["author"]["full_name"],
+        text: decoded["message"]["text"],
+        photo: decoded["message"]["image"],
+        timedate: DateTime.parse(decoded["message"]["created_at"]));
+  }
 
   Future<void> setChats({List<ChatType>? data}) async {
     var completer = new Completer();
@@ -21,16 +35,39 @@ class ChatsState extends ChangeNotifier {
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return ChatType(
               id: e["id"],
-              name: e["dm"]
-                  ? e["members"].firstWhere((e) => !e["me"])["full_name"]
+              name: e["type"] == 'dm'
+                  ? [...e["members"].map((e) => e).toList()]
+                              .firstWhereOrNull((e) => !e["me"]) !=
+                          null
+                      ? [...e["members"].map((e) => e).toList()]
+                          .firstWhereOrNull((e) => !e["me"])["full_name"]
+                      : e["name"]
                   : e["name"],
+              // name: e["type"] == 'dm'
+              // ? e["members"].firstWhere((e) => !e["me"])["full_name"]
+              // : e["name"],
               lastMessage: e["last_message"]["text"],
               unread: e["unreaded_count"],
-              photo: e["cover"] ?? e["dm"]
-                  ? e["members"].firstWhere((e) => !e["me"])["photo"]
+              photo: e["cover"] ?? e["type"] == 'dm'
+                  ? [...e["members"].map((e) => e).toList()]
+                              .firstWhereOrNull((e) => !e["me"]) !=
+                          null
+                      ? [...e["members"].map((e) => e).toList()]
+                          .firstWhereOrNull((e) => !e["me"])["photo"]
+                      : null
                   : null,
-              type: e["dm"] ? 'dm' : 'group',
-              lastTime: '13:00',
+              // ?? e["type"] == 'dm'
+              // ? e["members"].firstWhere((e) => !e["me"])["photo"]
+              // : null,
+              type: e["type"] == 'auto'
+                  ? 'system'
+                  : e["type"] == 'custom'
+                      ? 'group'
+                      : e["type"],
+              lastTime: e["last_message"]["created_at"] != null
+                  ? DateFormat('H:mm')
+                      .format(DateTime.parse(e["last_message"]["created_at"]))
+                  : '',
               members: [
                 ...e["members"]
                     .map((es) => MinimalUser(

@@ -14,7 +14,7 @@ Map numbers = {
   "parent": '+7 (918) 546-85-81',
   "child": '+7 (928) 900-06-80',
   "moderator": "+7 (900) 133-78-68",
-  "trainer": "+7 (938) 115-54-47",
+  "trainer": "+7 (988) 250-30-03",
   "payment": "+7 (900) 126-16-92"
 };
 
@@ -28,7 +28,7 @@ class AuthRegisterScreen extends StatefulWidget {
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber = TextEditingController(
       // text: '+'
-      text: numbers["moderator"]);
+      text: numbers["trainer"]);
   bool isLoaded = false;
 
   @override

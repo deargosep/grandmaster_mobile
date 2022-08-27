@@ -12,6 +12,7 @@ void showErrorSnackbar(String message) {
       messageText: Text(
         message.toString(),
         maxLines: 2,
+        style: TextStyle(color: Colors.white),
       ),
       backgroundColor: Colors.red,
       colorText: Colors.white);
@@ -36,12 +37,7 @@ Dio createDio(
     return handler.next(options);
   }, onError: (error, handler) {
     if (showSnackbar) {
-      if (error.response?.statusCode == 500 ||
-          error.response?.statusCode == 502) {
-        showErrorSnackbar(error.message);
-      } else {
-        showErrorSnackbar(error.response?.data);
-      }
+      showErrorSnackbar(error.message);
     }
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {

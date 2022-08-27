@@ -32,6 +32,8 @@ class _GroupsScreenState extends State<GroupsScreen> {
         list.map((e) => OptionType(e.name, '/group', arguments: e)).toList();
     var user = Provider.of<UserState>(context).user;
     return CustomScaffold(
+        noPadding: false,
+        noTopPadding: true,
         // scrollable: true,
         appBar: AppHeader(
           text: 'Группы спортсменов',

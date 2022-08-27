@@ -56,6 +56,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
     return CustomScaffold(
       // scrollable: true,
       noTopPadding: true,
+      noPadding: false,
       appBar: AppHeader(
         text: 'Создание группы',
       ),
