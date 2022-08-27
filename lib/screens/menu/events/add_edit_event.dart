@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -56,6 +57,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
   EventType? item = Get.arguments;
   // List<File?> images = [];
   File? cover;
+  XFile? xCover;
   String select = Get.arguments != null
       ? Get.arguments.open
           ? 'Открытое'
@@ -228,9 +230,10 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                 });
               },
               onTap: () async {
-                final XFile? image =
-                    await _picker.pickImage(source: ImageSource.gallery);
+                final XFile? image = await _picker.pickImage(
+                    source: ImageSource.gallery, imageQuality: 60);
                 setState(() {
+                  xCover = image;
                   cover = File(image!.path);
                 });
               },
@@ -240,12 +243,14 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                 decoration: BoxDecoration(
                     color: Color(0xFFFBF7F7),
                     borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: cover != null
-                    ? Image.file(
-                        cover!,
-                        height: 132,
-                        width: double.maxFinite,
-                      )
+                child: cover != null || xCover != null
+                    ? !kIsWeb
+                        ? Image.file(
+                            cover!,
+                            height: 132,
+                            width: double.maxFinite,
+                          )
+                        : Image.network(xCover!.path)
                     : item != null
                         ? Image.network(item!.cover)
                         : Padding(
@@ -311,7 +316,9 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                 };
                 FormData formData = FormData.fromMap(data);
                 if (cover != null) {
-                  formData = await getFormFromFile(cover!, 'cover', data);
+                  formData = !kIsWeb
+                      ? await getFormFromFile(cover!, 'cover', data)
+                      : await getFormFromXFile(xCover!, 'cover', data);
                 }
                 if (item != null) {
                   createDio()

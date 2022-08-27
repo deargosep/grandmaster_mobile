@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData, Response;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void showErrorSnackbar(String message) {
@@ -77,6 +78,15 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
     photoKey: !kIsWeb
         ? await MultipartFile.fromFile(file.path, filename: fileName)
         : await MultipartFile.fromBytes(file.readAsBytesSync())
+  });
+  return formData;
+}
+
+Future<FormData> getFormFromXFile(XFile file, String photoKey, Map data) async {
+  FormData formData = FormData.fromMap({
+    ...data,
+    photoKey: await MultipartFile.fromBytes(await file.readAsBytes(),
+        filename: file.name)
   });
   return formData;
 }

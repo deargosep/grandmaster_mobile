@@ -36,6 +36,8 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
   final ImagePicker _picker = ImagePicker();
   List<MyFile> images = [];
   File? cover;
+  XFile? xCover;
+  String? coverPath;
   ArticleType? item = Get.arguments;
   @override
   void initState() {
@@ -85,24 +87,49 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
               if (cover != null) {
                 var coverfile = !kIsWeb
                     ? await MultipartFile.fromFile(cover!.path)
-                    : await MultipartFile.fromBytes(cover!.readAsBytesSync());
+                    : await MultipartFile.fromBytes(await xCover!.readAsBytes(),
+                        filename: xCover?.name);
                 data.addAll({"cover": coverfile});
               }
               Future<List<Map<String, dynamic>>> getList() async {
                 List<Map<String, dynamic>> list = [];
                 for (var e in images) {
                   var file;
-                  if (e.file == null) {
-                    list.add(
-                        {"id": e.id, "file": "jn", "isModified": e.isModified});
+                  if (!kIsWeb) {
+                    if (e.file == null) {
+                      list.add({
+                        "id": e.id,
+                        "file": "jn",
+                        "isModified": e.isModified
+                      });
+                    } else {
+                      file = await MultipartFile.fromFile(e.file!.path,
+                          filename: e.file!.path.split('/').last);
+
+                      list.add({
+                        "file": file,
+                        "id": e.id,
+                        "isModified": e.isModified
+                      });
+                    }
                   } else {
-                    file = !kIsWeb
-                        ? await MultipartFile.fromFile(e.file!.path,
-                            filename: e.file!.path.split('/').last)
-                        : await MultipartFile.fromBytes(
-                            e.file!.readAsBytesSync());
-                    list.add(
-                        {"file": file, "id": e.id, "isModified": e.isModified});
+                    if (e.pickedFile == null) {
+                      list.add({
+                        "id": e.id,
+                        "file": "jn",
+                        "isModified": e.isModified
+                      });
+                    } else {
+                      file = await MultipartFile.fromBytes(
+                          await e.pickedFile!.readAsBytes(),
+                          filename: e.pickedFile?.name);
+
+                      list.add({
+                        "file": file,
+                        "id": e.id,
+                        "isModified": e.isModified
+                      });
+                    }
                   }
                 }
                 return list;
@@ -121,6 +148,8 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
               data.addEntries(photos);
               FormData newData = FormData.fromMap(data);
               if (item != null) {
+                print(newData.fields);
+                print(newData.files);
                 createDio()
                     .patch('/news/${item!.id}/',
                         data: newData,
@@ -207,10 +236,12 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                     //  TODO
                   },
                   onTap: () async {
-                    final XFile? image =
-                        await _picker.pickImage(source: ImageSource.gallery);
+                    final XFile? image = await _picker.pickImage(
+                        source: ImageSource.gallery, imageQuality: 60);
                     setState(() {
                       cover = File(image!.path);
+                      xCover = image;
+                      coverPath = image.path;
                     });
                   },
                   child: Container(
@@ -228,7 +259,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                                   height: 132,
                                   width: double.maxFinite,
                                 )
-                              : Image.memory(cover!.readAsBytesSync())
+                              : Image.network(coverPath!)
                           : item?.cover != null
                               ? Image.network(
                                   item?.cover,
@@ -276,11 +307,13 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
 
                   GestureDetector(
                     onTap: () async {
-                      final XFile? image =
-                          await _picker.pickImage(source: ImageSource.gallery);
+                      final XFile? image = await _picker.pickImage(
+                          source: ImageSource.gallery, imageQuality: 60);
                       if (image != null) {
                         var newImages = [...images];
                         newImages.add(MyFile(
+                            path: image.path,
+                            pickedFile: image,
                             file: File(image.path),
                             id: generateRandomString(10),
                             isModified: true));
@@ -323,11 +356,13 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                         },
                         onTap: () async {
                           final XFile? image = await _picker.pickImage(
-                              source: ImageSource.gallery);
+                              source: ImageSource.gallery, imageQuality: 60);
                           if (image != null) {
                             List<MyFile> newImages = [...images];
                             // Замена
                             newImages[index] = MyFile(
+                                pickedFile: image,
+                                path: image.path,
                                 file: File(image.path),
                                 id: images[index].id,
                                 isModified: true);
@@ -353,9 +388,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                                       )
                                     : !kIsWeb
                                         ? Image.file(images[index].file!)
-                                        : Image.memory(images[index]
-                                            .file!
-                                            .readAsBytesSync())),
+                                        : Image.network(images[index].path!)),
                       );
                     },
                   ),
@@ -401,10 +434,18 @@ class MyFile {
   final String id;
   final Uint8List? bytes;
   final File? file;
+  final XFile? pickedFile;
+  final String? path;
   bool isModified;
   void modify() {
     this.isModified = true;
   }
 
-  MyFile({required this.id, this.bytes, this.file, this.isModified = false});
+  MyFile(
+      {this.path,
+      this.pickedFile,
+      required this.id,
+      this.bytes,
+      this.file,
+      this.isModified = false});
 }

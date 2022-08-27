@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/about.dart';
@@ -24,6 +25,7 @@ class AddEditAboutScreen extends StatefulWidget {
 class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
   final ImagePicker _picker = ImagePicker();
   File? cover;
+  XFile? xCover;
   AboutType? item = Get.arguments;
   TextEditingController name =
       TextEditingController(text: Get.arguments?.name ?? '');
@@ -53,7 +55,9 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
             };
             FormData formData = FormData.fromMap(data);
             if (cover != null) {
-              formData = await getFormFromFile(cover!, 'cover', data);
+              formData = !kIsWeb
+                  ? await getFormFromFile(cover!, 'cover', data)
+                  : await getFormFromXFile(xCover!, 'cover', data);
             }
             if (item != null) {
               createDio()
@@ -136,10 +140,11 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
                 });
               },
               onTap: () async {
-                final XFile? image =
-                    await _picker.pickImage(source: ImageSource.gallery);
+                final XFile? image = await _picker.pickImage(
+                    source: ImageSource.gallery, imageQuality: 60);
                 setState(() {
                   cover = File(image!.path);
+                  xCover = image;
                 });
               },
               child: Container(
@@ -149,11 +154,13 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
                     color: Color(0xFFFBF7F7),
                     borderRadius: BorderRadius.all(Radius.circular(15))),
                 child: cover != null
-                    ? Image.file(
-                        cover!,
-                        height: 132,
-                        width: double.maxFinite,
-                      )
+                    ? !kIsWeb
+                        ? Image.file(
+                            cover!,
+                            height: 132,
+                            width: double.maxFinite,
+                          )
+                        : Image.network(xCover!.path)
                     : item?.cover != null
                         ? Image.network(item?.cover)
                         : Padding(

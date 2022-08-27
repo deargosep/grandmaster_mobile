@@ -52,7 +52,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       SharedPreferences.getInstance().then((value) {
         channel = WebSocketChannel.connect(
           Uri.parse(
-              'ws://app.grandmaster.center/ws/chat/${chat.id}/?token=${value.getString('access')}'),
+              'wss://app.grandmaster.center/ws/chat/${chat.id}/?token=${value.getString('access')}'),
         );
         setState(() {
           isLoaded = true;

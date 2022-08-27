@@ -46,8 +46,15 @@ class MembersScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: ListView.builder(
-                itemCount: members.length,
+                itemCount: members
+                    .where((element) =>
+                        element.id !=
+                        Provider.of<UserState>(context, listen: false).user.id)
+                    .length,
                 itemBuilder: (BuildContext context, int index) {
+                  if (members[index].id ==
+                      Provider.of<UserState>(context, listen: false).user.id)
+                    return Container();
                   return GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
