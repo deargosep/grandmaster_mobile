@@ -44,22 +44,33 @@ class BrandIcon extends StatelessWidget {
           width: width,
         ),
       );
-    if (icon == 'back_arrow')
-      return InkWell(
+    if (icon == 'back_arrow') {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () {
           if (onTap != null) onTap();
           Get.back();
         },
-        child: SvgPicture.asset(
-          'assets/icons/${icon}.svg',
-          fit: fit ?? BoxFit.contain,
-          color: color ?? Theme.of(context).primaryColor,
-          height: height,
-          width: width,
+        child: Container(
+          width: 30,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              fit: fit ?? BoxFit.contain,
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
+          ),
         ),
       );
-    return InkWell(
-      onTap: onTap,
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        if (onTap != null) onTap();
+      },
       child: SvgPicture.asset(
         'assets/icons/${icon}.svg',
         color: color ?? Theme.of(context).primaryColor,

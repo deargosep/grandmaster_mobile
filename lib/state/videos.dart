@@ -19,7 +19,8 @@ class VideosState extends ChangeNotifier {
               id: e["id"],
               name: e["title"],
               createdAt: newDate,
-              link: e["link"]);
+              link: e["link"],
+              order: e["order"]);
         }).toList()
       ];
       _videos = newList;
@@ -41,9 +42,11 @@ class Video {
   final name;
   final DateTime createdAt;
   final String link;
+  final order;
   Video(
       {required this.id,
       required this.name,
       required this.createdAt,
-      required this.link});
+      required this.link,
+      this.order});
 }

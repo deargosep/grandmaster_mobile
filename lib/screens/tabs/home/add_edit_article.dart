@@ -4,6 +4,7 @@ import 'dart:math' hide log;
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
@@ -82,7 +83,9 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 "hidden": false
               };
               if (cover != null) {
-                var coverfile = await MultipartFile.fromFile(cover!.path);
+                var coverfile = !kIsWeb
+                    ? await MultipartFile.fromFile(cover!.path)
+                    : await MultipartFile.fromBytes(cover!.readAsBytesSync());
                 data.addAll({"cover": coverfile});
               }
               Future<List<Map<String, dynamic>>> getList() async {
@@ -93,8 +96,11 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                     list.add(
                         {"id": e.id, "file": "jn", "isModified": e.isModified});
                   } else {
-                    file = await MultipartFile.fromFile(e.file!.path,
-                        filename: e.file!.path.split('/').last);
+                    file = !kIsWeb
+                        ? await MultipartFile.fromFile(e.file!.path,
+                            filename: e.file!.path.split('/').last)
+                        : await MultipartFile.fromBytes(
+                            e.file!.readAsBytesSync());
                     list.add(
                         {"file": file, "id": e.id, "isModified": e.isModified});
                   }
@@ -216,11 +222,13 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       child: cover != null
-                          ? Image.file(
-                              cover!,
-                              height: 132,
-                              width: double.maxFinite,
-                            )
+                          ? !kIsWeb
+                              ? Image.file(
+                                  cover!,
+                                  height: 132,
+                                  width: double.maxFinite,
+                                )
+                              : Image.memory(cover!.readAsBytesSync())
                           : item?.cover != null
                               ? Image.network(
                                   item?.cover,
@@ -343,7 +351,11 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                                     ? Image.memory(
                                         images[index].bytes!,
                                       )
-                                    : Image.file(images[index].file!)),
+                                    : !kIsWeb
+                                        ? Image.file(images[index].file!)
+                                        : Image.memory(images[index]
+                                            .file!
+                                            .readAsBytesSync())),
                       );
                     },
                   ),

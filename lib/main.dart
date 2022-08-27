@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show Clipboard, ClipboardData, PlatformException;
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:get/get.dart' hide Response;
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
@@ -42,10 +41,13 @@ import 'package:grandmaster/screens/menu/schedule/schedule_places.dart';
 import 'package:grandmaster/screens/menu/schedule/schedule_table.dart';
 import 'package:grandmaster/screens/menu/video/add_edit_video.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
+import 'package:grandmaster/screens/menu/video/watch.dart';
 import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/success.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/screens/tabs/chat/chat_create.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
+import 'package:grandmaster/screens/tabs/home/article_photos.dart';
 import 'package:grandmaster/screens/tabs/home/article_screen.dart';
 import 'package:grandmaster/screens/tabs/profile/child_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/document.dart';
@@ -76,6 +78,9 @@ import 'theme/theme.dart';
 bool _initialUriIsHandled = false;
 
 void main() {
+  // if (kIsWeb) {
+  //   setPathUrlStrategy();
+  // }
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = new MyHttpOverrides();
   initializeDateFormatting('ru_RU', null);
@@ -153,6 +158,24 @@ class _MyAppState extends State<MyApp> {
           }
         });
       });
+    } else {
+      print(Uri.base);
+      if (Uri.base.queryParameters["type"] != null) {
+        var uri = Uri.base;
+        var userId = uri.queryParameters["user"];
+        var type = uri.queryParameters["type"];
+        createDio(errHandler: (err, handler) {
+          showErrorSnackbar('Not found');
+        }).get('/users/${userId}/').then((value) {
+          print(value);
+          User user = UserState().convertMapToUser(value.data);
+          if (type == 'event') {
+            Get.toNamed('/other_profile/passport', arguments: user);
+          } else {
+            Get.toNamed('/qr/user', arguments: user);
+          }
+        });
+      }
     }
   }
 
@@ -164,41 +187,60 @@ class _MyAppState extends State<MyApp> {
   ///
   /// We handle all exceptions, since it is called from initState.
   Future<void> _handleInitialUri() async {
-    // In this example app this is an almost useless guard, but it is here to
-    // show we are not going to call getInitialUri multiple times, even if this
-    // was a weidget that will be disposed of (ex. a navigation route change).
-    if (!_initialUriIsHandled) {
-      _initialUriIsHandled = true;
-      // Get.snackbar('_handleInitialUri called', '');
-      try {
-        final uri = await getInitialUri();
-        if (uri == null) {
-          print('no initial uri');
-        } else {
-          print('got initial uri: $uri');
-          if (uri.queryParameters["user"] != null) {
-            createDio(errHandler: (err, handler) {
-              showErrorSnackbar('Not found');
-            }).get('/users/${uri.queryParameters["user"]}/').then((value) {
-              print(value);
-              User user = UserState().convertMapToUser(value.data);
-              if (uri.queryParameters["type"] == 'event') {
-                Get.toNamed('/other_profile/passport', arguments: user);
-              } else {
-                Get.toNamed('/qr/user', arguments: user);
-              }
-            });
+    if (!kIsWeb) {
+      // In this example app this is an almost useless guard, but it is here to
+      // show we are not going to call getInitialUri multiple times, even if this
+      // was a weidget that will be disposed of (ex. a navigation route change).
+      if (!_initialUriIsHandled) {
+        _initialUriIsHandled = true;
+        // Get.snackbar('_handleInitialUri called', '');
+        try {
+          final uri = await getInitialUri();
+          if (uri == null) {
+            print('no initial uri');
+          } else {
+            print('got initial uri: ${uri}');
+            if (uri.queryParameters["user"] != null) {
+              createDio(errHandler: (err, handler) {
+                showErrorSnackbar('Not found');
+              }).get('/users/${uri.queryParameters["user"]}/').then((value) {
+                print(value);
+                User user = UserState().convertMapToUser(value.data);
+                if (uri.queryParameters["type"] == 'event') {
+                  Get.toNamed('/other_profile/passport', arguments: user);
+                } else {
+                  Get.toNamed('/qr/user', arguments: user);
+                }
+              });
+            }
           }
+          if (!mounted) return;
+          setState(() => _initialUri = uri);
+        } on PlatformException {
+          // Platform messages may fail but we ignore the exception
+          print('falied to get initial uri');
+        } on FormatException catch (err) {
+          if (!mounted) return;
+          print('malformed initial uri');
+          setState(() => _err = err);
         }
-        if (!mounted) return;
-        setState(() => _initialUri = uri);
-      } on PlatformException {
-        // Platform messages may fail but we ignore the exception
-        print('falied to get initial uri');
-      } on FormatException catch (err) {
-        if (!mounted) return;
-        print('malformed initial uri');
-        setState(() => _err = err);
+      }
+    } else {
+      if (Uri.base.queryParameters["type"] != null) {
+        var uri = Uri.base;
+        var userId = uri.queryParameters["user"];
+        var type = uri.queryParameters["type"];
+        createDio(errHandler: (err, handler) {
+          showErrorSnackbar('Not found');
+        }).get('/users/${userId}/').then((value) {
+          print(value);
+          User user = UserState().convertMapToUser(value.data);
+          if (type == 'event') {
+            Get.toNamed('/other_profile/passport', arguments: user);
+          } else {
+            Get.toNamed('/qr/user', arguments: user);
+          }
+        });
       }
     }
   }
@@ -221,8 +263,35 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ChatsState()),
       ],
       child: GetMaterialApp(
+        title: 'Grandmaster',
+        // onGenerateRoute: (settings) {
+        //   print(settings);
+        //   if (settings.name != null) {
+        //     if (Uri.parse(settings.name!).queryParameters["user"] != null) {
+        //       var uri = Uri.parse(settings.name!);
+        //       var userId = Uri.parse(settings.name!).queryParameters["user"];
+        //       var type = Uri.parse(settings.name!).queryParameters["type"];
+        //       createDio(errHandler: (err, handler) {
+        //         showErrorSnackbar('Not found');
+        //       }).get('/users/${userId}/').then((value) {
+        //         print(value);
+        //         User user = UserState().convertMapToUser(value.data);
+        //         if (type == 'event') {
+        //           Get.toNamed('/other_profile/passport', arguments: user);
+        //         } else {
+        //           Get.toNamed('/qr/user', arguments: user);
+        //         }
+        //       });
+        //       return MaterialPageRoute(builder: (context) {
+        //         return Container();
+        //       });
+        //     }
+        //   }
+        // },
+        // routerDelegate: AppRouterDelegate(),
         debugShowCheckedModeBanner: false,
         transitionDuration: Duration.zero,
+        defaultTransition: Transition.noTransition,
         getPages: [
           // auth
           GetPage(name: '/', page: () => AuthRegisterScreen()),
@@ -234,10 +303,15 @@ class _MyAppState extends State<MyApp> {
             page: () => ArticleScreen(),
           ),
           GetPage(
+            name: '/article/photos',
+            page: () => ArticlePhotosScreen(),
+          ),
+          GetPage(
             name: '/add_edit_article',
             page: () => AddEditArticleScreen(),
           ),
           GetPage(name: '/chat', page: () => ChatScreen()),
+          GetPage(name: '/chat/create', page: () => ChatCreateScreen()),
           GetPage(
             name: '/members',
             page: () => MembersScreen(),
@@ -283,6 +357,10 @@ class _MyAppState extends State<MyApp> {
           GetPage(
             name: '/videos/add',
             page: () => AddEditVideoScreen(),
+          ),
+          GetPage(
+            name: '/videos/watch',
+            page: () => VideoWatchScreen(),
           ),
           GetPage(
             name: '/learnings',
@@ -454,3 +532,15 @@ List<String>? getCmds() {
     '$cmd "unilinks://@@malformed.invalid.url/path?"$cmdSuffix',
   ];
 }
+
+// class AppRouterDelegate extends GetDelegate {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Navigator(
+//       onPopPage: (route, result) => route.didPop(result),
+//       pages: currentConfiguration != null
+//           ? [currentConfiguration!.currentPage!]
+//           : [GetNavConfig.fromRoute('/bar')!.currentPage!],
+//     );
+//   }
+// }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomScaffold extends StatelessWidget {
+class CustomScaffold extends StatefulWidget {
   CustomScaffold(
       {Key? key,
       required Widget this.body,
       bool? this.scrollable,
-      bool? this.noPadding,
+      this.noPadding = true,
       this.noHorPadding,
       this.noVerPadding,
       this.noBottomPadding,
@@ -26,44 +26,63 @@ class CustomScaffold extends StatelessWidget {
   EdgeInsets? padding = EdgeInsets.zero;
   final bottomNavigationBar;
   final appBar;
+
+  @override
+  State<CustomScaffold> createState() => _CustomScaffoldState();
+}
+
+class _CustomScaffoldState extends State<CustomScaffold> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // SharedPreferences.getInstance().then((value) {
+    //   if (value.getString('access') != null &&
+    //       Provider.of<UserState>(context, listen: false).user.role == 'guest' &&
+    //       Get.currentRoute != '/') {
+    //     Get.offAllNamed('/');
+    //   } else {}
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (scrollable == true) {
+    if (widget.scrollable == true) {
       return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Scaffold(
-          appBar: appBar,
-          bottomNavigationBar: bottomNavigationBar,
+          appBar: widget.appBar,
+          bottomNavigationBar: widget.bottomNavigationBar,
           body: LayoutBuilder(builder: (context, constraint) {
             return Center(
-              child: noPadding == true
+              child: widget.noPadding == true
                   ? Align(
                       alignment: Alignment.topCenter,
                       child: SingleChildScrollView(
-                        child: body,
+                        child: widget.body,
                       ),
                     )
                   : Padding(
-                      padding: onlyTopPadding == true
+                      padding: widget.onlyTopPadding == true
                           ? EdgeInsets.only(
                               top: 32 + MediaQuery.of(context).viewInsets.top)
-                          : padding ??
+                          : widget.padding ??
                               EdgeInsets.fromLTRB(
-                                  noHorPadding == true ? 0 : 20,
-                                  noVerPadding == true
+                                  widget.noHorPadding == true ? 0 : 20,
+                                  widget.noVerPadding == true
                                       ? 0
-                                      : noTopPadding == true
+                                      : widget.noTopPadding == true
                                           ? 0
                                           : 32 +
                                               MediaQuery.of(context)
                                                   .viewInsets
                                                   .top,
                                   20,
-                                  noVerPadding == true
+                                  widget.noVerPadding == true
                                       ? 0
-                                      : noBottomPadding == true
+                                      : widget.noBottomPadding == true
                                           ? 0
                                           : 20),
                       child: Align(
@@ -71,7 +90,7 @@ class CustomScaffold extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: Container(
                             height: MediaQuery.of(context).size.height - 60,
-                            child: body,
+                            child: widget.body,
                           ),
                         ),
                       )),
@@ -85,33 +104,33 @@ class CustomScaffold extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar: appBar,
-        bottomNavigationBar: bottomNavigationBar,
+        appBar: widget.appBar,
+        bottomNavigationBar: widget.bottomNavigationBar,
         body: Center(
-            child: noPadding == true
-                ? body
+            child: widget.noPadding == true
+                ? widget.body
                 : Padding(
-                    padding: onlyTopPadding == true
+                    padding: widget.onlyTopPadding == true
                         ? EdgeInsets.only(
                             top: 40 + MediaQuery.of(context).viewInsets.top)
-                        : padding ??
+                        : widget.padding ??
                             EdgeInsets.fromLTRB(
-                                noHorPadding == true ? 0 : 20,
-                                noVerPadding == true
+                                widget.noHorPadding == true ? 0 : 20,
+                                widget.noVerPadding == true
                                     ? 0
-                                    : noTopPadding == true
+                                    : widget.noTopPadding == true
                                         ? 0
                                         : 32 +
                                             MediaQuery.of(context)
                                                 .viewInsets
                                                 .top,
-                                noHorPadding == true ? 0 : 20,
-                                noVerPadding == true
+                                widget.noHorPadding == true ? 0 : 20,
+                                widget.noVerPadding == true
                                     ? 0
-                                    : noBottomPadding == true
+                                    : widget.noBottomPadding == true
                                         ? 0
                                         : 20),
-                    child: body)),
+                    child: widget.body)),
       ),
     );
   }

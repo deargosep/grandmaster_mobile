@@ -18,9 +18,9 @@ class VisitLogState extends ChangeNotifier {
     groupId,
   ) async {
     var completer = new Completer();
-    createDio()
-        .get('/visit_log/?gym=${placeId}&sport_group=${groupId}')
-        .then((value) {
+    createDio(errHandler: (err, handler) {
+      completer.completeError(err);
+    }).get('/visit_log/?gym=${placeId}&sport_group=${groupId}').then((value) {
       var e = value.data;
       _visitLog = VisitLogType(
           id: e["id"],

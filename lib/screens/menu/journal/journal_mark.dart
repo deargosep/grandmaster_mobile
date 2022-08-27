@@ -73,6 +73,7 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
 
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         scrollable: true,
         appBar: AppHeader(
           text: 'Журнал посещений',

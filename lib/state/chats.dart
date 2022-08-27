@@ -1,40 +1,45 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:grandmaster/state/user.dart';
 
 import '../utils/dio.dart';
 
 class ChatsState extends ChangeNotifier {
-  List<ChatType> _chats = [
-    ChatType(
-        id: '0',
-        name: 'Андрей',
-        lastMessage: 'Привет',
-        lastTime: "13:00",
-        type: 'dm'),
-    ChatType(
-        id: '0',
-        name: 'Андрей Робот',
-        lastMessage: 'Здравствуйте',
-        lastTime: "9:41",
-        unread: 223,
-        type: 'system'),
-  ];
+  List<ChatType> _chats = [];
 
   List<ChatType> get chats => _chats;
 
   Future<void> setChats({List<ChatType>? data}) async {
     var completer = new Completer();
     createDio().get('/chats/').then((value) {
+      print(value.data);
       List<ChatType> newList = [
         ...value.data.map((e) {
+          log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
-          print(e);
           return ChatType(
               id: e["id"],
-              name: 'Андрей',
-              lastMessage: 'Привет',
-              lastTime: '13:00');
+              name: e["dm"]
+                  ? e["members"].firstWhere((e) => !e["me"])["full_name"]
+                  : e["name"],
+              lastMessage: e["last_message"]["text"],
+              unread: e["unreaded_count"],
+              photo: e["cover"] ?? e["dm"]
+                  ? e["members"].firstWhere((e) => !e["me"])["photo"]
+                  : null,
+              type: e["dm"] ? 'dm' : 'group',
+              lastTime: '13:00',
+              members: [
+                ...e["members"]
+                    .map((es) => MinimalUser(
+                        fullName: es["full_name"],
+                        id: es["id"],
+                        photo: es["photo"],
+                        role: UserState().getRole(es["contact_type"])))
+                    .toList()
+              ]);
         }).toList()
       ];
       _chats = newList;
@@ -63,6 +68,7 @@ class ChatType {
   final String lastTime;
   final String type;
   final int? unread;
+  final List<MinimalUser> members;
 
   ChatType(
       {required this.id,
@@ -71,5 +77,6 @@ class ChatType {
       required this.lastMessage,
       required this.lastTime,
       this.unread,
+      required this.members,
       this.type = 'dm'});
 }

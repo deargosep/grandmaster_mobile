@@ -1,13 +1,19 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData, Response;
 import 'package:shared_preferences/shared_preferences.dart';
 
 void showErrorSnackbar(String message) {
-  Get.snackbar('Ошибка', message,
-      backgroundColor: Colors.red, colorText: Colors.white);
+  Get.snackbar('Ошибка', '',
+      messageText: Text(
+        message.toString(),
+        maxLines: 2,
+      ),
+      backgroundColor: Colors.red,
+      colorText: Colors.white);
 }
 
 Dio createDio(
@@ -29,7 +35,12 @@ Dio createDio(
     return handler.next(options);
   }, onError: (error, handler) {
     if (showSnackbar) {
-      showErrorSnackbar(error.message);
+      if (error.response?.statusCode == 500 ||
+          error.response?.statusCode == 502) {
+        showErrorSnackbar(error.message);
+      } else {
+        showErrorSnackbar(error.response?.data);
+      }
     }
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {
@@ -63,7 +74,9 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
   String fileName = file.path.split('/').last;
   FormData formData = FormData.fromMap({
     ...data,
-    photoKey: await MultipartFile.fromFile(file.path, filename: fileName)
+    photoKey: !kIsWeb
+        ? await MultipartFile.fromFile(file.path, filename: fileName)
+        : await MultipartFile.fromBytes(file.readAsBytesSync())
   });
   return formData;
 }

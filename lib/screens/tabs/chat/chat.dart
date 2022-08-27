@@ -1,16 +1,19 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
+import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletons/skeletons.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../../utils/custom_scaffold.dart';
 import '../../../widgets/input.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -20,27 +23,44 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   ScrollController _scrollController = ScrollController();
 
   _scrollToBottom() {
-    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    if (_scrollController.hasClients)
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 
   // late final currentUser = Provider.of<UserState>(context).user.username;
-  ChatData chat = Get.arguments;
+  ChatType chat = Get.arguments;
 
   List<MessageType> messages = [
-    MessageType(
-        user: "Руслан Игоревич",
-        text: "Как у тебя дела?",
-        timedate: DateTime.now().subtract(Duration(days: 2))),
+    // MessageType(
+    //     user: "Руслан Игоревич",
+    //     text: "Как у тебя дела?",
+    //     timedate: DateTime.now().subtract(Duration(days: 2))),
   ];
 
+  bool isLoaded = false;
+
+  late WebSocketChannel channel;
   @override
   void initState() {
     super.initState();
+    // .initSocket(connectListener, messageListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      SharedPreferences.getInstance().then((value) {
+        channel = WebSocketChannel.connect(
+          Uri.parse(
+              'ws://app.grandmaster.center/ws/chat/${chat.id}/?token=${value.getString('access')}'),
+        );
+        setState(() {
+          isLoaded = true;
+        });
+      });
+      createDio().get('/chats/messages/?chat=${chat.id}').then((value) {
+        print(value.data);
+      });
       // messages[
       //     Provider.of<UserState>(context, listen: false).user.fullName;
     });
@@ -62,20 +82,25 @@ class _ChatScreenState extends State<ChatScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    void onChangedSM(newMessages) {
+    void onChangedSM(text) {
+      channel.sink.add({
+        "message": {
+          "text": text,
+        }
+      });
       // showErrorSnackbar('Не удалось отправить сообщение');
 
-      setState(() {
-        messages = newMessages;
-      });
-      Timer(Duration(seconds: 3), () {
-        var newMessages = [...messages];
-        newMessages.add(MessageType(
-            user: 'Руслан Игоревич', text: '👍', timedate: DateTime.now()));
-        setState(() {
-          messages = newMessages;
-        });
-      });
+      // setState(() {
+      //   messages = newMessages;
+      // });
+      // Timer(Duration(seconds: 3), () {
+      //   var newMessages = [...messages];
+      //   newMessages.add(MessageType(
+      //       user: 'Руслан Игоревич', text: '👍', timedate: DateTime.now()));
+      //   setState(() {
+      //     messages = newMessages;
+      //   });
+      // });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -104,73 +129,93 @@ class _ChatScreenState extends State<ChatScreen> {
       return "${time.year}-${time.month.toString().length == 1 ? "0" + time.month.toString() : time.month}-${time.day.toString().length == 1 ? "0" + time.day.toString() : time.day}";
     });
 
-    return Scaffold(
-        body: Column(
-      children: [
-        _Header(),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: grouped.keys.length,
-                  // reverse: true,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    String date = grouped.keys.toList()[index];
-                    List<MessageType> messages = grouped[date]!;
-                    // int reverseIndex = messages.length - 1 - index;
-                    DateTime parsed = DateTime.parse(date);
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 32,
+    @override
+    void dispose() {
+      channel.sink.close();
+      super.dispose();
+    }
+
+    return CustomScaffold(
+        body: !isLoaded
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  _Header(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: StreamBuilder(
+                              stream: channel.stream,
+                              builder: (context, snapshot) {
+                                print(snapshot.data);
+                                if (snapshot.connectionState !=
+                                    ConnectionState.done)
+                                  return CircularProgressIndicator();
+                                return Text(snapshot.data.toString());
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: grouped.keys.length,
+                                  // reverse: true,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    String date = grouped.keys.toList()[index];
+                                    List<MessageType> messages = grouped[date]!;
+                                    // int reverseIndex = messages.length - 1 - index;
+                                    DateTime parsed = DateTime.parse(date);
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 32,
+                                        ),
+                                        Text(
+                                          calculateDifference(parsed),
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondaryContainer,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 32,
+                                        ),
+                                        ListView.builder(
+                                          // reverse: true,
+                                          primary: false,
+                                          shrinkWrap: true,
+                                          itemCount: messages.length,
+                                          itemBuilder: (context, index) =>
+                                              Column(
+                                            children: [
+                                              Message(item: messages[index]),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              }),
                         ),
-                        Text(
-                          calculateDifference(parsed),
-                          style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        ListView.builder(
-                          // reverse: true,
-                          primary: false,
-                          shrinkWrap: true,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) => Column(
-                            children: [
-                              Message(item: messages[index]),
-                              SizedBox(
-                                height: 16,
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
-        BottomPanel(
-            height: 83.0,
-            child: SendMessage(
-              messages: messages,
-              onChanged: onChangedSM,
-            ))
-      ],
-    ));
+                      ),
+                    ),
+                  ),
+                  BottomPanel(
+                      height: 83.0,
+                      child: SendMessage(
+                        messages: messages,
+                        onChanged: onChangedSM,
+                      ))
+                ],
+              ));
   }
 }
 
@@ -193,9 +238,11 @@ class Message extends StatelessWidget {
             ? Container()
             : ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(100)),
-                child: CircleAvatar(
-                  child: Image.asset('assets/images/avatar.jpeg'),
-                )),
+                child: item.photo != null
+                    ? Avatar(item.photo!)
+                    : CircleAvatar(
+                        backgroundColor: Colors.black12,
+                      )),
         isMine()
             ? Container()
             : SizedBox(
@@ -278,14 +325,14 @@ class _SendMessageState extends State<SendMessage> {
     void sendMessage(String text) {
       controller.clear();
       // TODO: use actual user
-      var localMessages = <MessageType>[
-        ...widget.messages,
-        MessageType(
-            user: Provider.of<UserState>(context, listen: false).user.fullName,
-            text: text,
-            timedate: DateTime.now()),
-      ];
-      widget.onChanged(localMessages);
+      // var localMessages = <MessageType>[
+      //   ...widget.messages,
+      //   MessageType(
+      //       user: Provider.of<UserState>(context, listen: false).user.fullName,
+      //       text: text,
+      //       timedate: DateTime.now()),
+      // ];
+      widget.onChanged(text);
     }
 
     return Row(
@@ -315,9 +362,12 @@ class _SendMessageState extends State<SendMessage> {
 class _Header extends StatelessWidget {
   _Header({Key? key}) : super(key: key);
 
-  ChatData chat = Get.arguments;
+  var id = Get.arguments.id;
   @override
   Widget build(BuildContext context) {
+    ChatType chat = Provider.of<ChatsState>(context)
+        .chats
+        .firstWhere((element) => element.id == id);
     return Container(
         height: 114 + MediaQuery.of(context).viewPadding.top,
         width: MediaQuery.of(context).size.width,
@@ -333,52 +383,78 @@ class _Header extends StatelessWidget {
               icon: 'back_arrow',
               color: Theme.of(context).colorScheme.secondary,
             ),
-            SizedBox(
-              width: 26,
-            ),
+            // SizedBox(
+            //   width: 26,
+            // ),
             ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
-                child: Image.asset('assets/images/avatar.jpeg')),
+                child: chat.photo != null
+                    ? Avatar(chat.photo!)
+                    : CircleAvatar(
+                        backgroundColor: Colors.black12,
+                      )),
             SizedBox(
               width: 16,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  chat.name,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                chat.isGroup
-                    ? GestureDetector(
-                        onTap: () {
-                          Get.toNamed('/members', arguments: {
-                            "members": chat.members,
-                            "isOwner": true
-                          });
-                        },
-                        child: Text(
+            GestureDetector(
+              onTap: () {
+                if (chat.type == 'group') {
+                  Get.toNamed('/members', arguments: {
+                    "members": chat.members,
+                    "id": chat.id,
+                    "isOwner": true
+                  });
+                } else if (chat.type == 'dm') {
+                  createDio()
+                      .get(
+                          '/users/${chat.members.firstWhere((element) => element.id != Provider.of<UserState>(context, listen: false).user.id).id}/')
+                      .then((value) {
+                    print([chat.members.map((e) => e.me)]);
+                    User user = UserState().convertMapToUser(value.data);
+                    Get.toNamed('/other_profile', arguments: user);
+                  });
+                }
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    chat.name,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  chat.type == 'group'
+                      ? Text(
                           'Участники: ${chat.members.length}',
                           style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
                                   .secondaryContainer,
                               fontSize: 14),
-                        ))
-                    : Container(),
-              ],
+                        )
+                      : Container(),
+                ],
+              ),
             ),
             Spacer(),
-            chat.isGroup && !chat.isSystem
+            chat.type == 'group' || chat.type == 'system'
                 ? BrandIcon(
                     icon: 'logout',
+                    onTap: () {
+                      createDio()
+                          .get('/chats/leave/?chat=${chat.id}')
+                          .then((value) {
+                        Provider.of<ChatsState>(context, listen: false)
+                            .setChats();
+                        Get.back();
+                      });
+                    },
                     color: Theme.of(context).colorScheme.secondary,
                   )
                 : Container()
@@ -391,7 +467,12 @@ class MessageType {
   String user;
   String text;
   DateTime timedate;
-  MessageType({required this.user, required this.text, required this.timedate});
+  String? photo;
+  MessageType(
+      {required this.user,
+      this.photo,
+      required this.text,
+      required this.timedate});
 }
 
 class Avatar extends StatelessWidget {

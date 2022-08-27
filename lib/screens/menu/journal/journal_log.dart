@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -68,14 +69,20 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
             print(datetimestart);
             print(datetimeend);
             createDio(errHandler: (err, handler) {
-              print(err.requestOptions.path);
-              print(err.requestOptions.queryParameters);
+              // print(err.requestOptions.path);
+              // print(err.requestOptions.queryParameters);
+              Get
+                  .toNamed('/fail', arguments: 'Отчет не сформирован');
             }).get('/visit_log/report/', queryParameters: {
               "sport_group": groupId,
               "start_datetime": datetimestart,
               'end_datetime': datetimeend
-            }).then((value) => launchUrl(Uri.parse(value.data["url"]),
-                mode: LaunchMode.externalApplication));
+            }).then((value) {
+              Get
+                  .toNamed('/success', arguments: 'Отчет успешно сформирован');
+              launchUrl(Uri.parse(value.data["url"]),
+                  mode: LaunchMode.externalApplication);
+            });
             // Get.toNamed('/success', arguments: 'Отчет успешно сформирован');
           },
         ),

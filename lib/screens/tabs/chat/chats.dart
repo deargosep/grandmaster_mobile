@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/chats.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
@@ -25,33 +27,50 @@ class _ChatsScreenState extends State<ChatsScreen> {
   @override
   Widget build(BuildContext context) {
     List chats = Provider.of<ChatsState>(context).chats;
+    User user = Provider.of<UserState>(context).user;
     return CustomScaffold(
         noPadding: true,
         appBar: PreferredSize(
           preferredSize: Size(80, 80),
           child: AppHeader(
             text: 'Чаты',
-            icon: 'plus',
+            icon: user.role == 'moderator' || user.role == 'trainer'
+                ? 'plus'
+                : '',
+            iconOnTap: () {
+              if (user.role == 'moderator' || user.role == 'trainer') {
+                Get.toNamed('/chat/create');
+              }
+            },
           ),
         ),
         body: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: ListView.builder(
-                itemCount: chats.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ChatTile(chats[index]),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(),
-                      SizedBox(
-                        height: 16,
-                      )
-                    ],
-                  );
-                })));
+            child: RefreshIndicator(
+              onRefresh:
+                  Provider.of<ChatsState>(context, listen: false).setChats,
+              child: ListView.builder(
+                  itemCount: chats.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              Get.toNamed('/chat', arguments: chats[index]);
+                            },
+                            child: ChatTile(chats[index])),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Divider(),
+                        SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    );
+                  }),
+            )));
   }
 }
 
@@ -72,9 +91,11 @@ class ChatTile extends StatelessWidget {
               width: 60,
               child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(100)),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.black12,
-                  )),
+                  child: data.photo == null
+                      ? CircleAvatar(
+                          backgroundColor: Colors.black12,
+                        )
+                      : Avatar(data.photo!)),
             ),
             SizedBox(
               width: 16,
@@ -120,7 +141,7 @@ class ChatTile extends StatelessWidget {
                   : SizedBox(
                       height: 8,
                     ),
-              data.unread == null
+              data.unread == 0
                   ? Container()
                   : Container(
                       height: 15,

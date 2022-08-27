@@ -154,7 +154,8 @@ class _AddState extends State<_Add> {
                 data: {"members": members},
               ).then((value) {
                 Provider.of<EventsState>(context, listen: false).setEvents();
-                Get.back();
+                Get.toNamed('/success',
+                    arguments: 'Вы успешно записались на мероприятие');
               });
             },
           ),

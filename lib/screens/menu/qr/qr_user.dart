@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../state/user.dart';
+import '../../../utils/custom_scaffold.dart';
 import '../../../widgets/images/logo.dart';
 
 class QrUser extends StatelessWidget {
@@ -11,7 +12,7 @@ class QrUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User user = Get.arguments;
-    return Scaffold(
+    return CustomScaffold(
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

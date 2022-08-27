@@ -34,7 +34,7 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
         .map((e) => Column(
               children: [
                 Option(
-                  text: e.id.toString(),
+                  text: e.name,
                   onTap: () {
                     Provider.of<ScheduleState>(context, listen: false)
                         .setSchedule(Get.arguments, e.id, showSnackbar: false,

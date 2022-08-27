@@ -52,6 +52,11 @@ dependencies:
   uni_links: ^0.5.1
   flutter_native_splash: ^2.2.8
   socket_io_client: ^2.0.0
+  shared_preferences_web: ^2.0.4
+  web_socket_channel: ^2.2.0
+  photo_view: ^0.14.0
+  youtube_player_iframe: ^3.0.4
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"
@@ -60,9 +65,14 @@ dev_dependencies:
 
 flutter_icons:
   image_path: "icon.png"
-  android: true
+  android: false
   ios: false
   min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "icon_ios.jpeg"
+    background_color: "#FFFFFF"
+    theme_color: "#FFFFFF"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -147,7 +157,7 @@ flutter_native_splash:
   # platform.
   #android: false
   #ios: false
-  #web: false
+  web: true
 
   # Platform specific images can be specified with the following parameters, which will override
   # the respective image parameter.  You may specify all, selected, or none of these parameters:

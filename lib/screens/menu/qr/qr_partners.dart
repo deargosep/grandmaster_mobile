@@ -20,8 +20,11 @@ class _QRPartnersState extends State<QRPartners> {
     // TODO: implement initState
     super.initState();
     String imageEncoded = Get.arguments;
-    String decoded =
-        Utf8Decoder().convert(base64Decode(imageEncoded)).replaceAll('mm', '');
+    String decoded = Utf8Decoder()
+        .convert(base64Decode(imageEncoded))
+        .replaceAll('mm', '')
+        .replaceAll('<path ', '<path shape-rendering="geometricPrecision" ');
+    ;
     print(decoded);
     setState(() {
       image = decoded;

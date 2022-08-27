@@ -27,7 +27,7 @@ class SearchInput extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(20)),
               height: 40.0,
               label: 'Поиск',
-              onTap: () {
+              onTapIcon: () {
                 onComplete!();
               },
               icon: 'search_input',

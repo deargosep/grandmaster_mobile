@@ -73,7 +73,7 @@ class _VideosScreenState extends State<VideosScreen> {
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Видео',
-          icon: isModer() ? 'plus' : null,
+          icon: isModer() ? 'plus' : '',
           iconOnTap: isModer()
               ? () {
                   Get.toNamed('/videos/add');
@@ -119,8 +119,12 @@ class VideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final url = Uri.parse(item.link);
-        launchUrl(url, mode: LaunchMode.externalApplication);
+        if (item.link.contains('youtube')) {
+          Get.toNamed('/videos/watch', arguments: item.link);
+        } else {
+          final url = Uri.parse(item.link);
+          launchUrl(url, mode: LaunchMode.externalApplication);
+        }
       },
       child: Container(
         height: 219,

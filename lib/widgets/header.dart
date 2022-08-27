@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'images/brand_icon.dart';
@@ -113,65 +116,57 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? iconOnTap;
 
   @override
-  final Size preferredSize = Size(64, 64); // default is 56.0
+  final Size preferredSize = Size(56, 66); // default is 56.0
 
   @override
   Widget build(BuildContext context) {
+    EdgeInsets myPadding = EdgeInsets.fromLTRB(20, 20, 20, 0);
+
+    if (!kIsWeb) {
+      myPadding =
+          EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 + 20 : 32, 20, 0);
+    }
     return Column(
       children: [
         Padding(
           padding: padding != null
               ? padding
               : withPadding
-                  ? EdgeInsets.fromLTRB(20, 0, 20, 0)
+                  ? myPadding
                   : EdgeInsets.all(0),
           child: Row(
             children: [
               !withBack
                   ? Container()
                   : Row(children: [
-                      Container(
+                      BrandIcon(
+                        icon: 'back_arrow',
+                        onTap: onTap,
                         height: 17,
                         width: 10,
-                        child: BrandIcon(
-                          icon: 'back_arrow',
-                          onTap: onTap,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 26,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ]),
               Container(
                 width:
-                    icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 35,
-                  ),
-                  child: Text(
-                    text ?? '',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
+                    icon != '' ? 250 : MediaQuery.of(context).size.width - 80,
+                child: Text(
+                  text ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
               Spacer(),
               icon != ''
-                  ? Container(
+                  ? BrandIcon(
+                      icon: icon,
+                      onTap: iconOnTap,
+                      color: Theme.of(context).colorScheme.secondary,
                       height: 18,
-                      width: 18,
-                      child: BrandIcon(
-                        icon: icon,
-                        onTap: iconOnTap,
-                        color: Theme.of(context).colorScheme.secondary,
-                        height: 18,
-                        width: 18,
-                      ),
+                      width: 30,
                     )
                   : Container()
             ],

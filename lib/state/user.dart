@@ -61,9 +61,11 @@ class UserState extends ChangeNotifier {
   }
 
   User convertMapToUser(Map data) {
+    print(data["contact_type"]);
     return User(
         id: data["id"],
         parents: data["parents"],
+        chatId: data["dm"],
         children: <MinimalUser>[
           ...data["children"]
               .map((e) => MinimalUser(
@@ -78,8 +80,8 @@ class UserState extends ChangeNotifier {
         firstName: data["first_name"],
         middleName: data["middle_name"],
         lastName: data["last_name"],
-        fullName:
-            "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
+        fullName: data["full_name"] ??
+            '${data["first_name"]} ${data["middle_name"] ?? ''}${data["middle_name"] != null ? ' ' : ''}${data["last_name"]}',
         age: calculateAge(DateTime.parse(data["birth_date"])),
         birthday: data["birth_date"] != null
             ? DateTime.parse(data["birth_date"])
@@ -89,8 +91,8 @@ class UserState extends ChangeNotifier {
         gender: data["gender"],
         city: data["city"],
         passport: Passport(
-          fio:
-              "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
+          fio: data["full_name"] ??
+              '${data["first_name"]} ${data["middle_name"] ?? ''}${data["middle_name"] != null ? ' ' : ''}${data["last_name"]}',
           birthday: data["birth_date"] != null
               ? DateFormat("d.MM.y").format(DateTime.parse(data["birth_date"]))
               : null,
@@ -254,9 +256,11 @@ class User {
   Passport passport;
   final String? photo;
   final bool admitted;
+  final chatId;
 
   User(
       {this.id,
+      this.chatId,
       this.documentsUrl,
       this.fullName,
       this.firstName,
@@ -284,5 +288,14 @@ class MinimalUser {
   final fullName;
   final id;
   final bool? marked;
-  MinimalUser({required this.fullName, required this.id, this.marked});
+  final String? role;
+  final String? photo;
+  final bool me;
+  MinimalUser(
+      {required this.fullName,
+      required this.id,
+      this.marked,
+      this.role,
+      this.me = false,
+      this.photo});
 }

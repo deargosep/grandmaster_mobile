@@ -17,11 +17,12 @@ class Input extends StatelessWidget {
       this.height,
       this.onFieldSubmitted,
       this.onTapCalendar,
-      this.onTap,
+      this.onTapIcon,
       this.centerText = false,
       this.textStyle,
       this.keyboardType,
-      this.maxLength})
+      this.maxLength,
+      this.onTap})
       : super(key: key);
 
   final String? label;
@@ -36,11 +37,12 @@ class Input extends StatelessWidget {
   final double? height;
   final Function(String)? onFieldSubmitted;
   final onTapCalendar;
-  final onTap;
+  final onTapIcon;
   final TextStyle? textStyle;
   final bool centerText;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,8 @@ class Input extends StatelessWidget {
       height: height,
       width: width,
       child: TextFormField(
+        onTap: onTap,
+        readOnly: onTap != null,
         maxLength: maxLength,
         keyboardType: keyboardType,
         onFieldSubmitted: (text) {
@@ -82,7 +86,7 @@ class Input extends StatelessWidget {
                   child: BrandIcon(
                     icon: icon,
                     onTapCalendar: onTapCalendar,
-                    onTap: onTap,
+                    onTap: onTapIcon,
                   ))
               : null,
           alignLabelWithHint: true,
@@ -160,9 +164,11 @@ class _InputDateState extends State<InputDate> {
 }
 
 class InputPhone extends StatefulWidget {
-  const InputPhone({Key? key, this.controller, this.label}) : super(key: key);
+  const InputPhone({Key? key, this.controller, this.label, this.onChanged})
+      : super(key: key);
   final TextEditingController? controller;
   final String? label;
+  final Function(String)? onChanged;
 
   @override
   State<InputPhone> createState() => _InputPhoneState();
@@ -176,6 +182,7 @@ class _InputPhoneState extends State<InputPhone> {
       controller: widget.controller ?? null,
       maxLength: "+# (###) ###-##-##".length,
       keyboardType: TextInputType.phone,
+      onChanged: widget.onChanged,
       style: TextStyle(
           color: Color(
             0xFF927474,

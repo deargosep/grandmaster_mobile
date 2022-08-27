@@ -82,6 +82,7 @@ class MenuScreen extends StatelessWidget {
 
     return CustomScaffold(
       // scrollable: true,
+      noPadding:false,
       appBar: AppHeader(
         text: 'Меню пользователя',
         withBack: false,

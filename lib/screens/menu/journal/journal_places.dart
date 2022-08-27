@@ -33,6 +33,7 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         bottomNavigationBar: BottomPanel(
           withShadow: false,
           child: BrandButton(

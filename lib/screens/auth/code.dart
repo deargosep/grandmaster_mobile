@@ -21,67 +21,72 @@ class InputCodeScreen extends StatefulWidget {
 }
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
-  TextEditingController controller = TextEditingController(
-      // text: '12345'
-      );
+  TextEditingController controller = TextEditingController(text: '12345');
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (Get.arguments == null) {
+        Get.offAllNamed('/');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+        noPadding: false,
         body: Column(
-      children: [
-        Spacer(),
-        Logo(),
-        Spacer(),
-        Text('Введите код из СМС',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary,
-            )),
-        SizedBox(
-          height: 32,
-        ),
-        Input(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          label: 'Код',
-          maxLength: 5,
-        ),
-        SizedBox(
-          height: 32,
-        ),
-        Timer(),
-        Spacer(),
-        BrandButton(
-          onPressed: () async {
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.clear();
-            createDio().post('/auth/validate_code/', data: {
-              "phone_number": Get.arguments,
-              "code": controller.text
-            }).then((value) async {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('access', value.data["access"]);
-              await prefs.setString('refresh', value.data["refresh"]);
-              createDio().get('/users/self/').then((value) {
-                log(value.data.toString());
-                var data = value.data;
-                log(data.toString());
-                Provider.of<UserState>(context, listen: false).setUser(data);
-                FocusManager.instance.primaryFocus?.unfocus();
-                Get.offAllNamed('/bar', arguments: 1);
-              });
-            });
-          },
-          text: 'Вход',
-          type: 'primary',
-        ),
-      ],
-    ));
+          children: [
+            Spacer(),
+            Logo(),
+            Spacer(),
+            Text('Введите код из СМС',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+            SizedBox(
+              height: 32,
+            ),
+            Input(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              label: 'Код',
+              maxLength: 5,
+            ),
+            SizedBox(
+              height: 32,
+            ),
+            Timer(),
+            Spacer(),
+            BrandButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+                createDio().post('/auth/validate_code/', data: {
+                  "phone_number": Get.arguments,
+                  "code": controller.text
+                }).then((value) async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('access', value.data["access"]);
+                  await prefs.setString('refresh', value.data["refresh"]);
+                  createDio().get('/users/self/').then((value) {
+                    log(value.data.toString());
+                    var data = value.data;
+                    log(data.toString());
+                    Provider.of<UserState>(context, listen: false)
+                        .setUser(data);
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    Get.offAllNamed('/bar', arguments: 1);
+                  });
+                });
+              },
+              text: 'Вход',
+              type: 'primary',
+            ),
+          ],
+        ));
   }
 }
 

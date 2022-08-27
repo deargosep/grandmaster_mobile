@@ -20,7 +20,8 @@ class ListOfOptions extends StatelessWidget {
                     type: e.type,
                     noArrow: noArrow,
                     onTap: () {
-                      Get.toNamed(e.screen, arguments: e.arguments);
+                      Get
+                          .toNamed(e.screen, arguments: e.arguments);
                     },
                   ),
                   SizedBox(

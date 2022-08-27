@@ -18,11 +18,11 @@ class AddEditVideoScreen extends StatefulWidget {
 
 class _AddEditVideoScreenState extends State<AddEditVideoScreen> {
   TextEditingController name =
-      TextEditingController(text: Get.arguments["name"] ?? '');
+      TextEditingController(text: Get.arguments?.name ?? '');
   TextEditingController link =
-      TextEditingController(text: Get.arguments["link"] ?? '');
+      TextEditingController(text: Get.arguments?.link ?? '');
   TextEditingController order =
-      TextEditingController(text: Get.arguments["order"] ?? '');
+      TextEditingController(text: Get.arguments?.order.toString() ?? '');
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -39,12 +39,12 @@ class _AddEditVideoScreenState extends State<AddEditVideoScreen> {
               "order": order.text
             };
             if (Get.arguments != null) {
-              if (Get.arguments["title"] == name.text) data.remove('title');
-              if (Get.arguments["link"] == link.text) data.remove('link');
-              if (Get.arguments["order"] == order.text) data.remove('order');
+              // if (Get.arguments["title"] == name.text) data.remove('title');
+              // if (Get.arguments["link"] == link.text) data.remove('link');
+              // if (Get.arguments["order"] == order.text) data.remove('order');
               createDio()
                   .patch(
-                '/videos/${Get.arguments["id"]}/',
+                '/videos/${Get.arguments.id}/',
                 data: data,
               )
                   .then((value) {

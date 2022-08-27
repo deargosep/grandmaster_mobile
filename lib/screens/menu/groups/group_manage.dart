@@ -30,14 +30,15 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      List sportsmens = await Provider.of<GroupsState>(context, listen: false)
-          .setSportsmens();
+      List<MinimalUser> sportsmens =
+          await Provider.of<GroupsState>(context, listen: false)
+              .setSportsmens();
       GroupType group = Get.arguments;
       setState(() {
         checkboxes = {
           for (var v in sportsmens)
-            '${v["id"]}_${v["full_name"]}': group.members
-                        .firstWhereOrNull((element) => element.id == v["id"]) !=
+            '${v.id}_${v.fullName}': group.members
+                        .firstWhereOrNull((element) => element.id == v.id) !=
                     null
                 ? true
                 : false,

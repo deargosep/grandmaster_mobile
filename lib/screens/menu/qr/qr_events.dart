@@ -20,8 +20,10 @@ class _QREventsState extends State<QREvents> {
     // TODO: implement initState
     super.initState();
     String imageEncoded = Get.arguments;
-    String decoded =
-        Utf8Decoder().convert(base64Decode(imageEncoded)).replaceAll('mm', '');
+    String decoded = Utf8Decoder()
+        .convert(base64Decode(imageEncoded))
+        .replaceAll('mm', '')
+        .replaceAll('<path ', '<path shape-rendering="geometricPrecision" ');
     print(decoded);
     setState(() {
       image = decoded;
@@ -34,12 +36,10 @@ class _QREventsState extends State<QREvents> {
         appBar: AppHeader(
           text: 'Для мероприятий',
         ),
-        body: Container(
-          child: SvgPicture.string(
-            image,
-            height: 313,
-            width: 313,
-          ),
+        body: SvgPicture.string(
+          image,
+          height: 313,
+          width: 313,
         ));
   }
 }

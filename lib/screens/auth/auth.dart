@@ -27,8 +27,8 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber = TextEditingController(
-      // text: numbers["moderator"]
-      );
+      // text: '+'
+      text: numbers["moderator"]);
   bool isLoaded = false;
 
   @override
@@ -63,61 +63,70 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // void onChanged(String text) {
+    //   // if (text == '7') phoneNumber.text = '+$text';
+    //   // if (text == '8') phoneNumber.text = '+7';
+    // }
+
     if (!isLoaded)
       return CustomScaffold(
+          noPadding: false,
           body: Center(
-        child: Logo(),
-      ));
+            child: Logo(),
+          ));
     return CustomScaffold(
+        noPadding: false,
         body: Column(
-      children: [
-        Spacer(),
-        Logo(),
-        Spacer(),
-        Text('Для авторизации введите номер телефона',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: Theme.of(context).colorScheme.secondary,
-            )),
-        SizedBox(
-          height: 32,
-        ),
-        InputPhone(
-          label: 'Номер телефона',
-          controller: phoneNumber,
-        ),
-        Spacer(),
-        BrandButton(
-            text: 'Продолжить',
-            type: 'primary',
-            onPressed: () {
-              SharedPreferences.getInstance().then((value) => value.clear());
-              var number = phoneNumber.text
-                  .replaceAll(' ', '')
-                  .replaceAll(')', '')
-                  .replaceAll('(', '')
-                  .replaceAll('-', '');
-              createDio()
-                  .post('/auth/send_code/',
-                      data: {
-                        "phone_number": number,
-                      },
-                      options: Options(headers: {}))
-                  .then((value) => Get.toNamed('/code', arguments: number));
-            }),
-        SizedBox(
-          height: 16,
-        ),
-        BrandButton(
-            onPressed: () {
-              Provider.of<UserState>(context, listen: false)
-                  .setUserCustom(User(role: 'guest', passport: Passport()));
-              Get.offAllNamed('/bar', arguments: 1);
-            },
-            text: 'Войти как гость',
-            type: 'secondary'),
-      ],
-    ));
+          children: [
+            Spacer(),
+            Logo(),
+            Spacer(),
+            Text('Для авторизации введите номер телефона',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.secondary,
+                )),
+            SizedBox(
+              height: 32,
+            ),
+            InputPhone(
+              label: 'Номер телефона',
+              controller: phoneNumber,
+              // onChanged: onChanged,
+            ),
+            Spacer(),
+            BrandButton(
+                text: 'Продолжить',
+                type: 'primary',
+                onPressed: () {
+                  SharedPreferences.getInstance()
+                      .then((value) => value.clear());
+                  var number = phoneNumber.text
+                      .replaceAll(' ', '')
+                      .replaceAll(')', '')
+                      .replaceAll('(', '')
+                      .replaceAll('-', '');
+                  createDio()
+                      .post('/auth/send_code/',
+                          data: {
+                            "phone_number": number,
+                          },
+                          options: Options(headers: {}))
+                      .then((value) => Get.toNamed('/code', arguments: number));
+                }),
+            SizedBox(
+              height: 16,
+            ),
+            BrandButton(
+                onPressed: () {
+                  Provider.of<UserState>(context, listen: false)
+                      .setUserCustom(User(role: 'guest', passport: Passport()));
+                  Get.offAllNamed('/bar', arguments: 1);
+                },
+                text: 'Войти как гость',
+                type: 'secondary'),
+          ],
+        ));
   }
 }

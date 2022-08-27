@@ -33,7 +33,7 @@ class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
         .map((e) => Column(
               children: [
                 Option(
-                    text: e.id.toString(),
+                    text: e.name,
                     onTap: () {
                       var groupId = e.id;
                       var placeId = Get.arguments;
@@ -64,6 +64,7 @@ class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),

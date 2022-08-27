@@ -34,6 +34,8 @@ class _QRScreenState extends State<QRScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+        noPadding: false,
+        noTopPadding: true,
         appBar: AppHeader(
           text: 'QR коды',
         ),

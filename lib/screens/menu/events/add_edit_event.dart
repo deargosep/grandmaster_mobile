@@ -156,6 +156,19 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
               label: 'Время',
               controller: timeStart,
               maxLength: 5,
+              onTap: () async {
+                TimeOfDay? time = await showTimePicker(
+                    context: context,
+                    initialTime: timeStart.text != ''
+                        ? TimeOfDay(
+                            hour: int.parse(timeStart.text.split(':')[0]),
+                            minute: int.parse(timeStart.text.split(':')[1]))
+                        : TimeOfDay(hour: 0, minute: 0));
+                if (time != null) {
+                  timeStart.text =
+                      '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                }
+              },
             ),
             SizedBox(
               height: 32,
@@ -181,6 +194,19 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
               label: 'Время',
               controller: timeEnd,
               maxLength: 5,
+              onTap: () async {
+                TimeOfDay? time = await showTimePicker(
+                    context: context,
+                    initialTime: timeEnd.text != ''
+                        ? TimeOfDay(
+                            hour: int.parse(timeEnd.text.split(':')[0]),
+                            minute: int.parse(timeEnd.text.split(':')[1]))
+                        : TimeOfDay(hour: 0, minute: 0));
+                if (time != null) {
+                  timeEnd.text =
+                      '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                }
+              },
             ),
             SizedBox(
               height: 32,

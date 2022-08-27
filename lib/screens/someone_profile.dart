@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
+import 'package:grandmaster/state/chats.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:provider/provider.dart';
 
 import '../state/user.dart';
+import '../utils/custom_scaffold.dart';
 
 class SomeoneProfile extends StatelessWidget {
   const SomeoneProfile({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     User user = Get.arguments;
-    return Scaffold(
+    return CustomScaffold(
       body: Container(
         padding: EdgeInsets.only(top: 32, left: 20, right: 20),
         height: MediaQuery.of(context).size.height,
@@ -54,7 +58,21 @@ class SomeoneProfile extends StatelessWidget {
                       height: 33,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        createDio().get('/chats/${user.chatId}/').then((value) {
+                          print(value.data);
+                          Provider.of<ChatsState>(context, listen: false)
+                              .setChats()
+                              .then((value) {
+                            Get.toNamed('/chat',
+                                arguments: Provider.of<ChatsState>(context,
+                                        listen: false)
+                                    .chats
+                                    .firstWhere((element) =>
+                                        element.id == user.chatId));
+                          });
+                        });
+                      },
                       child: Container(
                         height: 40,
                         width: 281,

@@ -28,11 +28,12 @@ class BottomBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
+            BottomBarItem(
                 onTap: () {
                   onTap(0);
                 },
-                child: BottomBarItem(icon: 'menu', active: currentIndex == 0)),
+                icon: 'menu',
+                active: currentIndex == 0),
             Container(
               height: 52,
               width: 1,
@@ -40,15 +41,14 @@ class BottomBar extends StatelessWidget {
                   border: Border(
                       right: BorderSide(color: Color(0xFF9FA6BA), width: 1))),
             ),
-            GestureDetector(
-                onTap: () {
-                  onTap(1);
-                },
-                child: BottomBarItem(
-                  icon: 'home',
-                  active: currentIndex == 1,
-                )),
-            GestureDetector(
+            BottomBarItem(
+              onTap: () {
+                onTap(1);
+              },
+              icon: 'home',
+              active: currentIndex == 1,
+            ),
+            BottomBarItem(
                 onTap:
                     Provider.of<UserState>(context, listen: false).user.role !=
                             'guest'
@@ -56,32 +56,37 @@ class BottomBar extends StatelessWidget {
                             onTap(2);
                           }
                         : null,
-                child: BottomBarItem(
-                    icon: 'chat',
-                    active: currentIndex == 2,
-                    disabled: Provider.of<UserState>(context, listen: false)
-                            .user
-                            .role ==
-                        'guest')),
-            GestureDetector(
-                onTap:
-                    Provider.of<UserState>(context, listen: false).user.role !=
-                            'guest'
-                        ? () {
-                            onTap(3);
-                          }
-                        : null,
+                icon: 'chat',
+                active: currentIndex == 2,
+                disabled:
+                    Provider.of<UserState>(context, listen: false).user.role ==
+                        'guest'),
+            InkWell(
                 onLongPress: () {
                   SharedPreferences.getInstance().then((value) =>
                       value.clear().then((value) => Get.offAllNamed('/')));
                 },
                 child: BottomBarItem(
-                    icon: 'profile',
-                    active: currentIndex == 3,
-                    disabled: Provider.of<UserState>(context, listen: false)
-                            .user
-                            .role ==
-                        'guest')),
+                  onTap: Provider.of<UserState>(context, listen: false)
+                              .user
+                              .role !=
+                          'guest'
+                      ? () {
+                          onTap(3);
+                        }
+                      : () {
+                          SharedPreferences.getInstance().then((value) => value
+                              .clear()
+                              .then((value) => Get.offAllNamed('/')));
+                        },
+                  icon: Provider.of<UserState>(context, listen: false)
+                              .user
+                              .role ==
+                          'guest'
+                      ? 'logout'
+                      : 'profile',
+                  active: currentIndex == 3,
+                )),
           ],
         ),
       ),
@@ -94,30 +99,27 @@ class BottomBarItem extends StatelessWidget {
       {Key? key,
       required this.icon,
       required this.active,
-      this.disabled = false})
+      this.disabled = false,
+      this.onTap})
       : super(key: key);
   final String icon;
   final bool active;
   final bool disabled;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BrandIcon(
-            icon: icon,
-            color: active
-                ? Theme.of(context).primaryColor
-                : disabled
-                    ? Color(0xFF9FA6BA).withOpacity(0.7)
-                    : Color(0xFF9FA6BA),
-            width: 26,
-            height: 26,
-          ),
-        ],
+      child: BrandIcon(
+        icon: icon,
+        onTap: onTap,
+        color: active
+            ? Theme.of(context).primaryColor
+            : disabled
+                ? Color(0xFF9FA6BA).withOpacity(0.7)
+                : Color(0xFF9FA6BA),
+        width: 26,
+        height: 26,
       ),
     );
   }

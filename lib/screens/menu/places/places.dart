@@ -56,7 +56,8 @@ class _PlacesScreenState extends State<PlacesScreen> {
               itemCount: items.length,
               itemBuilder: (context, index) => GestureDetector(
                     onTap: () {
-                      Get.toNamed('/places', arguments: items[index]);
+                      Get
+                          .toNamed('/places', arguments: items[index]);
                     },
                     child: BrandCard(
                       items[index],

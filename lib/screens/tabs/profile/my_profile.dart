@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../utils/custom_scaffold.dart';
 import '../../../widgets/tabbar_switch.dart';
 import '../../../widgets/top_tab.dart';
 
@@ -74,7 +75,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
 
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
+      child: CustomScaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, value) {
             return [
@@ -88,7 +89,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                     GestureDetector(
                         onTap: () {
                           // TODO: more realistic dialog
-                          if (!widget.showPassport) getImage();
+                          // if (!widget.showPassport) getImage();
                         },
                         child: Container(
                             height: 136,
@@ -120,25 +121,45 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                     SizedBox(
                       height: 33,
                     ),
-                    Text(
-                      'Спортивная квалификация: ${user.passport.sport_qualification ?? 'Нет'}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          fontSize: 14),
-                    ),
+                    user.passport.sport_qualification != null &&
+                            (user.passport.sport_qualification != '' &&
+                                user.passport.sport_qualification !=
+                                    'Нет квалификации')
+                        ? Container(
+                            width: 300,
+                            child: Text(
+                              'Спортивная квалификация: ${user.passport.sport_qualification}',
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  fontSize: 14),
+                            ),
+                          )
+                        : Container(),
                     SizedBox(
                       height: 8,
                     ),
-                    Text(
-                      'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          fontSize: 14),
-                    ),
+                    user.passport.tech_qualification != null &&
+                            (user.passport.tech_qualification != '' &&
+                                user.passport.tech_qualification !=
+                                    'Нет квалификации')
+                        ? Container(
+                            width: 300,
+                            child: Text(
+                              'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  fontSize: 14),
+                            ),
+                          )
+                        : Container(),
                     SizedBox(
                       height: 24,
                     ),

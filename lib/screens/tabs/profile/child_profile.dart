@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/bottombar_wrap.dart';
+import '../../../utils/custom_scaffold.dart';
 import '../../../widgets/images/brand_icon.dart';
 
 class ChildProfileScreen extends StatefulWidget {
@@ -39,12 +40,12 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (!isLoaded)
-      return Scaffold(
+      return CustomScaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
-    return Scaffold(
+    return CustomScaffold(
         bottomNavigationBar: BottomBarWrap(
           currentTab: 3,
         ),

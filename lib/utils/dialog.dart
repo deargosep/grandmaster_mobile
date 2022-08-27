@@ -65,7 +65,7 @@ void showCustomDialog(
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
-                  onTap();
+                  // onTap();
                 },
                 child: Container(
                   height: 40,

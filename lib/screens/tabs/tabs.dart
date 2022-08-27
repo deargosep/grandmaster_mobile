@@ -4,8 +4,12 @@ import 'package:grandmaster/screens/tabs/chat/chats.dart';
 import 'package:grandmaster/screens/tabs/home/home.dart';
 import 'package:grandmaster/screens/tabs/menu/menu.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/bottom_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/custom_scaffold.dart';
 import 'menu/menu.dart';
 
 class BarScreen extends StatefulWidget {
@@ -34,8 +38,25 @@ class _BarScreenState extends State<BarScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      SharedPreferences.getInstance().then((value) {
+        var access = value.getString('access');
+        User user = Provider.of<UserState>(context, listen: false).user;
+        print(access);
+        if (access != null && user.role == 'guest') {
+          Get.offAllNamed('/');
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
+        noPadding: true,
         // backgroundColor: Color(0xFFEAEAEA),
         body: Center(
           child: _tabs.elementAt(_selectedIndex),

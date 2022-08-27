@@ -6,7 +6,9 @@ import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../utils/custom_scaffold.dart';
 import '../../../widgets/header.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -26,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
           .children
           .map((e) => OptionType(e.fullName, '/child_profile', arguments: e)),
     ];
-    return Scaffold(
+    return CustomScaffold(
         body: Padding(
             padding: EdgeInsets.fromLTRB(
                 0, 38 + MediaQuery.of(context).viewInsets.top, 0, 0),
@@ -87,14 +89,21 @@ class Info extends StatelessWidget {
         SizedBox(
           height: 8,
         ),
-        Text(
-          "${user.phoneNumber ?? "Нет"}",
-          style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              color: user.phoneNumber != null
-                  ? Color(0xFF2674E9)
-                  : Theme.of(context).colorScheme.secondary),
+        GestureDetector(
+          onTap: user.passport.phoneNumber != null
+              ? () {
+                  launchUrlString('tel://${user.passport.phoneNumber}');
+                }
+              : null,
+          child: Text(
+            "${user.passport.phoneNumber ?? "Нет"}",
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: user.passport.phoneNumber != null
+                    ? Color(0xFF2674E9)
+                    : Theme.of(context).colorScheme.secondary),
+          ),
         ),
         SizedBox(
           height: 24,
