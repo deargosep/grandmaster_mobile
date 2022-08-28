@@ -49,6 +49,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
   Widget build(BuildContext context) {
     if (widget.scrollable == true) {
       return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },

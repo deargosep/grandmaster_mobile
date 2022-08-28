@@ -5,34 +5,10 @@ import 'package:get/get.dart';
 import 'package:grandmaster/utils/dio.dart';
 
 class PaymentsState extends ChangeNotifier {
-  List<PaymentType> _payments = [
-    // PaymentType(
-    //     id: "1",
-    //     name: "Сборы",
-    //     paymentEnd: DateTime(2022, 08, 22),
-    //     price: 500.00,
-    //     paid: false),
-    // PaymentType(
-    //     id: "2",
-    //     name: "Соревнования",
-    //     paymentEnd: DateTime(2022, 06, 22),
-    //     price: 1500.00,
-    //     paid: false),
-    // PaymentType(
-    //     id: "3",
-    //     name: "Сборы",
-    //     paymentEnd: DateTime(2022, 08, 22),
-    //     price: 500.00,
-    //     paid: true),
-    // PaymentType(
-    //     id: "4",
-    //     name: "Соревнования",
-    //     paymentEnd: DateTime(2022, 06, 22),
-    //     price: 1500.00,
-    //     paid: true),
-  ];
-
+  List<PaymentType> _payments = [];
   List<PaymentType> get payments => _payments;
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
   Future<void> setPayments() async {
     var completer = new Completer();
@@ -56,6 +32,8 @@ class PaymentsState extends ChangeNotifier {
       _payments = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
     // _payments = ;

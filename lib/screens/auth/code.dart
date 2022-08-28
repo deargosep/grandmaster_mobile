@@ -31,61 +31,83 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
     });
   }
 
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
         noPadding: false,
-        body: Column(
-          children: [
-            Spacer(),
-            Logo(),
-            Spacer(),
-            Text('Введите код из СМС',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: Theme.of(context).colorScheme.secondary,
-                )),
-            SizedBox(
-              height: 32,
-            ),
-            Input(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              label: 'Код',
-              maxLength: 5,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Timer(),
-            Spacer(),
-            BrandButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.clear();
-                createDio().post('/auth/validate_code/', data: {
-                  "phone_number": Get.arguments,
-                  "code": controller.text
-                }).then((value) async {
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Spacer(),
+              Logo(),
+              Spacer(),
+              Text('Код отправлен на номер',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )),
+              SizedBox(
+                height: 8,
+              ),
+              Text('${Get.arguments["formatted"]}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )),
+              SizedBox(
+                height: 32,
+              ),
+              Input(
+                padding: EdgeInsets.only(left: 16, right: 16),
+                width: 120,
+                controller: controller,
+                keyboardType: TextInputType.number,
+                label: 'Код',
+                validator: (text) {
+                  if (controller.text.length < 5)
+                    return 'Введите код';
+                  else
+                    return null;
+                },
+                maxLength: 5,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Timer(),
+              Spacer(),
+              BrandButton(
+                onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('access', value.data["access"]);
-                  await prefs.setString('refresh', value.data["refresh"]);
-                  createDio().get('/users/self/').then((value) {
-                    log(value.data.toString());
-                    var data = value.data;
-                    log(data.toString());
-                    Provider.of<UserState>(context, listen: false)
-                        .setUser(data);
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    Get.offAllNamed('/bar', arguments: 1);
+                  await prefs.clear();
+                  createDio().post('/auth/validate_code/', data: {
+                    "phone_number": Get.arguments["raw"],
+                    "code": controller.text
+                  }).then((value) async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('access', value.data["access"]);
+                    await prefs.setString('refresh', value.data["refresh"]);
+                    createDio().get('/users/self/').then((value) {
+                      log(value.data.toString());
+                      var data = value.data;
+                      log(data.toString());
+                      Provider.of<UserState>(context, listen: false)
+                          .setUser(data);
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      Get.offAllNamed('/bar', arguments: 1);
+                    });
                   });
-                });
-              },
-              text: 'Вход',
-              type: 'primary',
-            ),
-          ],
+                },
+                text: 'Вход',
+                type: 'primary',
+              ),
+            ],
+          ),
         ));
   }
 }

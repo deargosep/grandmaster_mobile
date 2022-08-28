@@ -9,7 +9,11 @@ class VideosState extends ChangeNotifier {
 
   List<Video> get videos => _videos;
 
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
+
   Future<void> setVideos({List<Video>? data}) async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio().get('/videos/').then((value) {
       List<Video> newList = [
@@ -26,7 +30,10 @@ class VideosState extends ChangeNotifier {
       _videos = newList;
       completer.complete();
       notifyListeners();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
+    ;
     return completer.future;
   }
 

@@ -31,6 +31,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
     List<OptionType> listOptions =
         list.map((e) => OptionType(e.name, '/group', arguments: e)).toList();
     var user = Provider.of<UserState>(context).user;
+    bool isLoaded = Provider.of<GroupsState>(context).isLoaded;
     return CustomScaffold(
         noPadding: false,
         noTopPadding: true,
@@ -39,31 +40,36 @@ class _GroupsScreenState extends State<GroupsScreen> {
           text: 'Группы спортсменов',
         ),
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
-        body: RefreshIndicator(
-          onRefresh: Provider.of<GroupsState>(context, listen: false).setGroups,
-          child: ListView(
-            children: [
-              user.role == 'trainer'
-                  ? Option(
-                      text: 'Создать группу',
-                      type: 'create',
+        body: isLoaded
+            ? RefreshIndicator(
+                onRefresh:
+                    Provider.of<GroupsState>(context, listen: false).setGroups,
+                child: ListView(
+                  children: [
+                    user.role == 'trainer'
+                        ? Option(
+                            text: 'Создать группу',
+                            type: 'create',
+                            noArrow: true,
+                            onTap: () {
+                              Get.toNamed('/groups/add');
+                            },
+                          )
+                        : Container(),
+                    user.role == 'trainer'
+                        ? SizedBox(
+                            height: 16,
+                          )
+                        : Container(),
+                    ListOfOptions(
+                      list: listOptions,
                       noArrow: true,
-                      onTap: () {
-                        Get.toNamed('/groups/add');
-                      },
                     )
-                  : Container(),
-              user.role == 'trainer'
-                  ? SizedBox(
-                      height: 16,
-                    )
-                  : Container(),
-              ListOfOptions(
-                list: listOptions,
-                noArrow: true,
+                  ],
+                ),
               )
-            ],
-          ),
-        ));
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }

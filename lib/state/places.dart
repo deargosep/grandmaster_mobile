@@ -12,7 +12,13 @@ class PlacesState extends ChangeNotifier {
   List<PlaceType> get places => _places;
   List<Trainer> get trainers => _trainers;
 
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
+  bool _isLoadedTrainers = false;
+  bool get isLoadedTrainers => _isLoadedTrainers;
+
   Future<void> setPlaces({List<PlaceType>? data}) async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio().get('/gyms/').then((value) {
       List<PlaceType> newList = [
@@ -58,6 +64,8 @@ class PlacesState extends ChangeNotifier {
       _places = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

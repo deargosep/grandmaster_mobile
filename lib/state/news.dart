@@ -7,10 +7,12 @@ import '../utils/dio.dart';
 
 class Articles extends ChangeNotifier {
   List<ArticleType> _news = [];
-
   List<ArticleType> get news => _news;
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
   Future<void> setNews() async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio().get('/news/').then((value) {
       List<ArticleType> newList = [
@@ -30,6 +32,8 @@ class Articles extends ChangeNotifier {
       _news = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

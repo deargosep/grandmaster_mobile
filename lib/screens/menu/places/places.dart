@@ -37,6 +37,7 @@ class _PlacesScreenState extends State<PlacesScreen> {
     }
 
     List<PlaceType> items = Provider.of<PlacesState>(context).places;
+    bool isLoaded = Provider.of<PlacesState>(context).isLoaded;
 
     return CustomScaffold(
         noPadding: true,
@@ -50,32 +51,39 @@ class _PlacesScreenState extends State<PlacesScreen> {
                 }
               : null,
         ),
-        body: RefreshIndicator(
-          onRefresh: Provider.of<PlacesState>(context, listen: false).setPlaces,
-          child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      Get
-                          .toNamed('/places', arguments: items[index]);
-                    },
-                    child: BrandCard(
-                      items[index],
-                      // TODO
-                      () {
-                        createDio().patch('/gyms/${items[index].id}/',
-                            data: {"hidden": true});
-                        Provider.of<PlacesState>(context).setPlaces();
-                      },
-                      () {
-                        createDio().delete('/gyms/${items[index].id}/');
-                        Provider.of<PlacesState>(context).setPlaces();
-                      },
+        body: isLoaded
+            ? items.isNotEmpty
+                ? RefreshIndicator(
+                    onRefresh: Provider.of<PlacesState>(context, listen: false)
+                        .setPlaces,
+                    child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
+                                Get.toNamed('/places', arguments: items[index]);
+                              },
+                              child: BrandCard(
+                                items[index],
+                                // TODO
+                                () {
+                                  createDio().patch('/gyms/${items[index].id}/',
+                                      data: {"hidden": true});
+                                  Provider.of<PlacesState>(context).setPlaces();
+                                },
+                                () {
+                                  createDio()
+                                      .delete('/gyms/${items[index].id}/');
+                                  Provider.of<PlacesState>(context).setPlaces();
+                                },
 
-                      type: 'places',
-                    ),
-                  )),
-        ));
+                                type: 'places',
+                              ),
+                            )),
+                  )
+                : Text('Нет залов')
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 

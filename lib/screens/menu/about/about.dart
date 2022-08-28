@@ -16,6 +16,8 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     var user = Provider.of<UserState>(context);
+    bool isLoaded = Provider.of<AboutState>(context).isLoaded;
+    List list = Provider.of<AboutState>(context).about;
     return CustomScaffold(
       noPadding: true,
       bottomNavigationBar: BottomBarWrap(currentTab: 0),
@@ -26,20 +28,17 @@ class AboutScreen extends StatelessWidget {
           Get.toNamed('/about/add');
         },
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh:
-                  Provider.of<AboutState>(context, listen: false).setAbout,
-              child: ListView(children: [
-                // List
-                Content()
-              ]),
+      body: isLoaded
+          ? list.isNotEmpty
+              ? RefreshIndicator(
+                  onRefresh:
+                      Provider.of<AboutState>(context, listen: false).setAbout,
+                  child: Content(),
+                )
+              : Text('Нет контента')
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -65,35 +64,32 @@ class _ContentState extends State<Content> {
   Widget build(BuildContext context) {
     var list = Provider.of<AboutState>(context, listen: true).about;
     var user = Provider.of<UserState>(context);
-    if (list.isNotEmpty) {
-      return Column(
-          children: list.map((item) {
-        return BrandCard(
-          item,
-          // TODO
-          () {
-            createDio().patch('/club_content/${item.id}/', data: {
-              "hidden": true
-            }).then((value) =>
-                Provider.of<AboutState>(context, listen: false).setAbout());
-          },
-          () {
-            createDio().delete('/club_content/${item.id}/').then((value) =>
-                Provider.of<AboutState>(context, listen: false).setAbout());
-          },
-          type: 'about',
-        );
-      }).toList());
-      // return ListView.builder(
-      //     itemCount: list.length,
-      //     itemBuilder: (context, index) {
-      //       return Padding(
-      //         padding: const EdgeInsets.all(20),
-      //         child: AboutCard(item: list[index]),
-      //       );
-      //     });
-    }
-    return Center(child: CircularProgressIndicator());
+    return ListView(
+        children: list.map((item) {
+      return BrandCard(
+        item,
+        // TODO
+        () {
+          createDio().patch('/club_content/${item.id}/', data: {
+            "hidden": true
+          }).then((value) =>
+              Provider.of<AboutState>(context, listen: false).setAbout());
+        },
+        () {
+          createDio().delete('/club_content/${item.id}/').then((value) =>
+              Provider.of<AboutState>(context, listen: false).setAbout());
+        },
+        type: 'about',
+      );
+    }).toList());
+    // return ListView.builder(
+    //     itemCount: list.length,
+    //     itemBuilder: (context, index) {
+    //       return Padding(
+    //         padding: const EdgeInsets.all(20),
+    //         child: AboutCard(item: list[index]),
+    //       );
+    //     });
   }
 }
 

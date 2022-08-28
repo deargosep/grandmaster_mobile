@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ArticleScreen extends StatefulWidget {
   ArticleScreen({Key? key}) : super(key: key);
@@ -15,6 +17,16 @@ class ArticleScreen extends StatefulWidget {
 
 class _ArticleScreenState extends State<ArticleScreen> {
   final ArticleType item = Get.arguments;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      createDio().get('/news/${item.id}/').then((value) {
+        Provider.of<Articles>(context, listen: false).setNews();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

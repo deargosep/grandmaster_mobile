@@ -12,10 +12,12 @@ import '../utils/dio.dart';
 
 class ChatsState extends ChangeNotifier {
   List<ChatType> _chats = [];
-
   List<ChatType> get chats => _chats;
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
   MessageType getMessagefromJson(data) {
+    _isLoaded = false;
     var decoded = jsonDecode(data);
     print(decoded);
     return MessageType(
@@ -46,7 +48,7 @@ class ChatsState extends ChangeNotifier {
               // name: e["type"] == 'dm'
               // ? e["members"].firstWhere((e) => !e["me"])["full_name"]
               // : e["name"],
-              lastMessage: e["last_message"]["text"],
+              lastMessage: e["last_message"]["text"] ?? "Изображение",
               unread: e["unreaded_count"],
               photo: e["cover"] ?? e["type"] == 'dm'
                   ? [...e["members"].map((e) => e).toList()]
@@ -82,6 +84,8 @@ class ChatsState extends ChangeNotifier {
       _chats = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

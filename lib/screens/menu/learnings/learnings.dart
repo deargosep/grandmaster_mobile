@@ -36,7 +36,7 @@ class _LearningsScreenState extends State<LearningsScreen> {
     }
 
     List<LearningType> items = Provider.of<LearningsState>(context).learnings;
-
+    bool isLoaded = Provider.of<LearningsState>(context).isLoaded;
     return CustomScaffold(
         noPadding: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
@@ -49,40 +49,53 @@ class _LearningsScreenState extends State<LearningsScreen> {
                 }
               : null,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: RefreshIndicator(
-            onRefresh: Provider.of<LearningsState>(context, listen: false)
-                .setLearnings,
-            child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) => Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      child: GestureDetector(
-                        onTap: () {
-                          Uri url = Uri.parse(items[index].link);
-                          launchUrl(url, mode: LaunchMode.externalApplication);
-                        },
-                        child: BrandCard(
-                          items[index],
-                          withPadding: false,
-                          type: 'learning',
-                          () {
-                            createDio().patch(
-                                '/instructions/${items[index].id}/',
-                                data: {"hidden": true});
-                            Provider.of<LearningsState>(context).setLearnings();
-                          },
-                          () {
-                            createDio()
-                                .delete('/instructions/${items[index].id}/');
-                            Provider.of<LearningsState>(context).setLearnings();
-                          },
-                        ),
-                      ),
-                    )),
-          ),
-        ));
+        body: isLoaded
+            ? items.isNotEmpty
+                ? Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    child: RefreshIndicator(
+                      onRefresh:
+                          Provider.of<LearningsState>(context, listen: false)
+                              .setLearnings,
+                      child: ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) => Container(
+                                margin: EdgeInsets.only(bottom: 16),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Uri url = Uri.parse(items[index].link);
+                                    launchUrl(url,
+                                        mode: LaunchMode.externalApplication);
+                                  },
+                                  child: BrandCard(
+                                    items[index],
+                                    withPadding: false,
+                                    type: 'learning',
+                                    () {
+                                      createDio().patch(
+                                          '/instructions/${items[index].id}/',
+                                          data: {"hidden": true});
+                                      Provider.of<LearningsState>(context)
+                                          .setLearnings();
+                                    },
+                                    () {
+                                      createDio().delete(
+                                          '/instructions/${items[index].id}/');
+                                      Provider.of<LearningsState>(context)
+                                          .setLearnings();
+                                    },
+                                  ),
+                                ),
+                              )),
+                    ),
+                  )
+                : Center(
+                    child: Text('Нет учебных материалов'),
+                  )
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 

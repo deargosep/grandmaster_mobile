@@ -32,33 +32,36 @@ class _PlacesScheduleScreenState extends State<PlacesScheduleScreen> {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         // scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
         ),
-        body: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              'Выберите зал',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
-          ],
-        ));
+        body: list.isNotEmpty
+            ? ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    list.isNotEmpty ? 'Выберите зал' : '',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  ListOfOptions(
+                    list: list,
+                    noArrow: true,
+                  )
+                ],
+              )
+            : Center(child: Text('Нет залов')));
   }
 }

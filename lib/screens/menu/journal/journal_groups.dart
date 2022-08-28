@@ -68,24 +68,25 @@ class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              'Выберите группу',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            ...list
-          ],
-        ));
+        body: list.isNotEmpty
+            ? ListView(
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Выберите группу',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  ...list
+                ],
+              )
+            : Text('Нет групп'));
   }
 }

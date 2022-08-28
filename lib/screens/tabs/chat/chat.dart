@@ -124,9 +124,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       // setState(() {
       //   messages = newMessages;
       // });
-      channel.sink.add(jsonEncode({
-        "message": {"text": text, "photo": photo}
-      }));
+      if (text != '' || photo != '')
+        channel.sink.add(jsonEncode({
+          "message": {"text": text, "photo": photo}
+        }));
       // showErrorSnackbar('Не удалось отправить сообщение');
 
       // setState(() {
@@ -187,6 +188,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: grouped.keys.length,
                               shrinkWrap: true,
+                              reverse: true,
                               itemBuilder: (context, index) {
                                 String date = grouped.keys.toList()[index];
                                 List<MessageType> messages = grouped[date]!;
@@ -209,9 +211,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                       height: 32,
                                     ),
                                     ListView.builder(
-                                      reverse: true,
+                                      // reverse: true,
                                       primary: false,
                                       shrinkWrap: true,
+                                      reverse: true,
                                       itemCount: messages.length,
                                       itemBuilder: (context, index) => Column(
                                         children: [
@@ -278,17 +281,6 @@ class Message extends StatelessWidget {
             crossAxisAlignment:
                 isMine() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
-              item.photo != null
-                  ? GestureDetector(
-                      onTap: () {
-                        Get.toNamed('/chat/photo', arguments: item.photo);
-                      },
-                      child: Container(
-                          height: 200,
-                          width: 200,
-                          child: LoadingImage(item.photo!)),
-                    )
-                  : Container(),
               chat.type == 'group' && !isMine()
                   ? Column(
                       children: [
@@ -302,18 +294,44 @@ class Message extends StatelessWidget {
                       ],
                     )
                   : Container(),
-              Text(
-                item.text,
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.secondary),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                DateFormat.Hm().format(item.timedate),
-                style: TextStyle(fontSize: 12, color: Color(0xFF9FA6BA)),
+              item.photo != null
+                  ? GestureDetector(
+                      onTap: () {
+                        Get.toNamed('/chat/photo', arguments: item.photo);
+                      },
+                      child: Container(
+                          height: 200,
+                          width: 250,
+                          child: LoadingImage(item.photo!)),
+                    )
+                  : Container(),
+              item.text != ''
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          item.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    )
+                  : SizedBox(
+                      height: 8,
+                    ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  DateFormat.Hm().format(item.timedate),
+                  textAlign: TextAlign.end,
+                  style: TextStyle(fontSize: 12, color: Color(0xFF9FA6BA)),
+                ),
               )
             ],
           ),
@@ -404,6 +422,18 @@ class _SendMessageState extends State<SendMessage> {
             height: 40.0,
             borderRadius: BorderRadius.all(Radius.circular(20)),
             label: 'Введите сообщение',
+          ),
+        ),
+        SizedBox(
+          width: 16,
+        ),
+        InkWell(
+          onTap: () {
+            sendMessage(controller.text);
+          },
+          child: Icon(
+            Icons.send,
+            color: Theme.of(context).primaryColor,
           ),
         )
       ],

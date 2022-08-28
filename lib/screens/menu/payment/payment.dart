@@ -37,11 +37,11 @@ class _PaymentScreenState extends State<PaymentScreen>
   @override
   Widget build(BuildContext context) {
     List<PaymentType> payments = Provider.of<PaymentsState>(context).payments;
+    bool isLoaded = Provider.of<PaymentsState>(context).isLoaded;
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
           padding: EdgeInsets.only(top: 24),
-          scrollable: true,
           bottomNavigationBar: BottomBarWrap(currentTab: 0),
           appBar: AppHeader(
             text: 'Оплата',
@@ -70,23 +70,33 @@ class _PaymentScreenState extends State<PaymentScreen>
                   controller: controller,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    RefreshIndicator(
-                      onRefresh:
-                          Provider.of<PaymentsState>(context).setPayments,
-                      child: ListView(
-                          children: payments
-                              .map(((e) => !e.paid ? _Payment(e) : Container()))
-                              .toList()),
-                    ),
-                    RefreshIndicator(
-                      onRefresh:
-                          Provider.of<PaymentsState>(context).setPayments,
-                      child: ListView(
-                        children: (payments
-                            .map((e) => e.paid ? _Payment(e) : Container())
-                            .toList()),
-                      ),
-                    )
+                    isLoaded
+                        ? RefreshIndicator(
+                            onRefresh:
+                                Provider.of<PaymentsState>(context).setPayments,
+                            child: ListView(
+                                children: payments
+                                    .map(((e) =>
+                                        !e.paid ? _Payment(e) : Container()))
+                                    .toList()),
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                    isLoaded
+                        ? RefreshIndicator(
+                            onRefresh:
+                                Provider.of<PaymentsState>(context).setPayments,
+                            child: ListView(
+                              children: (payments
+                                  .map(
+                                      (e) => e.paid ? _Payment(e) : Container())
+                                  .toList()),
+                            ),
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          )
                   ],
                 ),
               )

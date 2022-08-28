@@ -13,10 +13,14 @@ class VisitLogState extends ChangeNotifier {
 
   VisitLogType get visitLog => _visitLog;
 
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
+
   Future<void> setVisitLog(
     placeId,
     groupId,
   ) async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio(errHandler: (err, handler) {
       completer.completeError(err);
@@ -33,7 +37,10 @@ class VisitLogState extends ChangeNotifier {
           datetime: DateTime.parse(e["mark_datetime"]));
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
+    ;
     return completer.future;
   }
 

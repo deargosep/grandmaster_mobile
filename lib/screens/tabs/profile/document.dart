@@ -51,6 +51,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         builder: (context, snapshot) {
           return CustomScaffold(
               noHorPadding: true,
+              noPadding: false,
               appBar: AppHeader(
                 text: optionList[currentIndex]["title"],
               ),

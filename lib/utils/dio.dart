@@ -72,7 +72,7 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
   FormData formData = FormData.fromMap({
     ...data,
     photoKey: !kIsWeb
-        ? await MultipartFile.fromFile(file.path, filename: fileName)
+        ? await MultipartFile.fromFile(file.path)
         : await MultipartFile.fromBytes(file.readAsBytesSync())
   });
   return formData;
@@ -81,8 +81,9 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
 Future<FormData> getFormFromXFile(XFile file, String photoKey, Map data) async {
   FormData formData = FormData.fromMap({
     ...data,
-    photoKey: await MultipartFile.fromBytes(await file.readAsBytes(),
-        filename: file.name)
+    photoKey: await MultipartFile.fromBytes(
+      await file.readAsBytes(),
+    )
   });
   return formData;
 }

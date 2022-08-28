@@ -9,10 +9,12 @@ import '../utils/dio.dart';
 
 class EventsState extends ChangeNotifier {
   List<EventType> _events = [];
-
   List<EventType> get events => _events;
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
   Future setEvents({List<EventType>? data}) {
+    _isLoaded = false;
     var completer = new Completer();
     createDio().get('/events/').then((value) {
       List<EventType> newList = [
@@ -44,6 +46,8 @@ class EventsState extends ChangeNotifier {
       _events = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

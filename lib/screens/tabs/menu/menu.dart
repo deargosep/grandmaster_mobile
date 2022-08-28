@@ -38,7 +38,7 @@ class MenuScreen extends StatelessWidget {
       if (user.role == 'trainer') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
-          OptionType('Учебные файлы', links["learning"]!),
+          OptionType('Учебные материалы', links["learning"]!),
           OptionType('Журнал посещений', links["visits"]!),
           OptionType('Расписание', links["schedule"]!),
           OptionType('Залы', links["places"]!),
@@ -62,13 +62,13 @@ class MenuScreen extends StatelessWidget {
       if (user.role == 'moderator') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
-          OptionType('Учебные файлы', links["learning"]!),
-          OptionType('Журнал посещений', links["visits"]!),
+          OptionType('Учебные материалы', links["learning"]!),
+          // OptionType('Журнал посещений', links["visits"]!),
           // OptionType('Расписание', links["schedule"]!),
           OptionType('Залы', links["places"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('QR коды', links["qr"]!),
-          OptionType('Группы спортсменов', links["groups"]!),
+          // OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }
@@ -82,7 +82,7 @@ class MenuScreen extends StatelessWidget {
 
     return CustomScaffold(
       // scrollable: true,
-      noPadding:false,
+      noPadding: false,
       appBar: AppHeader(
         text: 'Меню пользователя',
         withBack: false,

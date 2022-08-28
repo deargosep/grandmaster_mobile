@@ -135,6 +135,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
                 label: 'От',
                 controller: minAge,
                 centerText: true,
+                keyboardType: TextInputType.number,
               ),
               Container(
                 width: 55,
@@ -147,6 +148,7 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
                 height: 50.0,
                 controller: maxAge,
                 centerText: true,
+                keyboardType: TextInputType.number,
               )
             ],
           ),

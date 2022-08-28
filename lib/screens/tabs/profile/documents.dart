@@ -42,11 +42,11 @@ class DocumentsScreen extends StatelessWidget {
     }
     return CustomScaffold(
         noTopPadding: true,
-        scrollable: true,
+        noPadding: false,
         appBar: AppHeader(
           text: 'Документы',
         ),
-        body: Column(
+        body: ListView(
           children: [
             ListOfOptions(
               list: optionList,

@@ -8,10 +8,12 @@ import '../utils/dio.dart';
 
 class GroupsState extends ChangeNotifier {
   List<GroupType> _groups = [];
-
   List<MinimalUser> _sportsmens = [];
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
   Future<List<MinimalUser>> setSportsmens() async {
+    _isLoaded = false;
     // var completer = new Completer();
     // log(data.toString());
     var response = await createDio().get('/sport_groups/sportsmen/');
@@ -51,6 +53,8 @@ class GroupsState extends ChangeNotifier {
       _groups = newList;
       notifyListeners();
       completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

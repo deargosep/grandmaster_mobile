@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Map numbers = {
   "parent": '+7 (918) 546-85-81',
   "child": '+7 (928) 900-06-80',
-  "moderator": "+7 (900) 133-78-68",
+  "moderator": "+7 (909) 283-21-21",
   "trainer": "+7 (988) 250-30-03",
   "payment": "+7 (900) 126-16-92"
 };
@@ -28,7 +28,7 @@ class AuthRegisterScreen extends StatefulWidget {
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber = TextEditingController(
       // text: '+'
-      text: numbers["trainer"]);
+      text: numbers["moderator"]);
   bool isLoaded = false;
 
   @override
@@ -61,6 +61,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     });
   }
 
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     // void onChanged(String text) {
@@ -90,42 +91,55 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             SizedBox(
               height: 32,
             ),
-            InputPhone(
-              label: 'Номер телефона',
-              controller: phoneNumber,
-              // onChanged: onChanged,
+            Form(
+              key: _formKey,
+              child: InputPhone(
+                label: 'Номер телефона',
+                controller: phoneNumber,
+                // onChanged: onChanged,
+              ),
             ),
             Spacer(),
             BrandButton(
                 text: 'Продолжить',
                 type: 'primary',
+                // disabled: _formKey.currentState != null
+                //     ? !_formKey.currentState!.validate()
+                //     : true,
                 onPressed: () {
-                  SharedPreferences.getInstance()
-                      .then((value) => value.clear());
-                  var number = phoneNumber.text
-                      .replaceAll(' ', '')
-                      .replaceAll(')', '')
-                      .replaceAll('(', '')
-                      .replaceAll('-', '');
-                  createDio()
-                      .post('/auth/send_code/',
-                          data: {
-                            "phone_number": number,
-                          },
-                          options: Options(headers: {}))
-                      .then((value) => Get.toNamed('/code', arguments: number));
+                  if (_formKey.currentState != null) if (_formKey.currentState!
+                      .validate()) {
+                    SharedPreferences.getInstance()
+                        .then((value) => value.clear());
+                    var number = phoneNumber.text
+                        .replaceAll(' ', '')
+                        .replaceAll(')', '')
+                        .replaceAll('(', '')
+                        .replaceAll('-', '');
+                    createDio()
+                        .post('/auth/send_code/',
+                            data: {
+                              "phone_number": number,
+                            },
+                            options: Options(headers: {}))
+                        .then((value) => Get.toNamed('/code', arguments: {
+                              "formatted": phoneNumber.text,
+                              "raw": number
+                            }));
+                  }
                 }),
             SizedBox(
               height: 16,
             ),
             BrandButton(
-                onPressed: () {
-                  Provider.of<UserState>(context, listen: false)
-                      .setUserCustom(User(role: 'guest', passport: Passport()));
-                  Get.offAllNamed('/bar', arguments: 1);
-                },
-                text: 'Войти как гость',
-                type: 'secondary'),
+              onPressed: () {
+                Provider.of<UserState>(context, listen: false)
+                    .setUserCustom(User(role: 'guest', passport: Passport()));
+                Get.offAllNamed('/bar', arguments: 1);
+              },
+              text: 'Войти как гость',
+              type: 'secondary',
+            ),
           ],
         ));
   }

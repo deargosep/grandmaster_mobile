@@ -65,20 +65,22 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
         appBar: AppHeader(
           text: 'Расписание',
         ),
-        body: ListView(
-          children: [
-            Text(
-              'Выберите группу',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            ...list
-          ],
-        ));
+        body: list.isNotEmpty
+            ? ListView(
+                children: [
+                  Text(
+                    'Выберите группу',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  ...list
+                ],
+              )
+            : Text('Нет групп'));
   }
 }

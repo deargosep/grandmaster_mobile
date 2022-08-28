@@ -66,17 +66,24 @@ class BrandIcon extends StatelessWidget {
         ),
       );
     }
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        if (onTap != null) onTap();
-      },
-      child: SvgPicture.asset(
-        'assets/icons/${icon}.svg',
-        color: color ?? Theme.of(context).primaryColor,
-        height: height,
-        width: width,
-      ),
-    );
+    return onTap != null
+        ? GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              onTap();
+            },
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
+          )
+        : SvgPicture.asset(
+            'assets/icons/${icon}.svg',
+            color: color ?? Theme.of(context).primaryColor,
+            height: height,
+            width: width,
+          );
   }
 }

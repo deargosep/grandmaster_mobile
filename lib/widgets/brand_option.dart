@@ -69,6 +69,7 @@ class _OptionState extends State<Option> {
       onTap: widget.onTap,
       child: Container(
         height: 50,
+        width: double.infinity,
         padding: EdgeInsets.fromLTRB(20, 16.5, 20, 16.5),
         decoration: BoxDecoration(
           color: getColor('container'),
@@ -89,12 +90,16 @@ class _OptionState extends State<Option> {
                     width: 10,
                   )
                 : Container(),
-            Text(
-              widget.text ?? '',
-              style: TextStyle(
-                  color: getColor('text'),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500),
+            Container(
+              child: Text(
+                widget.text ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: getColor('text'),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
+              ),
             ),
             widget.type != 'create' ? Spacer() : Container(),
             widget.type != 'create' && !widget.noArrow

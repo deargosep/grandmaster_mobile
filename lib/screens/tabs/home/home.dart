@@ -60,29 +60,34 @@ class _ContentState extends State<Content> {
   Widget build(BuildContext context) {
     var list = Provider.of<Articles>(context, listen: true).news;
     // var user = Provider.of<UserState>(context);
-    return RefreshIndicator(
-      onRefresh: Provider.of<Articles>(context, listen: false).setNews,
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            var item = list[index];
-            return BrandCard(
-              item,
-              // TODO
-              () {
-                createDio().patch('/news/${item.id}/', data: {
-                  "hidden": true
-                }).then((value) =>
-                    Provider.of<Articles>(context, listen: false).setNews());
-              },
-              () {
-                createDio().delete('/news/${item.id}/').then((value) =>
-                    Provider.of<Articles>(context, listen: false).setNews());
-              },
-            );
-          }),
-    );
+    bool isLoaded = Provider.of<Articles>(context).isLoaded;
+    return isLoaded
+        ? list.isNotEmpty ? RefreshIndicator(
+            onRefresh: Provider.of<Articles>(context, listen: false).setNews,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  var item = list[index];
+                  return BrandCard(
+                    item,
+                    // TODO
+                    () {
+                      createDio().patch('/news/${item.id}/', data: {
+                        "hidden": true
+                      }).then((value) =>
+                          Provider.of<Articles>(context, listen: false)
+                              .setNews());
+                    },
+                    () {
+                      createDio().delete('/news/${item.id}/').then((value) =>
+                          Provider.of<Articles>(context, listen: false)
+                              .setNews());
+                    },
+                  );
+                }),
+          ) : Center(child: Text('Нет новостей'),)
+        : Center(child: CircularProgressIndicator());
     return ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {

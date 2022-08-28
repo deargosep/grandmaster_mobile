@@ -34,39 +34,45 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
     return CustomScaffold(
         noTopPadding: true,
         noPadding: false,
-        bottomNavigationBar: BottomPanel(
-          withShadow: false,
-          child: BrandButton(
-            text: 'Сформировать отчет',
-            onPressed: () {
-              Get.toNamed('/journal/log');
-            },
-          ),
-        ),
+        bottomNavigationBar: places.isNotEmpty
+            ? BottomPanel(
+                withShadow: false,
+                child: BrandButton(
+                  text: 'Сформировать отчет',
+                  onPressed: () {
+                    Get.toNamed('/journal/log');
+                  },
+                ),
+              )
+            : null,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
-        body: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              'Выберите зал',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
-          ],
-        ));
+        body: list.isNotEmpty
+            ? ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    list.isNotEmpty ? 'Выберите зал' : '',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  ListOfOptions(
+                    list: list,
+                    noArrow: true,
+                  )
+                ],
+              )
+            : Center(
+                child: Text('Нет залов'),
+              ));
   }
 }

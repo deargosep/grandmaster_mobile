@@ -269,6 +269,7 @@ class TimePill extends StatelessWidget {
         height: 37,
         width: 76,
         controller: controller,
+        validator: (text) => null,
         defaultText: text,
         centerText: true,
         maxLength: 5,

@@ -198,6 +198,7 @@ class TrainerCard extends StatelessWidget {
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         child: CircleAvatar(
+                          backgroundColor: Colors.black12,
                           child: item.photo != null
                               ? Avatar(
                                   item.photo!,

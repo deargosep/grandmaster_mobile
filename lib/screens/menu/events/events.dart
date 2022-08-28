@@ -11,15 +11,31 @@ import 'package:provider/provider.dart';
 import '/utils/custom_scaffold.dart';
 import '../../../../widgets/brand_card.dart';
 
-class EventsScreen extends StatelessWidget {
+class EventsScreen extends StatefulWidget {
   const EventsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<EventsScreen> createState() => _EventsScreenState();
+}
+
+class _EventsScreenState extends State<EventsScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<EventsState>(context, listen: false).setEvents();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     User user = Provider.of<UserState>(context).user;
+    bool isLoaded = Provider.of<EventsState>(context).isLoaded;
     return CustomScaffold(
       noPadding: true,
-      scrollable: true,
+      // scrollable: true,
       bottomNavigationBar: BottomBarWrap(currentTab: 0),
       appBar: AppHeader(
         text: 'Мероприятия',
@@ -28,11 +44,7 @@ class EventsScreen extends StatelessWidget {
           Get.toNamed('/events/add');
         },
       ),
-      body: Column(
-        children: [
-          Content(),
-        ],
-      ),
+      body: isLoaded ? Content() : Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -46,19 +58,10 @@ class Content extends StatefulWidget {
 
 class _ContentState extends State<Content> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<EventsState>(context, listen: false).setEvents();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     var list = Provider.of<EventsState>(context, listen: true).events;
     if (list.isNotEmpty) {
-      return Column(
+      return ListView(
           children: list.map((item) {
         return BrandCard(
           item,
@@ -80,6 +83,6 @@ class _ContentState extends State<Content> {
         );
       }).toList());
     }
-    return Center(child: CircularProgressIndicator());
+    return Center(child: Text('Нет мероприятий'));
   }
 }

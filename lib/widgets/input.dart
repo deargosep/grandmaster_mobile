@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
-import 'package:masked_text/masked_text.dart';
+import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class Input extends StatelessWidget {
   Input(
@@ -22,7 +23,9 @@ class Input extends StatelessWidget {
       this.textStyle,
       this.keyboardType,
       this.maxLength,
-      this.onTap})
+      this.onTap,
+      this.validator,
+      this.padding})
       : super(key: key);
 
   final String? label;
@@ -43,6 +46,8 @@ class Input extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
   final VoidCallback? onTap;
+  final FormFieldValidator<String>? validator;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +55,15 @@ class Input extends StatelessWidget {
       height: height,
       width: width,
       child: TextFormField(
+        validator: validator ??
+            (String? text) {
+              if (label != null && label!.contains('сообщение')) return null;
+              if (text == '')
+                return 'Необходим ввод';
+              else
+                return null;
+            },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         onTap: onTap,
         readOnly: onTap != null,
         maxLength: maxLength,
@@ -58,6 +72,7 @@ class Input extends StatelessWidget {
           print(text);
           onFieldSubmitted!(text);
         },
+        textAlign: TextAlign.center,
         obscureText: obscureText == true,
         minLines:
             expanded || label == 'Описание' || label == 'Название' ? 1 : 1,
@@ -73,13 +88,15 @@ class Input extends StatelessWidget {
                 ),
                 fontWeight: FontWeight.w500),
         decoration: InputDecoration(
-          contentPadding: height != null
-              ? centerText
-                  ? EdgeInsets.fromLTRB(20, 10.0, 20.0, 10.0)
-                  : EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
-              : centerText
-                  ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
-                  : null,
+          contentPadding: padding != null
+              ? padding
+              : height != null
+                  ? centerText
+                      ? EdgeInsets.fromLTRB(20, 10.0, 20.0, 10.0)
+                      : EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0)
+                  : centerText
+                      ? EdgeInsets.fromLTRB(52, 10.0, 20.0, 52.0)
+                      : null,
           suffixIcon: icon != null
               ? Transform.scale(
                   scale: 0.45,
@@ -108,9 +125,12 @@ class Input extends StatelessWidget {
 }
 
 class InputDate extends StatefulWidget {
-  const InputDate({Key? key, this.controller, this.label}) : super(key: key);
-  final TextEditingController? controller;
+  const InputDate(
+      {Key? key, required this.controller, this.label, this.validator})
+      : super(key: key);
+  final TextEditingController controller;
   final String? label;
+  final FormFieldValidator<String>? validator;
 
   @override
   State<InputDate> createState() => _InputDateState();
@@ -119,11 +139,43 @@ class InputDate extends StatefulWidget {
 class _InputDateState extends State<InputDate> {
   @override
   Widget build(BuildContext context) {
-    return MaskedTextField(
-      mask: "##.##.####",
-      controller: widget.controller ?? null,
+    var maskFormatter = new MaskTextInputFormatter(
+        mask: 'Dd.Mm.yyyy',
+        filter: {
+          "D": RegExp(r'[0-3]'),
+          "d": RegExp(r'[0-9]'),
+          "M": RegExp(r'[0-1]'),
+          "m": RegExp(r'[0-9]'),
+          "y": RegExp(r'[0-9]'),
+        },
+        type: MaskAutoCompletionType.lazy);
+
+    validate(text) {
+      if (widget.controller.text.length != "##.##.####".length) {
+        return 'Введите дату';
+      } else {
+        return null;
+      }
+    }
+
+    return TextFormField(
+      // mask: "##.##.####",
+      // inputFormatters: [maskFormatter],
+      controller: widget.controller,
       maxLength: "##.##.####".length,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: widget.validator ?? validate,
       keyboardType: TextInputType.datetime,
+      readOnly: true,
+      onTap: () async {
+        DateTime? datetime = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(Duration(days: 5)),
+            lastDate: DateTime.now().add(Duration(days: 60)));
+        if (datetime != null)
+          widget.controller.text = DateFormat('d.MM.y').format(datetime);
+      },
       style: TextStyle(
           color: Color(
             0xFF927474,
@@ -177,12 +229,19 @@ class InputPhone extends StatefulWidget {
 class _InputPhoneState extends State<InputPhone> {
   @override
   Widget build(BuildContext context) {
-    return MaskedTextField(
-      mask: "+# (###) ###-##-##",
+    return TextFormField(
+      // mask: "+# (###) ###-##-##",
       controller: widget.controller ?? null,
       maxLength: "+# (###) ###-##-##".length,
       keyboardType: TextInputType.phone,
       onChanged: widget.onChanged,
+      validator: (text) {
+        if (widget.controller?.text.length != "+# (###) ###-##-##".length)
+          return 'Введите номер телефона';
+        else
+          return null;
+      },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       style: TextStyle(
           color: Color(
             0xFF927474,

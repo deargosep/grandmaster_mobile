@@ -64,6 +64,8 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
           : 'Закрытое'
       : 'Открытое';
   final list = ['Открытое', 'Закрытое'];
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     void onChangeSelect(value) {
@@ -80,268 +82,282 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 24,
-            ),
-            Text(
-              'Введите название',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Название',
-              controller: name,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Введите описание',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Описание',
-              controller: description,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Укажите адрес проведения',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Адрес',
-              controller: address,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Дата и время начала мероприятия',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            InputDate(
-              label: 'Дата',
-              controller: dateStart,
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            Input(
-              label: 'Время',
-              controller: timeStart,
-              maxLength: 5,
-              onTap: () async {
-                TimeOfDay? time = await showTimePicker(
-                    context: context,
-                    initialTime: timeStart.text != ''
-                        ? TimeOfDay(
-                            hour: int.parse(timeStart.text.split(':')[0]),
-                            minute: int.parse(timeStart.text.split(':')[1]))
-                        : TimeOfDay(hour: 0, minute: 0));
-                if (time != null) {
-                  timeStart.text =
-                      '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
-                }
-              },
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Дата и время окончания мероприятия',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            InputDate(
-              label: 'Дата',
-              controller: dateEnd,
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            Input(
-              label: 'Время',
-              controller: timeEnd,
-              maxLength: 5,
-              onTap: () async {
-                TimeOfDay? time = await showTimePicker(
-                    context: context,
-                    initialTime: timeEnd.text != ''
-                        ? TimeOfDay(
-                            hour: int.parse(timeEnd.text.split(':')[0]),
-                            minute: int.parse(timeEnd.text.split(':')[1]))
-                        : TimeOfDay(hour: 0, minute: 0));
-                if (time != null) {
-                  timeEnd.text =
-                      '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
-                }
-              },
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Выберите обложку',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            GestureDetector(
-              onLongPress: () {
-                setState(() {
-                  cover = null;
-                });
-              },
-              onTap: () async {
-                final XFile? image = await _picker.pickImage(
-                    source: ImageSource.gallery, imageQuality: 60);
-                setState(() {
-                  xCover = image;
-                  cover = File(image!.path);
-                });
-              },
-              child: Container(
-                height: 132,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: Color(0xFFFBF7F7),
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: cover != null || xCover != null
-                    ? !kIsWeb
-                        ? Image.file(
-                            cover!,
-                            height: 132,
-                            width: double.maxFinite,
-                          )
-                        : Image.network(xCover!.path)
-                    : item != null
-                        ? Image.network(item!.cover)
-                        : Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 133, vertical: 28),
-                            child: BrandIcon(
-                              icon: 'upload',
-                              color: Color(0xFFE1D6D6),
-                            ),
-                          ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 24,
               ),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Укажите тип мероприятия',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            SelectList(onChange: onChangeSelect, value: select, items: list),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Введите порядковый номер',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Номер (1, 2, 3 и т.п.)',
-              controller: order,
-            ),
-            SizedBox(
-              height: 98,
-            ),
-            BrandButton(
-              text: item != null ? 'Сохранить' : 'Опубликовать',
-              onPressed: () async {
-                Map<String, dynamic> data = {
-                  "name": name.text,
-                  "description": description.text,
-                  "start_date": DateFormat('d.MM.y - H:m')
-                      .parse('${dateStart.text} - ${timeStart.text}')
-                      .toString(),
-                  "end_date": DateFormat('d.MM.y - H:m')
-                      .parse('${dateStart.text} - ${timeStart.text}')
-                      .toString(),
-                  "address": address.text,
-                  "open": select == 'Открытое' ? 'true' : 'false',
-                  "order": order.text,
-                  "hidden": false
-                };
-                FormData formData = FormData.fromMap(data);
-                if (cover != null) {
-                  formData = !kIsWeb
-                      ? await getFormFromFile(cover!, 'cover', data)
-                      : await getFormFromXFile(xCover!, 'cover', data);
-                }
-                if (item != null) {
-                  createDio()
-                      .patch('/events/${item?.id}/',
-                          data: formData,
-                          options: Options(contentType: 'multipart/form-data'))
-                      .then((value) {
-                    Get.back();
-                    Provider.of<EventsState>(context, listen: false)
-                        .setEvents();
+              Text(
+                'Введите название',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Название',
+                controller: name,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Введите описание',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Описание',
+                controller: description,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Укажите адрес проведения',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Адрес',
+                controller: address,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Дата и время начала мероприятия',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              InputDate(
+                label: 'Дата',
+                controller: dateStart,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Input(
+                label: 'Время',
+                controller: timeStart,
+                maxLength: 5,
+                onTap: () async {
+                  TimeOfDay? time = await showTimePicker(
+                      context: context,
+                      initialTime: timeStart.text != ''
+                          ? TimeOfDay(
+                              hour: int.parse(timeStart.text.split(':')[0]),
+                              minute: int.parse(timeStart.text.split(':')[1]))
+                          : TimeOfDay(hour: 0, minute: 0));
+                  if (time != null) {
+                    timeStart.text =
+                        '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                  }
+                },
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Дата и время окончания мероприятия',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              InputDate(
+                label: 'Дата',
+                controller: dateEnd,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Input(
+                label: 'Время',
+                controller: timeEnd,
+                maxLength: 5,
+                onTap: () async {
+                  TimeOfDay? time = await showTimePicker(
+                      context: context,
+                      initialTime: timeEnd.text != ''
+                          ? TimeOfDay(
+                              hour: int.parse(timeEnd.text.split(':')[0]),
+                              minute: int.parse(timeEnd.text.split(':')[1]))
+                          : TimeOfDay(hour: 0, minute: 0));
+                  if (time != null) {
+                    timeEnd.text =
+                        '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                  }
+                },
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Выберите обложку',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    cover = null;
                   });
-                } else {
-                  Get.toNamed('/events/list', arguments: {
-                    "options": {"type": 'add'},
-                    "formData": formData
+                },
+                onTap: () async {
+                  final XFile? image = await _picker.pickImage(
+                      source: ImageSource.gallery, imageQuality: 60);
+                  setState(() {
+                    xCover = image;
+                    cover = File(image!.path);
                   });
-                }
-              },
-            ),
-            SizedBox(
-              height: 12,
-            )
-          ],
+                },
+                child: Container(
+                  height: 132,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFBF7F7),
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: cover != null || xCover != null
+                      ? !kIsWeb
+                          ? Image.file(
+                              cover!,
+                              height: 132,
+                              width: double.maxFinite,
+                            )
+                          : Image.network(xCover!.path)
+                      : item != null
+                          ? Image.network(item!.cover)
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 133, vertical: 28),
+                              child: BrandIcon(
+                                icon: 'upload',
+                                color: Color(0xFFE1D6D6),
+                              ),
+                            ),
+                ),
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Укажите тип мероприятия',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              SelectList(onChange: onChangeSelect, value: select, items: list),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Введите порядковый номер',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Номер (1, 2, 3 и т.п.)',
+                controller: order,
+              ),
+              SizedBox(
+                height: 98,
+              ),
+              BrandButton(
+                text: item != null ? 'Сохранить' : 'Опубликовать',
+                onPressed: () async {
+                  if (_formKey.currentState != null) if (_formKey.currentState!
+                      .validate()) {
+                    Map<String, dynamic> data = {
+                      "name": name.text,
+                      "description": description.text,
+                      "start_date": DateFormat('d.MM.y - H:m')
+                          .parse('${dateStart.text} - ${timeStart.text}')
+                          .toString(),
+                      "end_date": DateFormat('d.MM.y - H:m')
+                          .parse('${dateStart.text} - ${timeStart.text}')
+                          .toString(),
+                      "address": address.text,
+                      "open": select == 'Открытое' ? 'true' : 'false',
+                      "order": order.text,
+                      "hidden": false
+                    };
+                    FormData formData = FormData.fromMap(data);
+                    if (cover != null) {
+                      formData = !kIsWeb
+                          ? await getFormFromFile(cover!, 'cover', data)
+                          : await getFormFromXFile(xCover!, 'cover', data);
+                    }
+                    if (item != null) {
+                      createDio()
+                          .patch('/events/${item?.id}/',
+                              data: formData,
+                              options:
+                                  Options(contentType: 'multipart/form-data'))
+                          .then((value) {
+                        Get.back();
+                        Provider.of<EventsState>(context, listen: false)
+                            .setEvents();
+                      });
+                    } else {
+                      createDio()
+                          .post(
+                        '/events/',
+                        data: formData,
+                      )
+                          .then((value) {
+                        Provider.of<EventsState>(context, listen: false)
+                            .setEvents();
+                        Get.toNamed('/success',
+                            arguments: 'Вы успешно записались на мероприятие');
+                      });
+                    }
+                  }
+                },
+              ),
+              SizedBox(
+                height: 12,
+              )
+            ],
+          ),
         ),
       ),
     );

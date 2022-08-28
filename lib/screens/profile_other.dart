@@ -46,7 +46,9 @@ class _ProfileOtherScreenState extends State<ProfileOtherScreen>
             Container(
               height: 114,
               width: 114,
-              child: CircleAvatar(),
+              child: CircleAvatar(
+                backgroundColor: Colors.black12,
+              ),
             ),
             SizedBox(
               height: 24,

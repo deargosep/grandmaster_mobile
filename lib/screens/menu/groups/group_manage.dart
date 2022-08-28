@@ -58,6 +58,8 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
       });
     }
 
+    List<MinimalUser> sportsmens =
+        Provider.of<GroupsState>(context, listen: false).sportsmens;
     GroupType item = Get.arguments;
     // List<User> users = Provider.of<UserState>(context).list;
     return CustomScaffold(
@@ -87,7 +89,7 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
           },
         )),
         body: isLoading
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : ListView(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

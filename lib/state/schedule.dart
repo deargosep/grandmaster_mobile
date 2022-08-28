@@ -19,9 +19,13 @@ class ScheduleState extends ChangeNotifier {
 
   ScheduleType get schedule => _schedule;
 
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
+
   Future<void> setSchedule(placeId, groupId,
       {Function(DioError, ErrorInterceptorHandler)? errHandler,
       showSnackbar = true}) async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio(
             errHandler: (err, handler) {
@@ -49,6 +53,8 @@ class ScheduleState extends ChangeNotifier {
       );
       notifyListeners();
       completer.complete(_schedule);
+    }).whenComplete(() {
+      _isLoaded = true;
     });
     return completer.future;
   }

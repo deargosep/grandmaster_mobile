@@ -82,7 +82,7 @@ class UserState extends ChangeNotifier {
         lastName: data["last_name"],
         fullName: data["full_name"] ??
             '${data["first_name"]} ${data["middle_name"] ?? ''}${data["middle_name"] != null ? ' ' : ''}${data["last_name"]}',
-        age: calculateAge(DateTime.parse(data["birth_date"])),
+        // age: calculateAge(DateTime.parse(data["birth_date"])),
         birthday: data["birth_date"] != null
             ? DateTime.parse(data["birth_date"])
             : null,
@@ -244,7 +244,7 @@ class User {
   // final role = Role;
   final DateTime? birthday;
   final role;
-  final age;
+  // final age;
   final country;
   final city;
   final firstName;
@@ -273,7 +273,7 @@ class User {
       // this.role = 'guest',
       this.gender,
       this.birthday,
-      this.age,
+      // this.age,
       this.country,
       this.city,
       this.registration_date,

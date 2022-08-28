@@ -58,7 +58,7 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
             child: BrandButton(
               text: 'Сохранить',
               onPressed: () {
-                var days = {
+                Map days = {
                   "monday": [monday1.text, monday2.text],
                   "tuesday": [tuesday1.text, tuesday2.text],
                   "wednesday": [wednesday1.text, wednesday2.text],
@@ -67,7 +67,10 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
                   "saturday": [saturday1.text, saturday2.text],
                   "sunday": [sunday1.text, sunday2.text],
                 };
-                if (createMode != null && createMode == true) {
+                if (!days.values
+                    .every((element) => element.isEmpty)) if (createMode !=
+                        null &&
+                    createMode == true) {
                   createDio().post('/schedule/', data: {
                     "gym": placeId.toString(),
                     "sport_group": groupId.toString(),
