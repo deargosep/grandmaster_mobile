@@ -25,6 +25,7 @@ class _FolderScreenState extends State<FolderScreen> {
   }
 
   var folder = Get.arguments;
+
   @override
   Widget build(BuildContext context) {
     List chats = Provider.of<ChatsState>(context).chats;

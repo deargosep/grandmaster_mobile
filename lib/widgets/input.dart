@@ -25,7 +25,8 @@ class Input extends StatelessWidget {
       this.maxLength,
       this.onTap,
       this.validator,
-      this.padding})
+      this.padding,
+      this.textAlign = TextAlign.start})
       : super(key: key);
 
   final String? label;
@@ -48,6 +49,7 @@ class Input extends StatelessWidget {
   final VoidCallback? onTap;
   final FormFieldValidator<String>? validator;
   final EdgeInsets? padding;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +74,7 @@ class Input extends StatelessWidget {
           print(text);
           onFieldSubmitted!(text);
         },
-        textAlign: TextAlign.center,
+        textAlign: textAlign,
         obscureText: obscureText == true,
         minLines:
             expanded || label == 'Описание' || label == 'Название' ? 1 : 1,

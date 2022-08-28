@@ -65,6 +65,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
               Input(
                 padding: EdgeInsets.only(left: 16, right: 16),
                 width: 120,
+                textAlign: TextAlign.center,
                 controller: controller,
                 keyboardType: TextInputType.number,
                 label: 'Код',

@@ -7,7 +7,7 @@
 HOST='79.133.181.103'
 USERNAME='dev'
 PASSWORD='0412'
-OUTPUT='/home/portlead/web'
+OUTPUT='/home/dev/web'
 
 flutter build web --release
 
