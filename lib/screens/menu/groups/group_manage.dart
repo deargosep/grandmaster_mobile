@@ -78,9 +78,8 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
                 .where((element) => element.value)
                 .map((e) => int.parse(e.key.split('_')[0]))
                 .toList();
-            createDio()
-                .patch('/sport_groups/${item.id}/fetch_members/', data: checked)
-                .then(
+            createDio().patch('/sport_groups/${item.id}/',
+                data: {"members": checked}).then(
               (value) {
                 Provider.of<GroupsState>(context, listen: false).setGroups();
                 Get.back();

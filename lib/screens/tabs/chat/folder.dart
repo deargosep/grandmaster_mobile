@@ -136,7 +136,7 @@ class ChatTile extends StatelessWidget {
                     child: Text(
                       data.name,
                       maxLines: 1,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.clip,
                       softWrap: false,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,

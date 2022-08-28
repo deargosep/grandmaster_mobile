@@ -43,6 +43,7 @@ class _TableScheduleScreenState extends State<TableScheduleScreen> {
     ScheduleType schedule = Provider.of<ScheduleState>(context).schedule;
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Расписание',
@@ -51,7 +52,11 @@ class _TableScheduleScreenState extends State<TableScheduleScreen> {
               : '',
           iconOnTap: Provider.of<UserState>(context).user.role == 'trainer'
               ? () {
-                  Get.toNamed('/schedule/edit');
+                  Get.toNamed('/schedule/edit', arguments: {
+                    "placeId": schedule.gym,
+                    "groupId": schedule.group,
+                    "createMode": false
+                  });
                 }
               : null,
         ),
@@ -156,7 +161,7 @@ class Schedule extends StatelessWidget {
         case 'Вторник':
           return 'tuesday';
         case 'Среда':
-          return 'friday';
+          return 'wednesday';
         case 'Четверг':
           return 'thursday';
         case 'Пятница':
@@ -271,6 +276,7 @@ class TimePill extends StatelessWidget {
         controller: controller,
         validator: (text) => null,
         defaultText: text,
+        keyboardType: TextInputType.number,
         centerText: true,
         maxLength: 5,
         textStyle: TextStyle(
@@ -325,7 +331,7 @@ String getDayReverse(String day) {
     case 'Вторник':
       return 'tuesday';
     case 'Среда':
-      return 'friday';
+      return 'wednesday';
     case 'Четверг':
       return 'thursday';
     case 'Пятница':

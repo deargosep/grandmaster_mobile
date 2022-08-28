@@ -104,6 +104,7 @@ class PlaceCard extends StatelessWidget {
           color: Colors.white,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image cover
             Container(
@@ -178,7 +179,7 @@ class PlaceCard extends StatelessWidget {
               child: Text(
                 item.description,
                 maxLines: 2,
-                overflow: TextOverflow.fade,
+                overflow: TextOverflow.clip,
                 softWrap: false,
                 style: TextStyle(
                     fontSize: 12, fontWeight: FontWeight.w500, color: color),
@@ -187,59 +188,61 @@ class PlaceCard extends StatelessWidget {
             SizedBox(
               height: 24,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      child: Stack(
+            item.trainers.isNotEmpty
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              child: item.trainers[0].photo != null
-                                  ? Avatar(
-                                      item.trainers[0].photo!,
-                                      height: 30,
-                                      width: 30,
-                                    )
-                                  : Container()),
-                          ...item.trainers.map((e) {
-                            var index = item.trainers.indexOf(e);
-                            if (index == 0) return Container();
-                            return Positioned(
-                                left: index == 1
-                                    ? 20
-                                    : index == 2
-                                        ? 40
-                                        : 60,
-                                child: ClipRRect(
+                          Container(
+                            width: 70,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(100)),
-                                    child: e.photo != null
+                                    child: item.trainers[0].photo != null
                                         ? Avatar(
-                                            e.photo!,
+                                            item.trainers[0].photo!,
                                             height: 30,
                                             width: 30,
                                           )
-                                        : Container()));
-                          }).toList()
-                          // Positioned(
-                          //   left: 40,
-                          //   child: CircleAvatar(
-                          //       radius: 15,
-                          //       backgroundColor: Theme.of(context).primaryColor,
-                          //       child: Image.network(item.trainers[0].photo)),
-                          // ),
+                                        : Container()),
+                                ...item.trainers.map((e) {
+                                  var index = item.trainers.indexOf(e);
+                                  if (index == 0) return Container();
+                                  return Positioned(
+                                      left: index == 1
+                                          ? 20
+                                          : index == 2
+                                              ? 40
+                                              : 60,
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(100)),
+                                          child: e.photo != null
+                                              ? Avatar(
+                                                  e.photo!,
+                                                  height: 30,
+                                                  width: 30,
+                                                )
+                                              : Container()));
+                                }).toList()
+                                // Positioned(
+                                //   left: 40,
+                                //   child: CircleAvatar(
+                                //       radius: 15,
+                                //       backgroundColor: Theme.of(context).primaryColor,
+                                //       child: Image.network(item.trainers[0].photo)),
+                                // ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  )
+                : Container(),
           ],
         ),
       ),

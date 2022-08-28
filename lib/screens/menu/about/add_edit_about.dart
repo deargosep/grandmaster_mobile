@@ -70,7 +70,7 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
               });
             } else {
               createDio()
-                  .post('/club_content/${item?.id}/',
+                  .post('/club_content/',
                       data: formData,
                       options: Options(contentType: 'multipart/form-data'))
                   .then((value) {

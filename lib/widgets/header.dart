@@ -44,14 +44,19 @@ class Header extends StatelessWidget {
                 !withBack
                     ? Container()
                     : Row(children: [
-                        Container(
-                          height: 17,
-                          width: 10,
-                          child: BrandIcon(
-                            icon: 'back_arrow',
-                            onTap: onTap,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
+                        Stack(
+                          children: [
+                            Container(
+                              height: 20,
+                              width: 20,
+                            ),
+                            BrandIcon(
+                              height: 17,
+                              width: 10,
+                              icon: 'back_arrow',
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ],
                         ),
                         SizedBox(
                           width: 26,
@@ -62,7 +67,7 @@ class Header extends StatelessWidget {
                       icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
                   child: Text(
                     text ?? '',
-                    overflow: TextOverflow.fade,
+                    overflow: TextOverflow.clip,
                     softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -153,7 +158,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     icon != '' ? 250 : MediaQuery.of(context).size.width - 80,
                 child: Text(
                   text ?? '',
-                  overflow: TextOverflow.fade,
+                  overflow: TextOverflow.clip,
                   softWrap: false,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,

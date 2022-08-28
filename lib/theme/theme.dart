@@ -13,6 +13,8 @@ class ThemeClass {
     inputDecorationTheme: const InputDecorationTheme(
       filled: true,
       fillColor: Color(0xFFFFBF7F7),
+      prefixStyle: TextStyle(
+          color: Color(0xFF927474), fontSize: 14, fontWeight: FontWeight.w500),
       labelStyle: TextStyle(
           color: Color(0xFFE1D6D6), fontSize: 14, fontWeight: FontWeight.w500),
     ),

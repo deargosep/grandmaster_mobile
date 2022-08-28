@@ -53,7 +53,7 @@ class NewsCard extends StatelessWidget {
                         item.name,
                         textAlign: TextAlign.start,
                         maxLines: 1,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.clip,
                         softWrap: false,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class NewsCard extends StatelessWidget {
                 child: Text(
                   item.description,
                   maxLines: 2,
-                  overflow: TextOverflow.fade,
+                  overflow: TextOverflow.clip,
                   softWrap: false,
                   style: TextStyle(
                       fontSize: 12,

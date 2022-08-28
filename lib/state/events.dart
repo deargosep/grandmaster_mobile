@@ -30,7 +30,7 @@ class EventsState extends ChangeNotifier {
               address: e["address"],
               timeDateStart: DateTime.parse(e["start_date"]),
               timeDateEnd: DateTime.parse(e["end_date"]),
-              cover: e["cover"],
+              cover: e["cover"] ?? '',
               open: e["open"],
               order: e["number"],
               members: <MinimalUser>[

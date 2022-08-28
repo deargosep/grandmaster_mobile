@@ -11,12 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Map numbers = {
-  "parent": '+7 (918) 546-85-81',
-  "child": '+7 (928) 900-06-80',
-  "moderator": "+7 (909) 283-21-21",
-  "trainer": "+7 (988) 250-30-03",
-  "payment": "+7 (900) 126-16-92",
-  "documents": "+7 (900) 123-09-56"
+  "parent": '(918) 546-85-81',
+  "child": '(928) 900-06-80',
+  "moderator": "(909) 283-21-21",
+  "trainer": "(988) 250-30-03",
+  "payment": "(900) 126-16-92",
+  "documents": "(900) 123-09-56",
+  "schedule": "(938) 115-54-47"
 };
 
 class AuthRegisterScreen extends StatefulWidget {
@@ -27,9 +28,8 @@ class AuthRegisterScreen extends StatefulWidget {
 }
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
-  TextEditingController phoneNumber = TextEditingController(
-      // text: '+'
-      text: numbers["trainer"]);
+  TextEditingController phoneNumber =
+      TextEditingController(text: numbers["moderator"]);
   bool isLoaded = false;
 
   @override
@@ -37,6 +37,19 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     super.initState();
     setState(() {
       isLoaded = false;
+    });
+    phoneNumber.addListener(() {
+      String myText = phoneNumber.text;
+      if (myText.length > 2) {
+        print('${myText[1]} test');
+        if (myText[1] == '8') {
+          myText.replaceAll('8', '7');
+          phoneNumber.text = '${myText}';
+          phoneNumber.selection = TextSelection.fromPosition(
+              TextPosition(offset: phoneNumber.text.length));
+          print(myText);
+        }
+      }
     });
     SharedPreferences.getInstance().then((sp) {
       if (sp.getString('access') != null) {
@@ -63,13 +76,9 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   }
 
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    // void onChanged(String text) {
-    //   // if (text == '7') phoneNumber.text = '+$text';
-    //   // if (text == '8') phoneNumber.text = '+7';
-    // }
-
     if (!isLoaded)
       return CustomScaffold(
           noPadding: false,
@@ -92,13 +101,11 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             SizedBox(
               height: 32,
             ),
-            Form(
-              key: _formKey,
-              child: InputPhone(
-                label: 'Номер телефона',
-                controller: phoneNumber,
-                // onChanged: onChanged,
-              ),
+            InputPhone(
+              label: 'Номер телефона',
+              controller: phoneNumber,
+              // onChanged: onChanged,
+              // onChanged: onChanged,
             ),
             Spacer(),
             BrandButton(
@@ -108,8 +115,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                 //     ? !_formKey.currentState!.validate()
                 //     : true,
                 onPressed: () {
-                  if (_formKey.currentState != null) if (_formKey.currentState!
-                      .validate()) {
+                  if (phoneNumber.text.length == "+# (###) ###-##-##".length) {
                     SharedPreferences.getInstance()
                         .then((value) => value.clear());
                     var number = phoneNumber.text

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:grandmaster/state/payments.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
@@ -27,6 +29,10 @@ class _PaymentScreenState extends State<PaymentScreen>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<PaymentsState>(context, listen: false).setPayments();
+      if (mounted)
+      Timer.periodic(Duration(seconds: 20), (timer) {
+        Provider.of<PaymentsState>(context, listen: false).setPayments();
+      });
     });
     controller = TabController(vsync: this, length: 2);
     controller.addListener(() {

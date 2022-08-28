@@ -60,6 +60,7 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
         .toList();
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         // scrollable: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(

@@ -17,6 +17,7 @@ class GroupsJournalScreen extends StatefulWidget {
 }
 
 class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
+  var arguments = Get.arguments;
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +37,7 @@ class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
                     text: e.name,
                     onTap: () {
                       var groupId = e.id;
-                      var placeId = Get.arguments;
+                      var placeId = arguments;
                       createDio(
                               showSnackbar: false,
                               errHandler: (err, handler) {
@@ -53,7 +54,10 @@ class _GroupsJournalScreenState extends State<GroupsJournalScreen> {
                         // print(value);
                         Provider.of<VisitLogState>(context, listen: false)
                             .setVisitLog(placeId, groupId);
-                        Get.toNamed('/journal/mark', arguments: value.data);
+                        Get.toNamed('/journal/mark', arguments: {
+                          "placeId": placeId,
+                          "groupId": groupId,
+                        });
                       });
                     }),
                 SizedBox(

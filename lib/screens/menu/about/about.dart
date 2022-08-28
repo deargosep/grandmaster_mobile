@@ -10,8 +10,23 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/custom_scaffold.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<AboutState>(context, listen: false).setAbout();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -134,7 +149,7 @@ class AboutCard extends StatelessWidget {
             child: Text(
               item.description,
               maxLines: 3,
-              overflow: TextOverflow.fade,
+              overflow: TextOverflow.clip,
               softWrap: false,
               style: TextStyle(
                   fontSize: 14,

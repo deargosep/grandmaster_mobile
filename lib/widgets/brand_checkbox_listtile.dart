@@ -40,7 +40,7 @@ class BrandCheckboxListTile extends StatelessWidget {
             width: 263,
             child: Text(
               title,
-              overflow: TextOverflow.fade,
+              overflow: TextOverflow.clip,
               softWrap: false,
               style: TextStyle(
                   color: Theme.of(context).colorScheme.secondaryContainer,

@@ -507,7 +507,7 @@ class _Header extends StatelessWidget {
                     width: 250,
                     child: Text(
                       chat.name,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.clip,
                       softWrap: false,
                       maxLines: 1,
                       style: TextStyle(

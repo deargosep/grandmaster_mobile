@@ -167,7 +167,7 @@ class VideoCard extends StatelessWidget {
                 child: Text(
                   item.name,
                   maxLines: 1,
-                  overflow: TextOverflow.fade,
+                  overflow: TextOverflow.clip,
                   softWrap: false,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,

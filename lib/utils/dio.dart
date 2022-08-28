@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -67,13 +67,14 @@ Dio createDio(
   return dio;
 }
 
-Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
+Future<FormData> getFormFromFile(file, String photoKey, Map data) async {
   String fileName = file.path.split('/').last;
   FormData formData = FormData.fromMap({
     ...data,
     photoKey: !kIsWeb
         ? await MultipartFile.fromFile(file.path)
-        : await MultipartFile.fromBytes(file.readAsBytesSync())
+        : await MultipartFile.fromBytes(file.readAsBytesSync(),
+            filename: file.name.substring((int.parse(file!.name.length! - 8))))
   });
   return formData;
 }
@@ -81,9 +82,8 @@ Future<FormData> getFormFromFile(File file, String photoKey, Map data) async {
 Future<FormData> getFormFromXFile(XFile file, String photoKey, Map data) async {
   FormData formData = FormData.fromMap({
     ...data,
-    photoKey: await MultipartFile.fromBytes(
-      await file.readAsBytes(),
-    )
+    photoKey: await MultipartFile.fromBytes(await file.readAsBytes(),
+        filename: file.name)
   });
   return formData;
 }
@@ -103,3 +103,9 @@ Future<FormData> getFormFromXFile(XFile file, String photoKey, Map data) async {
 //   FormData formData = FormData.fromMap(map);
 //   return formData;
 // }
+
+String generateRandomString(int len) {
+  var r = Random();
+  return String.fromCharCodes(
+      List.generate(len, (index) => r.nextInt(33) + 89));
+}

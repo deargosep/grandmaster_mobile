@@ -66,7 +66,7 @@ class ChatsState extends ChangeNotifier {
               // name: e["type"] == 'dm'
               // ? e["members"].firstWhere((e) => !e["me"])["full_name"]
               // : e["name"],
-              lastMessage: e["last_message"]["text"] ?? "Изображение",
+              lastMessage: e["last_message"]["text"] ?? '',
               unread: e["unreaded_count"] ?? '',
               photo: e["cover"] ?? e["type"] == 'dm'
                   ? [...e["members"].map((e) => e).toList()]

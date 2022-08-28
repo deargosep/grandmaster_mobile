@@ -73,6 +73,43 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       });
     }
 
+    if (user.role == 'moderator')
+      return Column(
+        children: [
+          SizedBox(
+            height: 32,
+          ),
+          Container(
+              height: 136,
+              width: 136,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+                child: user.photo != null
+                    ? Avatar(
+                        user.photo!,
+                        height: 136,
+                        width: 136,
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.black12,
+                      ),
+              )),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            user.fullName,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
+          ),
+          SizedBox(
+            height: 33,
+          ),
+        ],
+      );
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
@@ -86,25 +123,21 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                     SizedBox(
                       height: 32,
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          // TODO: more realistic dialog
-                          // if (!widget.showPassport) getImage();
-                        },
-                        child: Container(
-                            height: 136,
-                            width: 136,
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              child: user.photo != null
-                                  ? Avatar(
-                                      user.photo!,
-                                      height: 136,
-                                      width: 136,
-                                    )
-                                  : null,
-                            ))),
+                    Container(
+                        height: 136,
+                        width: 136,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          child: user.photo != null
+                              ? Avatar(
+                                  user.photo!,
+                                  height: 136,
+                                  width: 136,
+                                )
+                              : CircleAvatar(
+                            backgroundColor: Colors.black12,
+                          ),
+                        )),
                     SizedBox(
                       height: 16,
                     ),

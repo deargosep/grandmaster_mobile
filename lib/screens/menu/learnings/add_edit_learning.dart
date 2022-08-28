@@ -19,7 +19,7 @@ class AddEditLearningScreen extends StatefulWidget {
 
 class _AddEditLearningScreenState extends State<AddEditLearningScreen> {
   TextEditingController name =
-      TextEditingController(text: Get.arguments?.purpose ?? '');
+      TextEditingController(text: Get.arguments?.name ?? '');
   TextEditingController description =
       TextEditingController(text: Get.arguments?.description ?? '');
   TextEditingController link =

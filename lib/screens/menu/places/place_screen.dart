@@ -161,9 +161,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
   }
 }
 
-class TrainerCard extends StatelessWidget {
+class TrainerCard extends StatefulWidget {
   const TrainerCard(this.item, {Key? key}) : super(key: key);
   final Trainer item;
+
+  @override
+  State<TrainerCard> createState() => _TrainerCardState();
+}
+
+class _TrainerCardState extends State<TrainerCard> {
+  // ExpandableController controller = ExpandableController();
   // final Trainer item = Trainer(id: 2, fio: 'fio', category: category, daysOfWeek: daysOfWeek, time: time)
   @override
   Widget build(BuildContext context) {
@@ -181,9 +188,12 @@ class TrainerCard extends StatelessWidget {
         ],
       ),
       child: ExpandablePanel(
+          // controller: controller,
           theme: ExpandableThemeData(
-              iconSize: item.schedules!.isNotEmpty ? null : 0,
-              iconColor: Theme.of(context).colorScheme.secondary,
+              iconSize: widget.item.schedules!.isNotEmpty ? null : 0,
+              iconColor: widget.item.schedules!.isNotEmpty
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.secondary,
               iconPadding: EdgeInsets.only(top: 27, right: 14)),
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
@@ -199,9 +209,9 @@ class TrainerCard extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         child: CircleAvatar(
                           backgroundColor: Colors.black12,
-                          child: item.photo != null
+                          child: widget.item.photo != null
                               ? Avatar(
-                                  item.photo!,
+                                  widget.item.photo!,
                                   height: 46,
                                   width: 46,
                                 )
@@ -211,7 +221,7 @@ class TrainerCard extends StatelessWidget {
                   width: 16,
                 ),
                 Text(
-                  item.fio,
+                  widget.item.fio,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.w500),
@@ -222,7 +232,7 @@ class TrainerCard extends StatelessWidget {
           collapsed: Container(),
           expanded: Column(
             children: [
-              ...item.schedules!.map((e) => Column(
+              ...widget.item.schedules!.map((e) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
@@ -315,7 +325,7 @@ class TrainerCard extends StatelessWidget {
             width: 16,
           ),
           Text(
-            item.fio,
+            widget.item.fio,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w500),

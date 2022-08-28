@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:masked_text/masked_text.dart';
 
 class Input extends StatelessWidget {
   Input(
@@ -68,8 +70,17 @@ class Input extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         onTap: onTap,
         readOnly: onTap != null,
+        inputFormatters: label != null
+            ? label!.contains('1')
+                ? [FilteringTextInputFormatter.digitsOnly]
+                : null
+            : null,
         maxLength: maxLength,
-        keyboardType: keyboardType,
+        keyboardType: label != null
+            ? label!.contains('1')
+                ? TextInputType.number
+                : keyboardType
+            : keyboardType,
         onFieldSubmitted: (text) {
           print(text);
           onFieldSubmitted!(text);
@@ -231,25 +242,26 @@ class InputPhone extends StatefulWidget {
 class _InputPhoneState extends State<InputPhone> {
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      // mask: "+# (###) ###-##-##",
+    return MaskedTextField(
+      mask: "(###) ###-##-##",
       controller: widget.controller ?? null,
-      maxLength: "+# (###) ###-##-##".length,
+      maxLength: "(###) ###-##-##".length,
       keyboardType: TextInputType.phone,
-      onChanged: widget.onChanged,
-      validator: (text) {
-        if (widget.controller?.text.length != "+# (###) ###-##-##".length)
-          return 'Введите номер телефона';
-        else
-          return null;
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      // onChanged: widget.onChanged,
+      // validator: (text) {
+      //   if (widget.controller?.text.length != "+# (###) ###-##-##".length)
+      //     return 'Введите номер телефона';
+      //   else
+      //     return null;
+      // },
+      // autovalidateMode: AutovalidateMode.onUserInteraction,
       style: TextStyle(
           color: Color(
             0xFF927474,
           ),
           fontWeight: FontWeight.w500),
       decoration: InputDecoration(
+        prefixText: '+7 ',
         // contentPadding: height != null
         //     ? centerText
         //     ? EdgeInsets.fromLTRB(20, 10.0, 20.0, 10.0)

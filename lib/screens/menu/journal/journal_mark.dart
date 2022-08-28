@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/state/visit_log.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -21,6 +20,7 @@ class MarkJournalScreen extends StatefulWidget {
 
 class _MarkJournalScreenState extends State<MarkJournalScreen> {
   Map<String, bool>? checkboxes;
+  var arguments = Get.arguments;
 
   @override
   void initState() {
@@ -28,6 +28,8 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
     setState(() {
       checkboxes = {};
     });
+    Provider.of<VisitLogState>(context, listen: false)
+        .setVisitLog(arguments["placeId"], arguments["groupId"]);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // var members = [];
       // createDio()
@@ -35,13 +37,14 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
       //     .then((value) {
       //   print(value);
       // });
-      Provider.of<GroupsState>(context, listen: false)
-          .setSportsmens()
-          .then((value) {
-        List<MinimalUser> users =
-            Provider.of<GroupsState>(context, listen: false).sportsmens;
-        List<MinimalUser> groupUsers = [
-          ...Get.arguments["attending"]
+      // Provider.of<VisitLogState>(context).setVisitLog(placeId, groupId)
+      createDio().get('/sport_groups/${arguments["groupId"]}/').then((value) {
+        var users = value.data["members"]
+            .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]));
+        List<MinimalUser> attending = [
+          ...Provider.of<VisitLogState>(context, listen: false)
+              .visitLog
+              .attending
               .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
               .toList()
         ];
@@ -49,9 +52,9 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
         setState(() {
           checkboxes = {
             for (var v in users)
-              '${v.id}_${v.fullName}': groupUsers
-                      .firstWhereOrNull((element) => element.id == v.id) !=
-                  null
+              '${v.id}_${v.fullName}':
+                  attending.firstWhereOrNull((element) => element.id == v.id) !=
+                      null
           };
         });
       });
@@ -74,7 +77,6 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
     return CustomScaffold(
         noTopPadding: true,
         noPadding: false,
-        scrollable: true,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
@@ -140,19 +142,19 @@ class Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       decoration: BoxDecoration(
           color: Theme.of(context).inputDecorationTheme.fillColor,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       height: 37,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.secondary,
-              fontWeight: FontWeight.w500,
-              fontSize: 14),
-        ),
+      width: 94,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+            fontWeight: FontWeight.w500,
+            fontSize: 14),
       ),
     );
   }

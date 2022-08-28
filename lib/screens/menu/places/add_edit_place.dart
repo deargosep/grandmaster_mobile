@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/places.dart';
@@ -23,7 +24,7 @@ class AddEditPlace extends StatefulWidget {
 
 class _AddEditPlaceState extends State<AddEditPlace> {
   final ImagePicker _picker = ImagePicker();
-  File? cover;
+  XFile? cover;
   PlaceType? item = Get.arguments;
   TextEditingController name =
       TextEditingController(text: Get.arguments?.name ?? '');
@@ -174,7 +175,7 @@ class _AddEditPlaceState extends State<AddEditPlace> {
                   final XFile? image =
                       await _picker.pickImage(source: ImageSource.gallery);
                   setState(() {
-                    cover = File(image!.path);
+                    cover = image;
                   });
                 },
                 child: Container(
@@ -186,11 +187,14 @@ class _AddEditPlaceState extends State<AddEditPlace> {
                   child: item?.cover != null
                       ? Image.network(item!.cover!)
                       : cover != null
-                          ? Image.file(
-                              cover!,
-                              height: 132,
-                              width: double.maxFinite,
-                            )
+                          ? !kIsWeb
+                              ? Image.file(
+                                  File(cover!.path),
+                                  height: 132,
+                                  width: double.maxFinite,
+                                )
+                              : Image.network(cover!.path,
+                                  height: 132, width: double.maxFinite)
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 133, vertical: 28),

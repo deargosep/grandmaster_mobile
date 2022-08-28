@@ -44,6 +44,8 @@ class UserState extends ChangeNotifier {
 
   String getRole(String contact_type) {
     switch (contact_type) {
+      case 'PARENT':
+        return 'sportsmen';
       case 'CLIENT':
         return 'sportsmen';
       case 'PARTNER':

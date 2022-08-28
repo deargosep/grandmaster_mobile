@@ -9,7 +9,7 @@ USERNAME='dev'
 PASSWORD='0412'
 OUTPUT='/home/dev/web'
 
-flutter build web --release
+flutter build web --release --web-renderer html
 
 echo
 echo "Clearing cash_bot_client on server ..."

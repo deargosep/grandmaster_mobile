@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' hide log;
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -62,12 +61,6 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
     });
   }
 
-  String generateRandomString(int len) {
-    var r = Random();
-    return String.fromCharCodes(
-        List.generate(len, (index) => r.nextInt(33) + 89));
-  }
-
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
@@ -93,7 +86,8 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                       ? await MultipartFile.fromFile(cover!.path)
                       : await MultipartFile.fromBytes(
                           await xCover!.readAsBytes(),
-                        );
+                          filename:
+                              xCover!.name.substring(xCover!.name.length - 8));
                   data.addAll({"cover": coverfile});
                 }
                 Future<List<Map<String, dynamic>>> getList() async {
@@ -127,8 +121,9 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                         });
                       } else {
                         file = await MultipartFile.fromBytes(
-                          await e.pickedFile!.readAsBytes(),
-                        );
+                            await e.pickedFile!.readAsBytes(),
+                            filename: e.pickedFile!.name
+                                .substring((e.pickedFile!.name.length - 8)));
 
                         list.add({
                           "file": file,

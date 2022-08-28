@@ -33,12 +33,12 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
   TextEditingController sunday1 = TextEditingController();
   TextEditingController sunday2 = TextEditingController();
 
+  var arguments = Get.arguments;
+  var placeId = Get.arguments["placeId"];
+  var groupId = Get.arguments["groupId"];
+  var createMode = Get.arguments["createMode"];
   @override
   Widget build(BuildContext context) {
-    var arguments = Get.arguments;
-    var placeId = Get.arguments["placeId"];
-    var groupId = Get.arguments["groupId"];
-    var createMode = Get.arguments["createMode"];
     // Map<String, List<String>> schedule = {
     //   "Понедельник": ['10:30', '10:30'],
     //   "Вторник": [],

@@ -313,7 +313,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                           .parse('${dateStart.text} - ${timeStart.text}')
                           .toString(),
                       "end_date": DateFormat('d.MM.y - H:m')
-                          .parse('${dateStart.text} - ${timeStart.text}')
+                          .parse('${dateEnd.text} - ${timeEnd.text}')
                           .toString(),
                       "address": address.text,
                       "open": select == 'Открытое' ? 'true' : 'false',
@@ -333,9 +333,9 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                               options:
                                   Options(contentType: 'multipart/form-data'))
                           .then((value) {
-                        Get.back();
                         Provider.of<EventsState>(context, listen: false)
                             .setEvents();
+                        Get.back();
                       });
                     } else {
                       createDio()
@@ -344,10 +344,9 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                         data: formData,
                       )
                           .then((value) {
+                        Get.back();
                         Provider.of<EventsState>(context, listen: false)
                             .setEvents();
-                        Get.toNamed('/success',
-                            arguments: 'Вы успешно записались на мероприятие');
                       });
                     }
                   }

@@ -58,7 +58,7 @@ class EventCard extends StatelessWidget {
               child: Text(
                 item.description,
                 maxLines: 2,
-                overflow: TextOverflow.fade,
+                overflow: TextOverflow.clip,
                 softWrap: false,
                 style: TextStyle(
                     fontSize: 12, fontWeight: FontWeight.w500, color: color),
