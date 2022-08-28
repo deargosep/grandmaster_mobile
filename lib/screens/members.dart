@@ -46,25 +46,23 @@ class MembersScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: ListView.builder(
-                itemCount: members
-                    .where((element) =>
-                        element.id !=
-                        Provider.of<UserState>(context, listen: false).user.id)
-                    .length,
+                itemCount: members.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (members[index].id ==
-                      Provider.of<UserState>(context, listen: false).user.id)
-                    return Container();
                   return GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () {
-                      createDio()
-                          .get('/users/${members[index].id}/')
-                          .then((value) {
-                        log(value.data.toString());
-                        User user = UserState().convertMapToUser(value.data);
-                        Get.toNamed('/other_profile', arguments: user);
-                      });
+                      if (members[index].id !=
+                          Provider.of<UserState>(context, listen: false)
+                              .user
+                              .id) {
+                        createDio()
+                            .get('/users/${members[index].id}/')
+                            .then((value) {
+                          log(value.data.toString());
+                          User user = UserState().convertMapToUser(value.data);
+                          Get.toNamed('/other_profile', arguments: user);
+                        });
+                      }
                     },
                     child: Column(
                       children: [

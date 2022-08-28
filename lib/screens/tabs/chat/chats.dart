@@ -6,6 +6,7 @@ import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/choose_child.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
@@ -87,7 +88,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                   id: '',
                                                   unread: 0,
                                                   members: []),
-                                              hideAvatar: true,
+                                              folder: true,
                                             )),
                                         SizedBox(
                                           height: 16,
@@ -121,7 +122,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                     id: '',
                                                     unread: 0,
                                                     members: []),
-                                                hideAvatar: true)),
+                                                folder: true)),
                                         SizedBox(
                                           height: 16,
                                         ),
@@ -154,7 +155,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                     id: '',
                                                     unread: 0,
                                                     members: []),
-                                                hideAvatar: true)),
+                                                folder: true)),
                                         SizedBox(
                                           height: 16,
                                         ),
@@ -181,10 +182,36 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                 behavior:
                                                     HitTestBehavior.translucent,
                                                 onTap: () {
-                                                  Get.toNamed('/chat',
-                                                      arguments:
-                                                          chatsWithoutFolders[
-                                                              index]);
+                                                  if (Provider.of<UserState>(
+                                                          context,
+                                                          listen: false)
+                                                      .user
+                                                      .children
+                                                      .isNotEmpty) {
+                                                    showModalBottomSheet(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        isDismissible: false,
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            ChooseChild()).then(
+                                                        (value) {
+                                                      if (Provider.of<UserState>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .childId !=
+                                                          '')
+                                                        Get.toNamed('/chat',
+                                                            arguments:
+                                                                chatsWithoutFolders[
+                                                                    index]);
+                                                    });
+                                                  } else {
+                                                    Get.toNamed('/chat',
+                                                        arguments:
+                                                            chatsWithoutFolders[
+                                                                index]);
+                                                  }
                                                 },
                                                 child: ChatTile(
                                                     chatsWithoutFolders[
@@ -220,40 +247,41 @@ class _ChatsScreenState extends State<ChatsScreen> {
 }
 
 class ChatTile extends StatelessWidget {
-  const ChatTile(this.data, {Key? key, this.hideAvatar = false})
-      : super(key: key);
-  final bool hideAvatar;
+  const ChatTile(this.data, {Key? key, this.folder = false}) : super(key: key);
+  final bool folder;
   final ChatType data;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              !hideAvatar
-                  ? Container(
-                      height: 60,
-                      width: 60,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                          child: data.photo == null
-                              ? CircleAvatar(
-                                  backgroundColor: Colors.black12,
-                                )
-                              : Avatar(data.photo!)),
-                    )
-                  : Container(),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            !folder
+                ? Container(
+                    height: 60,
+                    width: 60,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        child: data.photo == null
+                            ? CircleAvatar(
+                                backgroundColor: Colors.black12,
+                              )
+                            : Avatar(data.photo!)),
+                  )
+                : Container(),
+            SizedBox(
+              width: 16,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width - 160,
+                  child: Text(
                     data.name,
+                    textAlign: TextAlign.start,
                     maxLines: 1,
                     overflow: TextOverflow.fade,
                     softWrap: false,
@@ -262,64 +290,63 @@ class ChatTile extends StatelessWidget {
                         fontSize: 16,
                         color: Color(0xFF4F3333)),
                   ),
-                  !hideAvatar
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              data.lastMessage,
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
-                            )
-                          ],
-                        )
-                      : Container(),
-                ],
-              ),
-            ],
-          ),
-          Container(
-            height: 40,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  data.lastTime,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
-                data.type != 'system'
-                    ? Container()
-                    : SizedBox(
-                        height: 8,
-                      ),
-                data.unread == 0
-                    ? Container()
-                    : Container(
-                        height: 15,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        child: Center(
-                          child: Text(data.unread.toString(),
-                              style:
-                                  TextStyle(color: Colors.white, height: 1.1)),
-                        ),
-                      ),
+                !folder
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            data.lastMessage,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                          )
+                        ],
+                      )
+                    : Container(),
               ],
             ),
-          )
-        ],
-      ),
+          ],
+        ),
+        Container(
+          height: 40,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                data.lastTime,
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+              ),
+              data.type != 'system'
+                  ? Container()
+                  : SizedBox(
+                      height: 8,
+                    ),
+              data.unread == 0
+                  ? Container()
+                  : Container(
+                      height: 15,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                      ),
+                      child: Center(
+                        child: Text(data.unread.toString(),
+                            style: TextStyle(color: Colors.white, height: 1.1)),
+                      ),
+                    ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

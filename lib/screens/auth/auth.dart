@@ -29,7 +29,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: numbers["moderator"]);
+      TextEditingController(text: numbers["parent"]);
   bool isLoaded = false;
 
   @override
@@ -115,10 +115,10 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                 //     ? !_formKey.currentState!.validate()
                 //     : true,
                 onPressed: () {
-                  if (phoneNumber.text.length == "+# (###) ###-##-##".length) {
+                  if (phoneNumber.text.length == "(###) ###-##-##".length) {
                     SharedPreferences.getInstance()
                         .then((value) => value.clear());
-                    var number = phoneNumber.text
+                    var number = '+7 ${phoneNumber.text}'
                         .replaceAll(' ', '')
                         .replaceAll(')', '')
                         .replaceAll('(', '')
@@ -126,11 +126,11 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                     createDio()
                         .post('/auth/send_code/',
                             data: {
-                              "phone_number": number,
+                              "phone_number": '${number}',
                             },
                             options: Options(headers: {}))
                         .then((value) => Get.toNamed('/code', arguments: {
-                              "formatted": phoneNumber.text,
+                              "formatted": '+7 ${phoneNumber.text}',
                               "raw": number
                             }));
                   }

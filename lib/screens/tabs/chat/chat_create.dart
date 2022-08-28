@@ -21,7 +21,7 @@ class ChatCreateScreen extends StatefulWidget {
 
 class _ChatCreateScreenState extends State<ChatCreateScreen> {
   late Map<String, bool> checkboxes;
-
+  bool isLoaded = false;
   @override
   void initState() {
     super.initState();
@@ -43,6 +43,7 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
           checkboxes = {
             for (var v in members) '${v.id}_${v.fullName}': false,
           };
+          isLoaded = true;
         });
       });
       // List sportsmens =

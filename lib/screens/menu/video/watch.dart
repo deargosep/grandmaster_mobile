@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class VideoWatchScreen extends StatefulWidget {
@@ -10,19 +9,14 @@ class VideoWatchScreen extends StatefulWidget {
 }
 
 class _VideoWatchScreenState extends State<VideoWatchScreen> {
-  YoutubePlayerController controller = YoutubePlayerController(
-      params: YoutubePlayerParams(
-    captionLanguage: 'ru',
-    interfaceLanguage: 'ru',
-  ));
+  late YoutubePlayerController controller;
+  var arguments;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller = YoutubePlayerController()
-      ..onInit = () {
-        controller.loadVideoByUrl(mediaContentUrl: Get.arguments);
-      };
+    controller = YoutubePlayerController.fromVideoId(
+        videoId: Uri.parse(arguments).queryParameters["v"]!);
   }
 
   @override

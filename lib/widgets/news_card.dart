@@ -116,13 +116,16 @@ class NewsCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Container(
-                      height: 12,
-                      width: 12,
-                      child: BrandIcon(
-                        icon: 'view',
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
                         height: 12,
                         width: 12,
+                        child: BrandIcon(
+                          icon: 'view',
+                          height: 8,
+                          width: 12,
+                        ),
                       ),
                     ),
                     SizedBox(

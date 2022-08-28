@@ -31,6 +31,28 @@
   <link rel="manifest" href="manifest.json">
 
   <script>
+  function isReload() {
+  console.log(window.location.pathname);
+  if (window.location.pathname.includes("type")) {
+  return false
+  }
+  try {
+    return (
+      (window.performance.navigation && window.performance.navigation.type === 1) ||
+        window.performance.getEntriesByType('navigation').map((nav) => nav.type).includes('reload')
+    );
+  } catch(err) {
+    return false;
+  }
+}
+
+if (isReload()) {
+  console.log("Page accessed by reload, redirecting...");
+  window.location.replace('/');
+}
+
+</script>
+  <script>
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
   </script>

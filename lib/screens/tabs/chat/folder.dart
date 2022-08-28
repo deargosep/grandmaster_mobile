@@ -7,6 +7,9 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/choose_child.dart';
+import 'chats.dart';
+
 class FolderScreen extends StatefulWidget {
   const FolderScreen({Key? key}) : super(key: key);
 
@@ -69,9 +72,33 @@ class _FolderScreenState extends State<FolderScreen> {
                                     GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         onTap: () {
-                                          Get.toNamed('/chat',
-                                              arguments:
-                                                  chatsWithoutFolders[index]);
+                                          if (Provider.of<UserState>(context,
+                                                  listen: false)
+                                              .user
+                                              .children
+                                              .isNotEmpty) {
+                                            showModalBottomSheet(
+                                                backgroundColor: Colors.white,
+                                                isDismissible: false,
+                                                context: context,
+                                                builder: (context) =>
+                                                    ChooseChild()).then(
+                                                (value) {
+                                              if (Provider.of<UserState>(
+                                                          context,
+                                                          listen: false)
+                                                      .childId !=
+                                                  '')
+                                                Get.toNamed('/chat',
+                                                    arguments:
+                                                        chatsWithoutFolders[
+                                                            index]);
+                                            });
+                                          } else {
+                                            Get.toNamed('/chat',
+                                                arguments:
+                                                    chatsWithoutFolders[index]);
+                                          }
                                         },
                                         child: ChatTile(
                                             chatsWithoutFolders[index])),
@@ -97,104 +124,6 @@ class _FolderScreenState extends State<FolderScreen> {
                     child: Text('Нет новостей'),
                   )
             : Center(child: CircularProgressIndicator()));
-  }
-}
-
-class ChatTile extends StatelessWidget {
-  const ChatTile(this.data, {Key? key}) : super(key: key);
-
-  final ChatType data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: 60,
-                width: 60,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    child: data.photo == null
-                        ? CircleAvatar(
-                            backgroundColor: Colors.black12,
-                          )
-                        : Avatar(data.photo!)),
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 200,
-                    child: Text(
-                      data.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                      softWrap: false,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Color(0xFF4F3333)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    data.lastMessage,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
-                  )
-                ],
-              ),
-            ],
-          ),
-          Container(
-            height: 40,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  data.lastTime,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                data.type != 'system'
-                    ? Container()
-                    : SizedBox(
-                        height: 8,
-                      ),
-                data.unread == 0
-                    ? Container()
-                    : Container(
-                        height: 15,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                        child: Center(
-                          child: Text(data.unread.toString(),
-                              style:
-                                  TextStyle(color: Colors.white, height: 1.1)),
-                        ),
-                      ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
   }
 }
 

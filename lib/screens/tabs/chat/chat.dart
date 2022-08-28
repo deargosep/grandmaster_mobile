@@ -504,7 +504,7 @@ class _Header extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: 250,
+                    width: MediaQuery.of(context).size.width - 150,
                     child: Text(
                       chat.name,
                       overflow: TextOverflow.clip,

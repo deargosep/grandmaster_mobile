@@ -11,7 +11,7 @@ class UserState extends ChangeNotifier {
     passport: Passport(),
   );
 
-  // List<User> _users = [];
+  var _childId = '';
 
   // List<Dot> _filteredDots = [];
 
@@ -140,6 +140,10 @@ class UserState extends ChangeNotifier {
     _user = user;
   }
 
+  void setChildId(id) {
+    _childId = id;
+  }
+
   Future<void> setUser(data) async {
     var completer = new Completer();
     log(data.toString());
@@ -156,6 +160,7 @@ class UserState extends ChangeNotifier {
   }
 
   User get user => _user;
+  get childId => _childId;
   // List<User> get list => _users;
 }
 

@@ -6,6 +6,7 @@ import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
+import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -73,42 +74,61 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       });
     }
 
-    if (user.role == 'moderator')
-      return Column(
-        children: [
-          SizedBox(
-            height: 32,
-          ),
-          Container(
-              height: 136,
-              width: 136,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-                child: user.photo != null
-                    ? Avatar(
-                        user.photo!,
-                        height: 136,
-                        width: 136,
-                      )
-                    : CircleAvatar(
-                        backgroundColor: Colors.black12,
-                      ),
-              )),
-          SizedBox(
-            height: 16,
-          ),
-          Text(
-            user.fullName,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.bold,
-                fontSize: 18),
-          ),
-          SizedBox(
-            height: 33,
-          ),
-        ],
+    if (user.role == 'moderator' || user.children.isNotEmpty)
+      return Container(
+        width: double.infinity,
+        child: Stack(
+          children: [
+            Positioned(
+                left: 20,
+                top: 60,
+                child: BrandIcon(
+                  icon: 'back_arrow',
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                )),
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 10,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 32,
+                  ),
+                  Container(
+                      height: 136,
+                      width: 136,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        child: user.photo != null
+                            ? Avatar(
+                                user.photo!,
+                                height: 136,
+                                width: 136,
+                              )
+                            : CircleAvatar(
+                                backgroundColor: Colors.black12,
+                              ),
+                      )),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    user.fullName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 33,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     return DefaultTabController(
       length: 2,
@@ -135,8 +155,8 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                   width: 136,
                                 )
                               : CircleAvatar(
-                            backgroundColor: Colors.black12,
-                          ),
+                                  backgroundColor: Colors.black12,
+                                ),
                         )),
                     SizedBox(
                       height: 16,

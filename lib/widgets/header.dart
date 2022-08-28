@@ -44,29 +44,20 @@ class Header extends StatelessWidget {
                 !withBack
                     ? Container()
                     : Row(children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: 20,
-                              width: 20,
-                            ),
-                            BrandIcon(
-                              height: 17,
-                              width: 10,
-                              icon: 'back_arrow',
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 26,
+                        BrandIcon(
+                          height: 17,
+                          width: 10,
+                          icon: 'back_arrow',
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ]),
                 Container(
-                  width:
-                      icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
+                  width: icon != ''
+                      ? 250
+                      : MediaQuery.of(context).size.width - 120,
                   child: Text(
                     text ?? '',
+                    textAlign: TextAlign.start,
                     overflow: TextOverflow.clip,
                     softWrap: false,
                     style: TextStyle(

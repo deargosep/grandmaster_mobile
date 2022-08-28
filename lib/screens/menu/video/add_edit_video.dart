@@ -112,6 +112,18 @@ class _AddEditVideoScreenState extends State<AddEditVideoScreen> {
               Input(
                 label: 'Ссылка',
                 controller: link,
+                validator: (text) {
+                  var uri = Uri.tryParse(link.text);
+                  if (uri != null) {
+                    if (link.text.contains('?v=')) {
+                      return null;
+                    } else {
+                      return 'Неверный адрес';
+                    }
+                  } else {
+                    return 'Неверный адрес';
+                  }
+                },
               ),
               SizedBox(
                 height: 32,

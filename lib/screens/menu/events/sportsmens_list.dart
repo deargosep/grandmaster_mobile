@@ -309,6 +309,7 @@ class _ChooseState extends State<_Choose> {
           text: 'Выберите спортсмена',
         ),
         noTopPadding: true,
+        noPadding: false,
         scrollable: true,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,8 +334,11 @@ class _ViewState extends State<_View> {
   @override
   Widget build(BuildContext context) {
     EventType item = Get.arguments["item"];
-    List<OptionType> list =
-        item.members.map((e) => OptionType(e.fullName, '')).toList();
+    List<OptionType> list = item.members
+        .map((e) => OptionType(e.fullName, '/other_profile',
+            arguments: User(
+                fullName: e.fullName, photo: e.photo, passport: Passport())))
+        .toList();
     return CustomScaffold(
         appBar: AppHeader(
           text: 'Просмотр участников',
