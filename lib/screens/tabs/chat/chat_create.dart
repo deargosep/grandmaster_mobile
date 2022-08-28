@@ -111,10 +111,12 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
             SizedBox(
               height: 32,
             ),
-            CheckboxesList(
-              changeCheckbox: changeCheckbox,
-              checkboxes: checkboxes,
-            )
+            isLoaded
+                ? CheckboxesList(
+                    changeCheckbox: changeCheckbox,
+                    checkboxes: checkboxes,
+                  )
+                : Center(child: CircularProgressIndicator())
           ],
         ));
   }
