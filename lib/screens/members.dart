@@ -104,6 +104,11 @@ class MembersScreen extends StatelessWidget {
                               ),
                               Builder(builder: (context) {
                                 if (!isOwner) return Container();
+                                if (members[index].id ==
+                                    Provider.of<UserState>(context,
+                                            listen: false)
+                                        .user
+                                        .id) return Container();
                                 return Row(
                                   children: [
                                     BrandIcon(

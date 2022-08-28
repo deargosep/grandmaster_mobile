@@ -62,7 +62,8 @@ class Header extends StatelessWidget {
                       icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
                   child: Text(
                     text ?? '',
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -152,7 +153,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     icon != '' ? 250 : MediaQuery.of(context).size.width - 80,
                 child: Text(
                   text ?? '',
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,

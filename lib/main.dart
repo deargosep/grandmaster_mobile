@@ -47,11 +47,13 @@ import 'package:grandmaster/screens/success.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/chat/chat_create.dart';
 import 'package:grandmaster/screens/tabs/chat/chat_photo.dart';
+import 'package:grandmaster/screens/tabs/chat/folder.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
 import 'package:grandmaster/screens/tabs/home/article_photos.dart';
 import 'package:grandmaster/screens/tabs/home/article_screen.dart';
 import 'package:grandmaster/screens/tabs/profile/child_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/document.dart';
+import 'package:grandmaster/screens/tabs/profile/document_watch.dart';
 import 'package:grandmaster/screens/tabs/profile/documents.dart';
 import 'package:grandmaster/screens/tabs/profile/my_profile.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
@@ -312,6 +314,7 @@ class _MyAppState extends State<MyApp> {
             page: () => AddEditArticleScreen(),
           ),
           GetPage(name: '/chat', page: () => ChatScreen()),
+          GetPage(name: '/chat/folder', page: () => FolderScreen()),
           GetPage(name: '/chat/create', page: () => ChatCreateScreen()),
           GetPage(
             name: '/chat/photo',
@@ -341,6 +344,9 @@ class _MyAppState extends State<MyApp> {
           GetPage(
               name: '/my_profile/documents/document',
               page: () => DocumentScreen()),
+          GetPage(
+              name: '/my_profile/documents/document/watch',
+              page: () => DocumentWatchScreen()),
           GetPage(name: '/child_profile', page: () => ChildProfileScreen()),
           GetPage(
             name: '/events',

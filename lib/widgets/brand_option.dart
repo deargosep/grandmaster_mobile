@@ -94,7 +94,8 @@ class _OptionState extends State<Option> {
               child: Text(
                 widget.text ?? '',
                 maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.fade,
+                softWrap: false,
                 style: TextStyle(
                     color: getColor('text'),
                     fontSize: 14,

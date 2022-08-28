@@ -69,20 +69,20 @@ class _VideosScreenState extends State<VideosScreen> {
     List videos = context.watch<VideosState>().videos;
     bool isLoaded = Provider.of<VideosState>(context, listen: true).isLoaded;
     return CustomScaffold(
-                noPadding: true,
-                bottomNavigationBar: BottomBarWrap(currentTab: 0),
-                appBar: AppHeader(
-                  text: 'Видео',
-                  icon: isModer() ? 'plus' : '',
-                  iconOnTap: isModer()
-                      ? () {
-                          Get.toNamed('/videos/add');
-                        }
-                      : null,
-                ),
-                body: isLoaded
-                    ? videos.isNotEmpty
-                    ? Padding(
+        noPadding: true,
+        bottomNavigationBar: BottomBarWrap(currentTab: 0),
+        appBar: AppHeader(
+          text: 'Видео',
+          icon: isModer() ? 'plus' : '',
+          iconOnTap: isModer()
+              ? () {
+                  Get.toNamed('/videos/add');
+                }
+              : null,
+        ),
+        body: isLoaded
+            ? videos.isNotEmpty
+                ? Padding(
                     padding: const EdgeInsets.only(top: 24),
                     child: Align(
                       alignment: Alignment.topCenter,
@@ -113,10 +113,11 @@ class _VideosScreenState extends State<VideosScreen> {
                               });
                             }),
                       ),
-                    )): Text('Нет видео')
-                    : Center(
-                  child: CircularProgressIndicator(),
-                ));
+                    ))
+                : Text('Нет видео')
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 
@@ -166,7 +167,8 @@ class VideoCard extends StatelessWidget {
                 child: Text(
                   item.name,
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,

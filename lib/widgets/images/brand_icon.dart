@@ -58,7 +58,7 @@ class BrandIcon extends StatelessWidget {
             child: SvgPicture.asset(
               'assets/icons/${icon}.svg',
               fit: fit ?? BoxFit.contain,
-              color: color ?? Theme.of(context).primaryColor,
+              color: Color(0xFF433EDB),
               height: height,
               width: width,
             ),

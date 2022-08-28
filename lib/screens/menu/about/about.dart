@@ -134,7 +134,8 @@ class AboutCard extends StatelessWidget {
             child: Text(
               item.description,
               maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.fade,
+              softWrap: false,
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

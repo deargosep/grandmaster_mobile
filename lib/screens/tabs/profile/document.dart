@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
@@ -72,20 +73,27 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 items: optionList.map((i) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return Container(
-                        height: 335,
-                        width: 335,
-                        decoration: BoxDecoration(
-                            color: Color(0xFFEFEFEF),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: snapshot.data?.data[i["code"]] != null
-                            ? Image.network(snapshot.data?.data[i["code"]])
-                            : Center(
-                                child: Text(
-                                "Нет документа",
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              )),
+                      return GestureDetector(
+                        onTap: () {
+                          if (snapshot.data?.data[i["code"]] != null)
+                            Get.toNamed('/my_profile/documents/document/watch',
+                                arguments: snapshot.data?.data[i["code"]]);
+                        },
+                        child: Container(
+                          height: 335,
+                          width: 335,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFEFEFEF),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: snapshot.data?.data[i["code"]] != null
+                              ? LoadingImage(snapshot.data?.data[i["code"]])
+                              : Center(
+                                  child: Text(
+                                  "Нет документа",
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                )),
+                        ),
                       );
                     },
                   );

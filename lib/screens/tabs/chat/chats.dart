@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
@@ -21,12 +23,20 @@ class _ChatsScreenState extends State<ChatsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<ChatsState>(context, listen: false).setChats();
+      Timer.periodic(Duration(seconds: 10), (timer) {
+        if (mounted) Provider.of<ChatsState>(context, listen: false).setChats();
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     List chats = Provider.of<ChatsState>(context).chats;
+    List chatsWithoutFolders =
+        Provider.of<ChatsState>(context).chatsWithoutFolders;
+    List chatsModerators = Provider.of<ChatsState>(context).moderatorsChats;
+    List chatsTrainers = Provider.of<ChatsState>(context).trainersChats;
+    List chatsStudents = Provider.of<ChatsState>(context).studentsChats;
     User user = Provider.of<UserState>(context).user;
     bool isLoaded = Provider.of<ChatsState>(context).isLoaded;
     return CustomScaffold(
@@ -53,34 +63,137 @@ class _ChatsScreenState extends State<ChatsScreen> {
                     child: RefreshIndicator(
                       onRefresh: Provider.of<ChatsState>(context, listen: false)
                           .setChats,
-                      child: ListView.builder(
-                          itemCount: chats.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Get.toNamed('/chat',
-                                          arguments: chats[index]);
-                                    },
-                                    child: ChatTile(chats[index])),
-                                SizedBox(
-                                  height: 16,
-                                ),
-                                index != chats.length - 1
-                                    ? Column(
-                                        children: [
-                                          Divider(),
-                                          SizedBox(
-                                            height: 16,
-                                          )
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            );
-                          }),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          chatsModerators.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Get.toNamed('/chat/folder',
+                                              arguments: 'moderators');
+                                        },
+                                        child: ChatTile(ChatType(
+                                            name: 'Модераторы',
+                                            lastMessage: '',
+                                            lastTime: '',
+                                            id: '',
+                                            unread: 0,
+                                            members: []))),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Divider(),
+                                        SizedBox(
+                                          height: 16,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Container(),
+                          chatsTrainers.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Get.toNamed('/chat/folder',
+                                              arguments: 'trainers');
+                                        },
+                                        child: ChatTile(ChatType(
+                                            name: 'Тренеры',
+                                            lastMessage: '',
+                                            lastTime: '',
+                                            id: '',
+                                            unread: 0,
+                                            members: []))),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Divider(),
+                                        SizedBox(
+                                          height: 16,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Container(),
+                          chatsStudents.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
+                                        onTap: () {
+                                          Get.toNamed('/chat/folder',
+                                              arguments: 'students');
+                                        },
+                                        child: ChatTile(ChatType(
+                                            name: 'Студенты',
+                                            lastMessage: '',
+                                            lastTime: '',
+                                            id: '',
+                                            unread: 0,
+                                            members: []))),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Divider(),
+                                        SizedBox(
+                                          height: 16,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Container(),
+                          chatsWithoutFolders.isNotEmpty
+                              ? ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: chatsWithoutFolders.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                            behavior:
+                                                HitTestBehavior.translucent,
+                                            onTap: () {
+                                              Get.toNamed('/chat',
+                                                  arguments:
+                                                      chatsWithoutFolders[
+                                                          index]);
+                                            },
+                                            child: ChatTile(
+                                                chatsWithoutFolders[index])),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        index != chatsWithoutFolders.length - 1
+                                            ? Column(
+                                                children: [
+                                                  Divider(),
+                                                  SizedBox(
+                                                    height: 16,
+                                                  )
+                                                ],
+                                              )
+                                            : Container(),
+                                      ],
+                                    );
+                                  })
+                              : Container(),
+                        ],
+                      ),
                     ))
                 : Center(
                     child: Text('Нет новостей'),
@@ -125,7 +238,8 @@ class ChatTile extends StatelessWidget {
                     child: Text(
                       data.name,
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,

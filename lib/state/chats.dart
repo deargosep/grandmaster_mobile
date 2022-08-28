@@ -13,6 +13,10 @@ import '../utils/dio.dart';
 class ChatsState extends ChangeNotifier {
   List<ChatType> _chats = [];
   List<ChatType> get chats => _chats;
+  List<ChatType> get chatsWithoutFolders => getChats();
+  List<ChatType> get trainersChats => getTrainersChats();
+  List<ChatType> get moderatorsChats => getModeratorsChats();
+  List<ChatType> get studentsChats => getStudentsChats();
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
@@ -27,6 +31,25 @@ class ChatsState extends ChangeNotifier {
         timedate: DateTime.parse(decoded["message"]["created_at"]));
   }
 
+  List<ChatType> getChats() {
+    return _chats
+        .where((element) =>
+            element.folder == 'none' || element.folder == 'specialists')
+        .toList();
+  }
+
+  List<ChatType> getTrainersChats() {
+    return _chats.where((element) => element.folder == 'trainers').toList();
+  }
+
+  List<ChatType> getStudentsChats() {
+    return _chats.where((element) => element.folder == 'students').toList();
+  }
+
+  List<ChatType> getModeratorsChats() {
+    return _chats.where((element) => element.folder == 'moderators').toList();
+  }
+
   Future<void> setChats({List<ChatType>? data}) async {
     var completer = new Completer();
     createDio().get('/chats/').then((value) {
@@ -37,19 +60,14 @@ class ChatsState extends ChangeNotifier {
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return ChatType(
               id: e["id"],
-              name: e["type"] == 'dm'
-                  ? [...e["members"].map((e) => e).toList()]
-                              .firstWhereOrNull((e) => !e["me"]) !=
-                          null
-                      ? [...e["members"].map((e) => e).toList()]
-                          .firstWhereOrNull((e) => !e["me"])["full_name"]
-                      : e["name"]
-                  : e["name"],
+              name: e["display_name"] ?? e["name"],
+              folder: e["folder"],
+              owner: e["owner"] != null ? e["owner"]["id"] : null,
               // name: e["type"] == 'dm'
               // ? e["members"].firstWhere((e) => !e["me"])["full_name"]
               // : e["name"],
               lastMessage: e["last_message"]["text"] ?? "Изображение",
-              unread: e["unreaded_count"],
+              unread: e["unreaded_count"] ?? '',
               photo: e["cover"] ?? e["type"] == 'dm'
                   ? [...e["members"].map((e) => e).toList()]
                               .firstWhereOrNull((e) => !e["me"]) !=
@@ -110,6 +128,8 @@ class ChatType {
   final String type;
   final int? unread;
   final List<MinimalUser> members;
+  final String folder;
+  final owner;
 
   ChatType(
       {required this.id,
@@ -118,6 +138,8 @@ class ChatType {
       required this.lastMessage,
       required this.lastTime,
       this.unread,
+      this.owner,
       required this.members,
-      this.type = 'dm'});
+      this.type = 'dm',
+      this.folder = 'none'});
 }

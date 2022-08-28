@@ -52,6 +52,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
     // .initSocket(connectListener, messageListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ChatsState>(context, listen: false).setChats();
       SharedPreferences.getInstance().then((value) {
         channel = WebSocketChannel.connect(
           Uri.parse(
@@ -484,7 +485,8 @@ class _Header extends StatelessWidget {
                   Get.toNamed('/members', arguments: {
                     "members": chat.members,
                     "id": chat.id,
-                    "isOwner": true
+                    "isOwner": chat.owner ==
+                        Provider.of<UserState>(context, listen: false).user.id
                   });
                 } else if (chat.type == 'dm') {
                   createDio()
@@ -505,7 +507,9 @@ class _Header extends StatelessWidget {
                     width: 250,
                     child: Text(
                       chat.name,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 1,
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

@@ -285,7 +285,7 @@ class User {
 }
 
 class MinimalUser {
-  final fullName;
+  final String fullName;
   final id;
   final bool? marked;
   final String? role;

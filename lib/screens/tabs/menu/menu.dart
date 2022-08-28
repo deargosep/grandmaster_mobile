@@ -49,16 +49,16 @@ class MenuScreen extends StatelessWidget {
           OptionType('О клубе', links["about"]!),
         ];
       }
-      if (user.role == 'student') {
-        return <OptionType>[
-          OptionType('Мероприятия', links["events"]!),
-          // OptionType('Расписание', links["schedule"]!),
-          OptionType('Видео', links["videos"]!),
-          OptionType('Залы', links["places"]!),
-          OptionType('QR коды', links["qr"]!),
-          OptionType('О клубе', links["about"]!)
-        ];
-      }
+      // if (user.parents.isNotEmpty) {
+      //   return <OptionType>[
+      //     OptionType('Мероприятия', links["events"]!),
+      //     // OptionType('Расписание', links["schedule"]!),
+      //     OptionType('Видео', links["videos"]!),
+      //     OptionType('Залы', links["places"]!),
+      //     OptionType('QR коды', links["qr"]!),
+      //     OptionType('О клубе', links["about"]!)
+      //   ];
+      // }
       if (user.role == 'moderator') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
@@ -77,7 +77,15 @@ class MenuScreen extends StatelessWidget {
           OptionType('О клубе', links["about"]!),
         ];
       }
-      return <OptionType>[];
+      return <OptionType>[
+        OptionType('Мероприятия', links["events"]!),
+        OptionType('Видео', links["videos"]!),
+        OptionType('Учебные материалы', links["learning"]!),
+        OptionType('Залы', links["places"]!),
+        OptionType('Оплата', links["payment"]!),
+        OptionType('QR коды', links["qr"]!),
+        OptionType('О клубе', links["about"]!)
+      ];
     }
 
     return CustomScaffold(

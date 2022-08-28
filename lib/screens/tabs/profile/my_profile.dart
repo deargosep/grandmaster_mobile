@@ -94,18 +94,16 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         child: Container(
                             height: 136,
                             width: 136,
-                            child: CircleAvatar(
-                              child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100)),
-                                child: user.photo != null
-                                    ? Avatar(
-                                        user.photo!,
-                                        height: 136,
-                                        width: 136,
-                                      )
-                                    : null,
-                              ),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: user.photo != null
+                                  ? Avatar(
+                                      user.photo!,
+                                      height: 136,
+                                      width: 136,
+                                    )
+                                  : null,
                             ))),
                     SizedBox(
                       height: 16,

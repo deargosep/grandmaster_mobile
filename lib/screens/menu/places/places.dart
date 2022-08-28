@@ -178,7 +178,8 @@ class PlaceCard extends StatelessWidget {
               child: Text(
                 item.description,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.fade,
+                softWrap: false,
                 style: TextStyle(
                     fontSize: 12, fontWeight: FontWeight.w500, color: color),
               ),
