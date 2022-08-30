@@ -144,11 +144,11 @@ class VideoCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: item.link.contains('youtube')
                   ? Container(
-                height: 132,
-                    width: double.infinity,
-                    child: LoadingImage(
-                        'https://img.youtube.com/vi/${Uri.parse(item.link).queryParameters["v"]}/0.jpg'),
-                  )
+                      height: 132,
+                      width: double.infinity,
+                      child: LoadingImage(
+                          'https://app.grandmaster.center/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}'),
+                    )
                   : Container(
                       height: 132,
                       width: double.infinity,
