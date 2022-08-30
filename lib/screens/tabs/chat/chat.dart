@@ -73,7 +73,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       setState(() {
         isLoaded = true;
       });
-      createDio().get('/chats/messages/?chat=${chat.id}').then((value) {
+      createDio()
+          .get(
+              '/chats/messages/?chat=${chat.id}${Provider.of<UserState>(context, listen: false).user.children.isNotEmpty ? '&id=${Provider.of<UserState>(context, listen: false).childId}' : ''}')
+          .then((value) {
         print(value.data);
         List<MessageType> newMessages = [...messages];
         if (value.data.isNotEmpty) {
