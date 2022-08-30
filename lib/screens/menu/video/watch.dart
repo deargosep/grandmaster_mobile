@@ -23,6 +23,13 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.close();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (context, orientation) => CustomScaffold(

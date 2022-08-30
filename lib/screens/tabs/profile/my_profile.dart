@@ -259,15 +259,18 @@ class PassportInfo extends StatelessWidget {
               _Item(
                 name: "ФИО",
                 value: passport.fio,
+                ifNullRed: user.role == 'trainer',
               ),
               _Item(
                 name: "Дата рождения",
+                ifNullRed: true,
                 value: user.birthday != null
                     ? DateFormat('dd.MM.y').format(user.birthday!)
                     : '',
               ),
               _Item(
                 name: "Телефон",
+                ifNullRed: user.role == 'trainer',
                 value: passport.phoneNumber,
               ),
             ],
@@ -287,32 +290,54 @@ class PassportInfo extends StatelessWidget {
             children: [
               _Item(
                 name: "Спортшкола, клуб",
+                ifNullRed: user.role != 'trainer',
                 value: passport.sport_school,
               ),
-              _Item(
-                name: "Ведомство",
-                value: passport.vedomstvo,
-              ),
-              _Item(
-                name: "Место тренировок",
-                value: passport.place_of_training,
-              ),
+              user.role != 'trainer'
+                  ? _Item(
+                      name: "Ведомство",
+                      ifNullRed: true,
+                      value: passport.vedomstvo,
+                    )
+                  : Container(),
+              user.role != 'trainer'
+                  ? _Item(
+                      name: "Тренер",
+                      ifNullRed: true,
+                      value: passport.trainer,
+                    )
+                  : Container(),
+              user.role != 'trainer'
+                  ? _Item(
+                      name: "Место тренировок",
+                      ifNullRed: true,
+                      value: passport.place_of_training,
+                    )
+                  : Container(),
               _Item(
                 name: "Техническая квалификация",
+                ifNullRed: true,
                 value: passport.tech_qualification,
               ),
               _Item(
                 name: "Спортивная квалификация",
+                ifNullRed: user.role != 'trainer',
                 value: passport.sport_qualification,
               ),
-              _Item(
-                name: "Рост (см)",
-                value: passport.height,
-              ),
-              _Item(
-                name: "Вес (кг)",
-                value: passport.weight,
-              ),
+              user.role != 'trainer'
+                  ? _Item(
+                      name: "Рост (см)",
+                      ifNullRed: true,
+                      value: passport.height,
+                    )
+                  : Container(),
+              user.role != 'trainer'
+                  ? _Item(
+                      name: "Вес (кг)",
+                      ifNullRed: true,
+                      value: passport.weight,
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -330,23 +355,18 @@ class PassportInfo extends StatelessWidget {
             children: [
               _Item(
                 name: "Регион",
+                ifNullRed: true,
                 value: passport.region,
               ),
               _Item(
                 name: "Город",
+                ifNullRed: true,
                 value: passport.city,
               ),
               _Item(
                 name: "Адрес (ул., дом, кв.)",
+                ifNullRed: true,
                 value: passport.address,
-              ),
-              _Item(
-                name: "Медицинская справка / Дата окончания",
-                value: passport.med_spravka_date,
-              ),
-              _Item(
-                name: "Страховой полис / Дата окончания",
-                value: passport.strah_date,
               ),
             ],
           ),
@@ -367,6 +387,14 @@ class PassportInfo extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _Item(
+                          name: "Медицинская справка / Дата окончания",
+                          value: passport.med_spravka_date,
+                        ),
+                        _Item(
+                          name: "Страховой полис / Дата окончания",
+                          value: passport.strah_date,
+                        ),
                         _Item(
                           name: "Отец (ФИО)",
                           value: passport.father_fio,
@@ -438,21 +466,24 @@ class PassportInfo extends StatelessWidget {
 }
 
 class _Item extends StatelessWidget {
-  _Item({Key? key, required this.name, this.value}) : super(key: key);
+  _Item({Key? key, required this.name, this.value, this.ifNullRed = false})
+      : super(key: key);
   final String name;
   final value;
+  final bool ifNullRed;
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.secondaryContainer;
+    if (value == null && !ifNullRed) return Container();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           name,
           style: TextStyle(
-              color: value != null
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).primaryColor),
+              color: value == null && ifNullRed
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).colorScheme.secondary),
         ),
         SizedBox(
           height: 8,
@@ -475,9 +506,9 @@ class _Item extends StatelessWidget {
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
-                    color: value != null
-                        ? Theme.of(context).colorScheme.secondary
-                        : Theme.of(context).primaryColor),
+                    color: value == null && ifNullRed
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).colorScheme.secondary),
               ),
         SizedBox(
           height: 24,

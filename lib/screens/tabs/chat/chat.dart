@@ -65,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           List<MessageType> newMessages = [...messages];
           newMessages.insert(
               0, ChatsState().getMessagefromJson(event.toString()));
+          print(ChatsState().getMessagefromJson(event.toString()));
           setState(() {
             messages = newMessages;
           });
@@ -291,11 +292,11 @@ class Message extends StatelessWidget {
             crossAxisAlignment:
                 isMine() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
-              chat.type == 'group' && !isMine()
+              chat.type != 'dm' && !isMine()
                   ? Column(
                       children: [
                         Text(
-                          '${item.prefix ?? ''}${item.prefix != null ? ' ' : ''}${item.user}',
+                          '${item.prefix ?? ''}${item.prefix != null ? '  ' : ''}${item.user}',
                           style: TextStyle(color: Color(0xFF9FA6BA)),
                         ),
                         SizedBox(
