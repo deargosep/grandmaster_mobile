@@ -142,20 +142,27 @@ class VideoCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
+              child: item.link.contains('youtube')
+                  ? Container(
                 height: 132,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 35),
-                decoration: BoxDecoration(
-                    color: Color(0xFFE7E7E7),
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: BrandIcon(
-                  height: 61,
-                  width: 61,
-                  icon: 'play',
-                  color: Color(0xFFA8A8A8),
-                ),
-              ),
+                    width: double.infinity,
+                    child: LoadingImage(
+                        'https://img.youtube.com/vi/${Uri.parse(item.link).queryParameters["v"]}/0.jpg'),
+                  )
+                  : Container(
+                      height: 132,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 35),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFE7E7E7),
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: BrandIcon(
+                        height: 61,
+                        width: 61,
+                        icon: 'play',
+                        color: Color(0xFFA8A8A8),
+                      ),
+                    ),
             ),
             SizedBox(
               height: 16,
