@@ -28,12 +28,15 @@ class EventCard extends StatelessWidget {
           children: [
             // Image cover
             Container(
-              height: 132,
-              width: double.infinity,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: LoadingImage(item.cover)),
-            ),
+                height: 132,
+                width: double.infinity,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    child: item.cover != null
+                        ? LoadingImage(item.cover!)
+                        : Container(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ))),
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
@@ -87,7 +90,7 @@ class EventCard extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                      "${DateFormat('dd.MM.y').format(item.timeDateStart)} в ${DateFormat('HH:mm').format(item.timeDateStart)} - ${DateFormat('dd.MM.y').format(item.timeDateEnd)}",
                       style: TextStyle(fontSize: 12, color: color),
                     )
                   ],

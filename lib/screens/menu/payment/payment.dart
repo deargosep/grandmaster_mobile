@@ -30,9 +30,9 @@ class _PaymentScreenState extends State<PaymentScreen>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<PaymentsState>(context, listen: false).setPayments();
       if (mounted)
-      Timer.periodic(Duration(seconds: 20), (timer) {
-        Provider.of<PaymentsState>(context, listen: false).setPayments();
-      });
+        Timer.periodic(Duration(seconds: 20), (timer) {
+          Provider.of<PaymentsState>(context, listen: false).setPayments();
+        });
     });
     controller = TabController(vsync: this, length: 2);
     controller.addListener(() {
@@ -185,7 +185,7 @@ class _Payment extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                'Оплатить до: ${DateFormat('d.MM.y').format(item.must_be_paid_at)}',
+                                'Оплатить до: ${DateFormat('dd.MM.y').format(item.must_be_paid_at)}',
                                 maxLines: 1,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500,

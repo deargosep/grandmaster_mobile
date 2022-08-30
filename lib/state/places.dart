@@ -17,10 +17,10 @@ class PlacesState extends ChangeNotifier {
   bool _isLoadedTrainers = false;
   bool get isLoadedTrainers => _isLoadedTrainers;
 
-  Future<void> setPlaces({List<PlaceType>? data}) async {
+  Future<void> setPlaces({List<PlaceType>? data, String? url}) async {
     _isLoaded = false;
     var completer = new Completer();
-    createDio().get('/gyms/').then((value) {
+    createDio().get(url ?? '/gyms/').then((value) {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);

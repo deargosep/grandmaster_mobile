@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -16,8 +17,8 @@ import 'package:grandmaster/screens/menu/events/add_edit_event.dart';
 import 'package:grandmaster/screens/menu/events/event_screen.dart';
 import 'package:grandmaster/screens/menu/events/events.dart';
 import 'package:grandmaster/screens/menu/events/sportsmens_list.dart';
+import 'package:grandmaster/screens/menu/groups/add_edit_group.dart';
 import 'package:grandmaster/screens/menu/groups/group.dart';
-import 'package:grandmaster/screens/menu/groups/group_create.dart';
 import 'package:grandmaster/screens/menu/groups/group_manage.dart';
 import 'package:grandmaster/screens/menu/groups/groups.dart';
 import 'package:grandmaster/screens/menu/journal/journal_groups.dart';
@@ -32,6 +33,7 @@ import 'package:grandmaster/screens/menu/places/place_screen.dart';
 import 'package:grandmaster/screens/menu/places/places.dart';
 import 'package:grandmaster/screens/menu/places/select_trainers.dart';
 import 'package:grandmaster/screens/menu/qr/qr.dart';
+import 'package:grandmaster/screens/menu/qr/qr_child.dart';
 import 'package:grandmaster/screens/menu/qr/qr_events.dart';
 import 'package:grandmaster/screens/menu/qr/qr_partners.dart';
 import 'package:grandmaster/screens/menu/qr/qr_user.dart';
@@ -169,7 +171,10 @@ class _MyAppState extends State<MyApp> {
         var type = uri.queryParameters["type"];
         createDio(errHandler: (err, handler) {
           showErrorSnackbar('Not found');
-        }).get('/users/${userId}/').then((value) {
+        })
+            .get(
+                '${uri.queryParameters["type"] == 'event' ? '' : '/qrcodes'}/users/${userId}/')
+            .then((value) {
           print(value);
           User user = UserState().convertMapToUser(value.data);
           if (type == 'event') {
@@ -206,7 +211,10 @@ class _MyAppState extends State<MyApp> {
             if (uri.queryParameters["user"] != null) {
               createDio(errHandler: (err, handler) {
                 showErrorSnackbar('Not found');
-              }).get('/users/${uri.queryParameters["user"]}/').then((value) {
+              })
+                  .get(
+                      '${uri.queryParameters["type"] == 'event' ? '' : '/qrcodes'}/users/${uri.queryParameters["user"]}/')
+                  .then((value) {
                 print(value);
                 User user = UserState().convertMapToUser(value.data);
                 if (uri.queryParameters["type"] == 'event') {
@@ -235,7 +243,10 @@ class _MyAppState extends State<MyApp> {
         var type = uri.queryParameters["type"];
         createDio(errHandler: (err, handler) {
           showErrorSnackbar('Not found');
-        }).get('/users/${userId}/').then((value) {
+        })
+            .get('${type == 'event' ? '' : 'qrcodes'}/users/${userId}/',
+                options: Options(headers: {"Authorization": "Bearer 123"}))
+            .then((value) {
           print(value);
           User user = UserState().convertMapToUser(value.data);
           if (type == 'event') {
@@ -415,7 +426,7 @@ class _MyAppState extends State<MyApp> {
           ),
           GetPage(
             name: '/groups/add',
-            page: () => GroupAddScreen(),
+            page: () => GroupAddEditScreen(),
           ),
           GetPage(
             name: '/about',
@@ -476,6 +487,10 @@ class _MyAppState extends State<MyApp> {
           GetPage(
             name: '/qr/partners',
             page: () => QRPartners(),
+          ),
+          GetPage(
+            name: '/qr/child',
+            page: () => QRChildScreen(),
           ),
         ],
         theme: ThemeClass.lightTheme,

@@ -21,11 +21,11 @@ class _TableScheduleScreenState extends State<TableScheduleScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // var placeId = Get.arguments["placeId"];
-      // var groupId = Get.arguments["groupId"];
+      var placeId = Get.arguments["placeId"];
+      var groupId = Get.arguments["groupId"];
       // print('$placeId $groupId');
-      // Provider.of<ScheduleState>(context, listen: false)
-      //     .setSchedule(placeId, groupId);
+      Provider.of<ScheduleState>(context, listen: false)
+          .setSchedule(placeId, groupId);
     });
   }
 
@@ -180,82 +180,76 @@ class Schedule extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: daysOfWeek
+                .map((e) => Container(
+                    width: 120,
+                    margin: EdgeInsets.only(bottom: 16),
+                    child: TimePill(e)))
+                .toList()),
         Container(
-          width: 129,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: daysOfWeek
-                  .map((e) => Container(
-                      margin: EdgeInsets.only(bottom: 16), child: TimePill(e)))
-                  .toList()),
-        ),
-        Container(
-            width: 168,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: daysOfWeek
-                  .map((e) => editMode
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: daysOfWeek
+              .map((e) => editMode
+                  ? Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      child: Row(
+                        children: schedule.days[getDayReverse(e)]!.isNotEmpty
+                            ? [
+                                TimePill(
+                                  schedule.days[getDayReverse(e)]![0]!,
+                                  editMode: true,
+                                  controller:
+                                      getController(getDayReverse(e), 0),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                TimePill(schedule.days[getDayReverse(e)]![1]!,
+                                    controller:
+                                        getController(getDayReverse(e), 1),
+                                    editMode: true),
+                              ]
+                            : [
+                                TimePill(
+                                  '',
+                                  editMode: true,
+                                  controller:
+                                      getController(getDayReverse(e), 0),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                TimePill(
+                                  '',
+                                  editMode: true,
+                                  controller:
+                                      getController(getDayReverse(e), 1),
+                                )
+                              ],
+                      ),
+                    )
+                  : schedule.days[getDayReverse(e)]!.isNotEmpty
                       ? Container(
                           margin: EdgeInsets.only(bottom: 16),
                           child: Row(
-                            children: schedule
-                                    .days[getDayReverse(e)]!.isNotEmpty
-                                ? [
-                                    TimePill(
-                                      schedule.days[getDayReverse(e)]![0]!,
-                                      editMode: true,
-                                      controller:
-                                          getController(getDayReverse(e), 0),
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    TimePill(
-                                        schedule.days[getDayReverse(e)]![1]!,
-                                        controller:
-                                            getController(getDayReverse(e), 1),
-                                        editMode: true),
-                                  ]
-                                : [
-                                    TimePill(
-                                      '',
-                                      editMode: true,
-                                      controller:
-                                          getController(getDayReverse(e), 0),
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    TimePill(
-                                      '',
-                                      editMode: true,
-                                      controller:
-                                          getController(getDayReverse(e), 1),
-                                    )
-                                  ],
+                            children: [
+                              TimePill(schedule.days[getDayReverse(e)]![0]!),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              TimePill(schedule.days[getDayReverse(e)]![1]!),
+                            ],
                           ),
                         )
-                      : schedule.days[getDayReverse(e)]!.isNotEmpty
-                          ? Container(
-                              margin: EdgeInsets.only(bottom: 16),
-                              child: Row(
-                                children: [
-                                  TimePill(
-                                      schedule.days[getDayReverse(e)]![0]!),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  TimePill(
-                                      schedule.days[getDayReverse(e)]![1]!),
-                                ],
-                              ),
-                            )
-                          : Container(
-                              height: 37,
-                              margin: EdgeInsets.only(bottom: 16),
-                            ))
-                  .toList(),
-            ))
+                      : Container(
+                          height: 37,
+                          margin: EdgeInsets.only(bottom: 16),
+                        ))
+              .toList(),
+        ))
       ],
     );
   }
@@ -272,20 +266,34 @@ class TimePill extends StatelessWidget {
     if (editMode)
       return Input(
         height: 37,
-        width: 76,
+        width: 82,
         controller: controller,
         validator: (text) => null,
         defaultText: text,
+        onTap: () async {
+          TimeOfDay? time = await showTimePicker(
+              context: context,
+              initialTime: controller!.text != ''
+                  ? TimeOfDay(
+                      hour: int.parse(controller!.text.split(':')[0]),
+                      minute: int.parse(controller!.text.split(':')[1]))
+                  : TimeOfDay(hour: 0, minute: 0));
+          if (time != null) {
+            controller!.text =
+                '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+          }
+        },
         keyboardType: TextInputType.number,
         centerText: true,
         maxLength: 5,
+        textAlign: TextAlign.start,
         textStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
             color: Theme.of(context).colorScheme.secondary),
       );
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
           color: Theme.of(context).inputDecorationTheme.fillColor,
           borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -293,6 +301,7 @@ class TimePill extends StatelessWidget {
       child: Center(
         child: Text(
           text,
+          textAlign: TextAlign.start,
           style: TextStyle(
               color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,

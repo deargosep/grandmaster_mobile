@@ -22,7 +22,7 @@ class EventsState extends ChangeNotifier {
             .where((el) => el["hidden"] == null || !el["hidden"])
             .map((e) {
           log(e.toString());
-          // DateTime newDate = DateTime.parse(e["created_at"]);
+          DateTime deadlineDate = DateTime.parse(e["deadline_date"]);
           return EventType(
               id: e["id"],
               name: e["name"],
@@ -30,9 +30,11 @@ class EventsState extends ChangeNotifier {
               address: e["address"],
               timeDateStart: DateTime.parse(e["start_date"]),
               timeDateEnd: DateTime.parse(e["end_date"]),
-              cover: e["cover"] ?? '',
+              cover: e["cover"],
               open: e["open"],
               order: e["number"],
+              timeDateDeadline: DateTime.parse(e["deadline_date"]),
+              isAfter: DateTime.now().isAfter(deadlineDate),
               members: <MinimalUser>[
                 ...e["members"]
                     .map((e) => MinimalUser(
@@ -68,22 +70,26 @@ class EventType {
   final name;
   final DateTime timeDateStart;
   final DateTime timeDateEnd;
+  final DateTime timeDateDeadline;
   final description;
   final address;
   final List<MinimalUser> members;
-  final String cover;
+  final String? cover;
   final order;
   final bool open;
+  final bool isAfter;
   EventType(
       {required this.id,
       required this.name,
       required this.timeDateStart,
       required this.timeDateEnd,
+      required this.timeDateDeadline,
       required this.description,
       required this.address,
       required this.cover,
       required this.order,
       required this.open,
+      this.isAfter = false,
       members})
       : members = members ?? [];
 }

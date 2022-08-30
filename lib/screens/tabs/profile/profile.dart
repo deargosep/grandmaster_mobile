@@ -72,7 +72,7 @@ class Info extends StatelessWidget {
         ),
         Text(
           user.birthday != null
-              ? DateFormat('d.MM.y').format(user.birthday!)
+              ? DateFormat('dd.MM.y').format(user.birthday!)
               : '',
           style: TextStyle(
               fontWeight: FontWeight.w500,

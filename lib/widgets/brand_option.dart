@@ -68,7 +68,7 @@ class _OptionState extends State<Option> {
       },
       onTap: widget.onTap,
       child: Container(
-        height: 60,
+        height: 50,
         width: double.infinity,
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
         decoration: BoxDecoration(

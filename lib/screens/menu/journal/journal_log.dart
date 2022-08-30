@@ -55,9 +55,9 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
           onPressed: () {
             if (_formKey.currentState != null) if (_formKey.currentState!
                 .validate()) {
-              dynamic datetimestart = DateFormat('d.MM.y_H:m')
+              dynamic datetimestart = DateFormat('dd.MM.y_HH:mm')
                   .parse('${dateStart.text}_${timeStart.text}');
-              dynamic datetimeend = DateFormat('d.MM.y_H:m')
+              dynamic datetimeend = DateFormat('dd.MM.y_HH:mm')
                   .parse('${dateEnd.text}_${timeEnd.text}');
               datetimestart = DateFormat('y-MM-dT')
                   .add_Hm()

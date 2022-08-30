@@ -67,13 +67,16 @@ class MenuScreen extends StatelessWidget {
           // OptionType('Расписание', links["schedule"]!),
           OptionType('Залы', links["places"]!),
           OptionType('Видео', links["videos"]!),
-          OptionType('QR коды', links["qr"]!),
+          // OptionType('QR коды', links["qr"]!),
           // OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }
       if (user.role == 'guest') {
         return <OptionType>[
+          OptionType('Мероприятия', links["events"]!),
+          OptionType('Видео', links["videos"]!),
+          OptionType('Залы', links["places"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }

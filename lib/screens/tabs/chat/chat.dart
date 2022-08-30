@@ -52,7 +52,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
     // .initSocket(connectListener, messageListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<ChatsState>(context, listen: false).setChats();
+      if (Provider.of<UserState>(context, listen: false).childId == null) {
+        Provider.of<ChatsState>(context, listen: false).setChats(
+            childId: Provider.of<UserState>(context, listen: false).childId);
+      } else {
+        Provider.of<ChatsState>(context, listen: false).setChats();
+      }
       SharedPreferences.getInstance().then((value) {
         channel = WebSocketChannel.connect(
           Uri.parse(
@@ -81,6 +86,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 user: e["author"]["full_name"],
                 text: e["text"],
                 photo: e["image"],
+                prefix: e["prefix"],
                 timedate: DateTime.parse(e["created_at"])))
           ]);
           setState(() {
@@ -127,7 +133,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       // });
       if (text != '' || photo != '')
         channel.sink.add(jsonEncode({
-          "message": {"text": text, "photo": photo}
+          "message": {
+            "text": text,
+            "photo": photo,
+            "id": Provider.of<UserState>(context, listen: false).childId
+          }
         }));
       // showErrorSnackbar('Не удалось отправить сообщение');
 
@@ -286,7 +296,7 @@ class Message extends StatelessWidget {
                   ? Column(
                       children: [
                         Text(
-                          item.user,
+                          '${item.prefix ?? ''}${item.prefix != null ? ' ' : ''}${item.user}',
                           style: TextStyle(color: Color(0xFF9FA6BA)),
                         ),
                         SizedBox(
@@ -558,9 +568,11 @@ class MessageType {
   String text;
   DateTime timedate;
   String? photo;
+  String? prefix;
   MessageType(
       {required this.user,
       this.photo,
+      this.prefix,
       required this.text,
       required this.timedate});
 }

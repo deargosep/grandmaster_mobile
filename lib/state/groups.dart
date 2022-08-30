@@ -22,6 +22,7 @@ class GroupsState extends ChangeNotifier {
           .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
           .toList()
     ];
+    _isLoaded = true;
     _sportsmens = data;
     notifyListeners();
     return data;
@@ -31,6 +32,7 @@ class GroupsState extends ChangeNotifier {
   List<MinimalUser> get sportsmens => _sportsmens;
 
   Future<void> setGroups({List<GroupType>? data}) async {
+    _isLoaded = false;
     var completer = new Completer();
     createDio().get('/sport_groups/').then((value) {
       List<GroupType> newList = [

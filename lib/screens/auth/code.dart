@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
@@ -59,6 +60,22 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.secondary,
                   )),
+              SizedBox(
+                height: 8,
+              ),
+              InkWell(
+                onTap: () {
+                  Get.offAllNamed('/');
+                },
+                child: Text(
+                  "Не ваш номер?",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 32,
               ),
@@ -120,7 +137,7 @@ class Timer extends StatefulWidget {
 
 class _TimerState extends State<Timer> {
   CountdownController controller = CountdownController(autoStart: true);
-
+  var arguments = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return Countdown(
@@ -130,6 +147,11 @@ class _TimerState extends State<Timer> {
         if (time.seconds.inSeconds == 0)
           return InkWell(
             onTap: () {
+              createDio().post('/auth/send_code/',
+                  data: {
+                    "phone_number": '${arguments["raw"]}',
+                  },
+                  options: Options(headers: {}));
               controller.restart();
               controller.start();
             },

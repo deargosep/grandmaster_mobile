@@ -29,11 +29,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
               height: 220,
               width: double.infinity,
               // decoration: BoxDecoration(
-              // color: Theme.of(context).colorScheme.secondary,
-              child: Image.network(
-                item.cover!,
-                fit: BoxFit.cover,
-              ),
+              color: item.cover != null
+                  ? null
+                  : Theme.of(context).colorScheme.secondary,
+              child: item.cover != null
+                  ? Image.network(
+                      item.cover!,
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
             Container(
               margin: EdgeInsets.only(top: 200),
@@ -119,25 +123,31 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           SizedBox(
                             height: 32,
                           ),
-                          Text(
-                            'Тренеры',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
-                          item.trainers != null
+                          item.trainers.isNotEmpty
                               ? Column(
-                                  children: item.trainers
-                                      .map((e) => TrainerCard(e))
-                                      .toList(),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Тренеры',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Column(
+                                      children: item.trainers
+                                          .map((e) => TrainerCard(e))
+                                          .toList(),
+                                    ),
+                                  ],
                                 )
                               : Container(),
-
                           SizedBox(
                             height: 68,
                           )
@@ -192,8 +202,8 @@ class _TrainerCardState extends State<TrainerCard> {
           theme: ExpandableThemeData(
               iconSize: widget.item.schedules!.isNotEmpty ? null : 0,
               iconColor: widget.item.schedules!.isNotEmpty
-                  ? Colors.white
-                  : Theme.of(context).colorScheme.secondary,
+                  ? Theme.of(context).colorScheme.secondary
+                  : Colors.white,
               iconPadding: EdgeInsets.only(top: 27, right: 14)),
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
@@ -257,37 +267,51 @@ class _TrainerCardState extends State<TrainerCard> {
                             SizedBox(
                               height: 8,
                             ),
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    '${e.items.map((e) => e.daysOfWeek.map((e) => getDay(e)))}'
-                                        .replaceAll('(', '')
-                                        .replaceAll(')', ''),
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryContainer)),
-                                SizedBox(
-                                  width: 11,
-                                ),
-                                Container(
-                                  width: 29,
-                                  height: 1,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryContainer,
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                    '${e.items.first.startTime} - ${e.items.first.finishTime}',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryContainer))
+                                ...e.items
+                                    .map(
+                                      (e) => Row(
+                                        children: [
+                                          Container(
+                                            width: e.daysOfWeek.length < 3
+                                                ? 40
+                                                : 60,
+                                            child: Text(
+                                                '${e.daysOfWeek.map((e) => getDay(e))}'
+                                                    .replaceAll('(', '')
+                                                    .replaceAll(')', ''),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondaryContainer)),
+                                          ),
+                                          SizedBox(
+                                            width: 11,
+                                          ),
+                                          Container(
+                                            width: 29,
+                                            height: 1,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondaryContainer,
+                                          ),
+                                          SizedBox(
+                                            width: 16,
+                                          ),
+                                          Text(
+                                              '${e.startTime} - ${e.finishTime}',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryContainer))
+                                        ],
+                                      ),
+                                    )
+                                    .toList()
                               ],
                             ),
                           ],

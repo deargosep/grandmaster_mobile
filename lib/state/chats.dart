@@ -15,6 +15,7 @@ class ChatsState extends ChangeNotifier {
   List<ChatType> get chats => _chats;
   List<ChatType> get chatsWithoutFolders => getChats();
   List<ChatType> get trainersChats => getTrainersChats();
+  List<ChatType> get specialistsChat => getSpecialistsChats();
   List<ChatType> get moderatorsChats => getModeratorsChats();
   List<ChatType> get studentsChats => getStudentsChats();
   bool _isLoaded = false;
@@ -38,6 +39,10 @@ class ChatsState extends ChangeNotifier {
         .toList();
   }
 
+  List<ChatType> getSpecialistsChats() {
+    return _chats.where((element) => element.folder == 'specialists').toList();
+  }
+
   List<ChatType> getTrainersChats() {
     return _chats.where((element) => element.folder == 'trainers').toList();
   }
@@ -50,9 +55,11 @@ class ChatsState extends ChangeNotifier {
     return _chats.where((element) => element.folder == 'moderators').toList();
   }
 
-  Future<void> setChats({List<ChatType>? data}) async {
+  Future<void> setChats({List<ChatType>? data, childId}) async {
     var completer = new Completer();
-    createDio().get('/chats/').then((value) {
+    createDio()
+        .get('/chats/${childId != null ? '?id=' : ''}${childId ?? ''}')
+        .then((value) {
       print(value.data);
       List<ChatType> newList = [
         ...value.data.map((e) {

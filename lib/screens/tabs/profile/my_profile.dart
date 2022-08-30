@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
-import 'package:grandmaster/widgets/images/brand_icon.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -27,7 +24,6 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen>
     with TickerProviderStateMixin {
   late TabController controller;
-  File? _pickedImage;
 
   @override
   void initState() {
@@ -50,82 +46,41 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       return !user.admitted;
     }
 
-    void getImage() {
-      showDialog<ImageSource>(
-        context: context,
-        builder: (context) =>
-            AlertDialog(content: Text("Choose image source"), actions: [
-          FlatButton(
-            child: Text("Camera"),
-            onPressed: () => Navigator.pop(context, ImageSource.camera),
-          ),
-          FlatButton(
-            child: Text("Gallery"),
-            onPressed: () => Navigator.pop(context, ImageSource.gallery),
-          ),
-        ]),
-      ).then((ImageSource? source) async {
-        if (source != null) {
-          final pickedFile = await ImagePicker().pickImage(source: source);
-          setState(() {
-            _pickedImage = File(pickedFile!.path);
-          });
-        }
-      });
-    }
-
     if (user.role == 'moderator' || user.children.isNotEmpty)
-      return Container(
-        width: double.infinity,
-        child: Stack(
+      return CustomScaffold(
+        body: Column(
           children: [
-            Positioned(
-                left: 20,
-                top: 60,
-                child: BrandIcon(
-                  icon: 'back_arrow',
-                  color: Theme.of(context).colorScheme.secondaryContainer,
+            SizedBox(
+              height: 50,
+            ),
+            Container(
+                height: 136,
+                width: 136,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  child: user.photo != null
+                      ? Avatar(
+                          user.photo!,
+                          height: 136,
+                          width: 136,
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Colors.black12,
+                        ),
                 )),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 10,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 32,
-                  ),
-                  Container(
-                      height: 136,
-                      width: 136,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        child: user.photo != null
-                            ? Avatar(
-                                user.photo!,
-                                height: 136,
-                                width: 136,
-                              )
-                            : CircleAvatar(
-                                backgroundColor: Colors.black12,
-                              ),
-                      )),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    user.fullName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
-                  SizedBox(
-                    height: 33,
-                  ),
-                ],
-              ),
+            SizedBox(
+              height: 16,
+            ),
+            Text(
+              user.fullName,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            SizedBox(
+              height: 33,
             ),
           ],
         ),
@@ -228,7 +183,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                 width: 8,
                               ),
                               Text(
-                                isAdmitted() ? 'Не допущен' : 'Допущен',
+                                !isAdmitted() ? 'Не допущен' : 'Допущен',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Theme.of(context)
@@ -308,7 +263,7 @@ class PassportInfo extends StatelessWidget {
               _Item(
                 name: "Дата рождения",
                 value: user.birthday != null
-                    ? DateFormat('d.MM.y').format(user.birthday!)
+                    ? DateFormat('dd.MM.y').format(user.birthday!)
                     : '',
               ),
               _Item(

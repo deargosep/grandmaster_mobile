@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,7 @@ class ChooseChild extends StatelessWidget {
                         onTap: () {
                           Provider.of<UserState>(context, listen: false)
                               .setChildId(user.children[index].id);
+                          Get.back();
                         },
                       ),
                       SizedBox(

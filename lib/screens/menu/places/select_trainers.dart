@@ -69,6 +69,7 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
     return CustomScaffold(
         scrollable: true,
         noTopPadding: true,
+        noPadding: false,
         bottomNavigationBar: BottomPanel(
           child: BrandButton(
             text: editMode ? 'Сохранить' : 'Опубликовать',
@@ -87,7 +88,11 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
                     .patch('/gyms/${id}/',
                         data: formData,
                         options: Options(contentType: 'multipart/form-data'))
-                    .then((value) => Get.offAllNamed('/places'));
+                    .then((value) {
+                  Provider.of<PlacesState>(context, listen: false).setPlaces();
+
+                  Get.offAllNamed('/places');
+                });
               } else {
                 newFormData.fields.add(MapEntry(
                     'trainers',
@@ -101,7 +106,10 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
                     .post('/gyms/',
                         data: formData,
                         options: Options(contentType: 'multipart/form-data'))
-                    .then((value) => Get.offAllNamed('/places'));
+                    .then((value) {
+                  Provider.of<PlacesState>(context, listen: false).setPlaces();
+                  Get.offAndToNamed('/places');
+                });
               }
             },
           ),
@@ -111,6 +119,7 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
           text: '${editMode ? 'Редактирование' : 'Создание'} зала',
         ),
         body: ListView(
+          shrinkWrap: true,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(

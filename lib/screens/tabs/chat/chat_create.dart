@@ -84,7 +84,14 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
                     .toList()
               ]
             }).then((value) {
-              Provider.of<ChatsState>(context, listen: false).setChats();
+              if (Provider.of<UserState>(context, listen: false).childId ==
+                  null) {
+                Provider.of<ChatsState>(context, listen: false).setChats(
+                    childId:
+                        Provider.of<UserState>(context, listen: false).childId);
+              } else {
+                Provider.of<ChatsState>(context, listen: false).setChats();
+              }
               Get.back();
             });
           },

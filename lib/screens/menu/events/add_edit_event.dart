@@ -37,19 +37,27 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
           : Get.arguments?.address ?? '');
   TextEditingController dateStart = TextEditingController(
       text: Get.arguments != null
-          ? DateFormat('d.MM.y').format(Get.arguments?.timeDateStart)
+          ? DateFormat('dd.MM.y').format(Get.arguments?.timeDateStart)
           : '');
   TextEditingController timeStart = TextEditingController(
       text: Get.arguments != null
-          ? DateFormat('H:m').format(Get.arguments?.timeDateStart)
+          ? DateFormat('HH:mm').format(Get.arguments?.timeDateStart)
           : '');
   TextEditingController dateEnd = TextEditingController(
       text: Get.arguments != null
-          ? DateFormat('d.MM.y').format(Get.arguments?.timeDateEnd)
+          ? DateFormat('dd.MM.y').format(Get.arguments?.timeDateEnd)
           : '');
   TextEditingController timeEnd = TextEditingController(
       text: Get.arguments != null
-          ? DateFormat('H:m').format(Get.arguments?.timeDateEnd)
+          ? DateFormat('HH:mm').format(Get.arguments?.timeDateEnd)
+          : '');
+  TextEditingController dateDeadline = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('dd.MM.y').format(Get.arguments?.timeDateDeadline)
+          : '');
+  TextEditingController timeDeadline = TextEditingController(
+      text: Get.arguments != null
+          ? DateFormat('HH:mm').format(Get.arguments?.timeDateDeadline)
           : '');
   TextEditingController order =
       TextEditingController(text: Get.arguments?.order.toString());
@@ -218,6 +226,45 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                 height: 32,
               ),
               Text(
+                'Дата и время окончания записи мероприятия',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              InputDate(
+                label: 'Дата',
+                controller: dateDeadline,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Input(
+                label: 'Время',
+                controller: timeDeadline,
+                maxLength: 5,
+                onTap: () async {
+                  TimeOfDay? time = await showTimePicker(
+                      context: context,
+                      initialTime: timeDeadline.text != ''
+                          ? TimeOfDay(
+                              hour: int.parse(timeDeadline.text.split(':')[0]),
+                              minute:
+                                  int.parse(timeDeadline.text.split(':')[1]))
+                          : TimeOfDay(hour: 0, minute: 0));
+                  if (time != null) {
+                    timeDeadline.text =
+                        '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                  }
+                },
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
                 'Выберите обложку',
                 style: TextStyle(
                     fontSize: 16,
@@ -256,7 +303,16 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                             )
                           : Image.network(xCover!.path)
                       : item != null
-                          ? Image.network(item!.cover)
+                          ? item?.cover != null
+                              ? Image.network(item!.cover!)
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 133, vertical: 28),
+                                  child: BrandIcon(
+                                    icon: 'upload',
+                                    color: Color(0xFFE1D6D6),
+                                  ),
+                                )
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 133, vertical: 28),
@@ -309,11 +365,14 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                     Map<String, dynamic> data = {
                       "name": name.text,
                       "description": description.text,
-                      "start_date": DateFormat('d.MM.y - H:m')
+                      "start_date": DateFormat('dd.MM.y - HH:mm')
                           .parse('${dateStart.text} - ${timeStart.text}')
                           .toString(),
-                      "end_date": DateFormat('d.MM.y - H:m')
+                      "end_date": DateFormat('dd.MM.y - HH:mm')
                           .parse('${dateEnd.text} - ${timeEnd.text}')
+                          .toString(),
+                      "deadline_date": DateFormat('dd.MM.y - HH:mm')
+                          .parse('${dateDeadline.text} - ${timeDeadline.text}')
                           .toString(),
                       "address": address.text,
                       "open": select == 'Открытое' ? 'true' : 'false',

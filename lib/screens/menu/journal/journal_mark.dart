@@ -107,7 +107,7 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
             ),
             Row(
               children: [
-                Pill(DateFormat('d.MM.y').format(visitLog.datetime)),
+                Pill(DateFormat('dd.MM.y').format(visitLog.datetime)),
                 SizedBox(
                   width: 16,
                 ),

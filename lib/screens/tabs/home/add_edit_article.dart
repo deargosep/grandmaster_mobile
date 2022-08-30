@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -15,6 +14,7 @@ import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/input.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -46,10 +46,13 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
       if (item != null && item!.photos.isNotEmpty) {
         List<MyFile> newImages = [];
         for (var e in item!.photos) {
-          Uint8List bytes =
-              (await NetworkAssetBundle(Uri.parse(e["image"])).load(e["image"]))
-                  .buffer
-                  .asUint8List();
+          Uint8List bytes;
+          http.Response response = await http.get(Uri.parse(e["image"]));
+          bytes = response.bodyBytes;
+          // Uint8List bytes =
+          //     (await NetworkAssetBundle(Uri.parse(e["image"])).load(e["image"]))
+          //         .buffer
+          //         .asUint8List();
           newImages.add(MyFile(bytes: bytes, id: e["id"].toString()));
           // newImages.add(File.fromRawPath(bytes));
         }

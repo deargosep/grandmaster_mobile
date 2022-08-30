@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
+import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
-import '../../../utils/bottombar_wrap.dart';
 import '../../../utils/custom_scaffold.dart';
-import '../../../widgets/images/brand_icon.dart';
+import '../../../widgets/tabbar_switch.dart';
+import '../../../widgets/top_tab.dart';
+import 'my_profile.dart';
 
 class ChildProfileScreen extends StatefulWidget {
   const ChildProfileScreen({Key? key}) : super(key: key);
@@ -17,8 +20,10 @@ class ChildProfileScreen extends StatefulWidget {
   State<ChildProfileScreen> createState() => _ChildProfileScreenState();
 }
 
-class _ChildProfileScreenState extends State<ChildProfileScreen> {
+class _ChildProfileScreenState extends State<ChildProfileScreen>
+    with TickerProviderStateMixin {
   late final User user;
+  late TabController controller;
   bool isLoaded = false;
   @override
   void initState() {
@@ -33,9 +38,13 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
               .convertMapToUser(e);
           isLoaded = true;
         });
+        controller = TabController(length: 2, vsync: this);
       });
     });
   }
+
+  final green = Color(0xFF44E467);
+  final red = Color(0xFFE44444);
 
   @override
   Widget build(BuildContext context) {
@@ -45,76 +54,163 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
           child: CircularProgressIndicator(),
         ),
       );
-    return CustomScaffold(
-        bottomNavigationBar: BottomBarWrap(
-          currentTab: 3,
-        ),
-        body: Container(
-          padding: EdgeInsets.only(top: 32, left: 0, right: 0),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              Positioned(
-                left: 0,
-                top: 28,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: BrandIcon(
-                    icon: 'back_arrow',
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ),
-              Positioned(
-                  right: 0,
-                  left: 0,
-                  child: Column(
-                    children: [
-                      Container(
-                          height: 136,
-                          width: 136,
-                          child: ClipRRect(
+    return DefaultTabController(
+      length: 2,
+      child: CustomScaffold(
+        bottomNavigationBar: BottomBarWrap(currentTab: 3),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, value) {
+            return [
+              // SliverToBoxAdapter(child: _buildCarousel()),
+              SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    Positioned(
+                        left: 20,
+                        top: 50,
+                        child: BrandIcon(
+                          icon: 'back_arrow',
+                          color: Theme.of(context).colorScheme.secondary,
+                        )),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 32,
+                        ),
+                        Container(
+                            height: 136,
+                            width: 136,
+                            child: ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(100)),
-                              child: user.photo == null
-                                  ? CircleAvatar(
-                                      backgroundColor: Colors.black12,
-                                    )
-                                  : Avatar(
+                              child: user.photo != null
+                                  ? Avatar(
                                       user.photo!,
                                       height: 136,
                                       width: 136,
-                                    ))),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        user.fullName,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 32,
-                      ),
-                      Divider(
-                        height: 0,
-                      ),
-                      SizedBox(
-                        height: 32,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Info(
-                          user: user,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundColor: Colors.black12,
+                                    ),
+                            )),
+                        SizedBox(
+                          height: 16,
                         ),
-                      )
-                    ],
-                  ))
-            ],
-          ),
-        ));
+                        Text(
+                          user.fullName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 33,
+                        ),
+                        user.passport.sport_qualification != null &&
+                                (user.passport.sport_qualification != '' &&
+                                    user.passport.sport_qualification !=
+                                        'Нет квалификации')
+                            ? Container(
+                                width: 300,
+                                child: Text(
+                                  'Спортивная квалификация: ${user.passport.sport_qualification}',
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryContainer,
+                                      fontSize: 14),
+                                ),
+                              )
+                            : Container(),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                          width: 300,
+                          child: Text(
+                            'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
+                                fontSize: 14),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                height: 18,
+                                width: 18,
+                                child: CircleAvatar(
+                                  backgroundColor: !user.admitted ? red : green,
+                                )),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              !user.admitted ? 'Не допущен' : 'Допущен',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        Divider(),
+                        SizedBox(
+                          height: 32,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 32),
+                          child: TabsSwitch(
+                            controller: controller,
+                            children: [
+                              TopTab(
+                                text: 'Информация',
+                              ),
+                              TopTab(
+                                text: 'Паспорт ребенка',
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(
+              controller: controller,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Info(
+                    user: user,
+                  ),
+                ),
+                PassportInfo(user: user)
+              ]),
+        ),
+      ),
+    );
   }
 }

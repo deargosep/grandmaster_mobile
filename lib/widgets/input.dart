@@ -187,7 +187,7 @@ class _InputDateState extends State<InputDate> {
             firstDate: DateTime.now().subtract(Duration(days: 5)),
             lastDate: DateTime.now().add(Duration(days: 60)));
         if (datetime != null)
-          widget.controller.text = DateFormat('d.MM.y').format(datetime);
+          widget.controller.text = DateFormat('dd.MM.y').format(datetime);
       },
       style: TextStyle(
           color: Color(

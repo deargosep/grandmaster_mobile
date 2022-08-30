@@ -22,10 +22,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<ChatsState>(context, listen: false).setChats();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (Provider.of<UserState>(context, listen: false).user.children.length >
+          1) {
+        await showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return ChooseChild();
+            });
+      }
+      Provider.of<ChatsState>(context, listen: false).setChats(
+          childId: Provider.of<UserState>(context, listen: false).childId);
       Timer.periodic(Duration(seconds: 10), (timer) {
-        if (mounted) Provider.of<ChatsState>(context, listen: false).setChats();
+        if (mounted)
+          Provider.of<ChatsState>(context, listen: false).setChats(
+              childId: Provider.of<UserState>(context, listen: false).childId);
       });
     });
   }
@@ -38,6 +49,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
     List chatsModerators = Provider.of<ChatsState>(context).moderatorsChats;
     List chatsTrainers = Provider.of<ChatsState>(context).trainersChats;
     List chatsStudents = Provider.of<ChatsState>(context).studentsChats;
+    List chatsSpecialists = Provider.of<ChatsState>(context).specialistsChat;
     User user = Provider.of<UserState>(context).user;
     bool isLoaded = Provider.of<ChatsState>(context).isLoaded;
     return CustomScaffold(
@@ -70,6 +82,40 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           child: ListView(
                             // shrinkWrap: true,
                             children: [
+                              chatsSpecialists.isNotEmpty
+                                  ? Column(
+                                      children: [
+                                        GestureDetector(
+                                            behavior:
+                                                HitTestBehavior.translucent,
+                                            onTap: () {
+                                              Get.toNamed('/chat/folder',
+                                                  arguments: 'specialists');
+                                            },
+                                            child: ChatTile(
+                                              ChatType(
+                                                  name: 'Специалисты',
+                                                  lastMessage: '',
+                                                  lastTime: '',
+                                                  id: '',
+                                                  unread: 0,
+                                                  members: []),
+                                              folder: true,
+                                            )),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Divider(),
+                                            SizedBox(
+                                              height: 16,
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  : Container(),
                               chatsModerators.isNotEmpty
                                   ? Column(
                                       children: [
@@ -182,36 +228,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                 behavior:
                                                     HitTestBehavior.translucent,
                                                 onTap: () {
-                                                  if (Provider.of<UserState>(
-                                                          context,
-                                                          listen: false)
-                                                      .user
-                                                      .children
-                                                      .isNotEmpty) {
-                                                    showModalBottomSheet(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        isDismissible: false,
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            ChooseChild()).then(
-                                                        (value) {
-                                                      if (Provider.of<UserState>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .childId !=
-                                                          '')
-                                                        Get.toNamed('/chat',
-                                                            arguments:
-                                                                chatsWithoutFolders[
-                                                                    index]);
-                                                    });
-                                                  } else {
-                                                    Get.toNamed('/chat',
-                                                        arguments:
-                                                            chatsWithoutFolders[
-                                                                index]);
-                                                  }
+                                                  Get.toNamed('/chat',
+                                                      arguments:
+                                                          chatsWithoutFolders[
+                                                              index]);
                                                 },
                                                 child: ChatTile(
                                                     chatsWithoutFolders[
@@ -240,7 +260,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         )),
                   )
                 : Center(
-                    child: Text('Нет новостей'),
+                    child: Text('Нет чатов'),
                   )
             : Center(child: CircularProgressIndicator()));
   }
@@ -283,7 +303,7 @@ class ChatTile extends StatelessWidget {
                     data.name,
                     textAlign: TextAlign.start,
                     maxLines: 1,
-                    overflow: TextOverflow.fade,
+                    overflow: TextOverflow.clip,
                     softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,

@@ -57,7 +57,9 @@ class _EventScreenState extends State<EventScreen> {
           withShadow: false,
           height: zapisan ? 148.0 : 85.0,
           child: getRole() == 'moderator' ||
-                  (getRole() == 'sportsmen' && !item.open)
+                  getRole() == 'guest' ||
+                  (getRole() == 'sportsmen' && !item.open) ||
+                  (getRole() == 'sportsmen' && item.isAfter)
               ? Container()
               : Column(
                   children: [
@@ -101,7 +103,11 @@ class _EventScreenState extends State<EventScreen> {
                                   '/events/members/',
                                   data: {"members": []},
                                   queryParameters: {"event": item.id},
-                                );
+                                ).then((value) {
+                                  Provider.of<EventsState>(context,
+                                          listen: false)
+                                      .setEvents();
+                                });
                               }
                             }
 
@@ -122,6 +128,8 @@ class _EventScreenState extends State<EventScreen> {
                                       .id)
                                 ]
                               }).then((value) {
+                                Provider.of<EventsState>(context, listen: false)
+                                    .setEvents();
                                 Get.toNamed('/success',
                                     arguments:
                                         'Вы успешно записались на мероприятие');
@@ -198,7 +206,7 @@ class _EventScreenState extends State<EventScreen> {
                               : hasMoreThanOneChild()
                                   ? 'Записать спортсменов'
                                   : item.members.isNotEmpty
-                                      ? 'Записаться'
+                                      ? 'Записать спортсменов'
                                       : 'Нет пользователей для записи',
                       textStyle: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -216,10 +224,15 @@ class _EventScreenState extends State<EventScreen> {
           Container(
             height: 220,
             width: double.infinity,
-            child: Image.network(
-              item.cover,
-              fit: BoxFit.cover,
-            ),
+            child: item.cover != null
+                ? Image.network(
+                    item.cover!,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    height: 220,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
           ),
           Container(
             margin: EdgeInsets.only(top: 200),
@@ -314,7 +327,7 @@ class _EventScreenState extends State<EventScreen> {
                               width: 10,
                             ),
                             Text(
-                              "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                              "${DateFormat('dd.MM.y').format(item.timeDateStart)} в ${DateFormat('HH:mm').format(item.timeDateStart)} - ${DateFormat('dd.MM.y').format(item.timeDateEnd)}",
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -380,7 +393,7 @@ class _EventScreenState extends State<EventScreen> {
                                       .secondaryContainer),
                             ),
                             Text(
-                              " ${DateFormat('d.MM.y').format(item.timeDateEnd)} в ${DateFormat('Hm').format(item.timeDateEnd)}",
+                              " ${DateFormat('dd.MM.y').format(item.timeDateDeadline)} в ${DateFormat('HH:mm').format(item.timeDateDeadline)}",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,

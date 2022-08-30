@@ -34,7 +34,7 @@ class MembersScreen extends StatelessWidget {
       child: Column(
         children: [
           Header(
-            text: 'Список участников чата',
+            text: 'Список участников',
           ),
           SizedBox(
             height: 32,
@@ -89,14 +89,18 @@ class MembersScreen extends StatelessWidget {
                                   SizedBox(
                                     width: 16,
                                   ),
-                                  Text(
-                                    members[index].fullName,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryContainer),
+                                  Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      members[index].fullName,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryContainer),
+                                    ),
                                   ),
                                 ],
                               ),

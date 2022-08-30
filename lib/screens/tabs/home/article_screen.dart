@@ -48,7 +48,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     item.cover,
                     fit: BoxFit.cover,
                   )
-                : null,
+                : Container(color: Theme.of(context).colorScheme.secondary),
           ),
           Container(
             margin: EdgeInsets.only(top: 200),
@@ -85,7 +85,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              DateFormat('d MMMM y, H:m').format(item.dateTime),
+                              DateFormat('dd MMMM y, HH:mm')
+                                  .format(item.dateTime),
                               style: TextStyle(
                                   fontSize: 12,
                                   color:

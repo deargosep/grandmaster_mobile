@@ -7,7 +7,6 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
-import '../../../widgets/choose_child.dart';
 import 'chats.dart';
 
 class FolderScreen extends StatefulWidget {
@@ -37,9 +36,11 @@ class _FolderScreenState extends State<FolderScreen> {
     List chatsModerators = Provider.of<ChatsState>(context).moderatorsChats;
     List chatsTrainers = Provider.of<ChatsState>(context).trainersChats;
     List chatsStudents = Provider.of<ChatsState>(context).studentsChats;
+    List chatsSpecialists = Provider.of<ChatsState>(context).specialistsChat;
     if (folder == 'trainers') chatsWithoutFolders = chatsTrainers;
     if (folder == 'moderators') chatsWithoutFolders = chatsModerators;
     if (folder == 'students') chatsWithoutFolders = chatsStudents;
+    if (folder == 'specialists') chatsWithoutFolders = chatsSpecialists;
     User user = Provider.of<UserState>(context).user;
     bool isLoaded = Provider.of<ChatsState>(context).isLoaded;
     return CustomScaffold(
@@ -54,7 +55,9 @@ class _FolderScreenState extends State<FolderScreen> {
                       ? 'Модераторы'
                       : folder == 'students'
                           ? 'Студенты'
-                          : ''),
+                          : folder == 'specialists'
+                              ? 'Специалисты'
+                              : ''),
         ),
         body: isLoaded
             ? chats.isNotEmpty
@@ -72,33 +75,9 @@ class _FolderScreenState extends State<FolderScreen> {
                                     GestureDetector(
                                         behavior: HitTestBehavior.translucent,
                                         onTap: () {
-                                          if (Provider.of<UserState>(context,
-                                                  listen: false)
-                                              .user
-                                              .children
-                                              .isNotEmpty) {
-                                            showModalBottomSheet(
-                                                backgroundColor: Colors.white,
-                                                isDismissible: false,
-                                                context: context,
-                                                builder: (context) =>
-                                                    ChooseChild()).then(
-                                                (value) {
-                                              if (Provider.of<UserState>(
-                                                          context,
-                                                          listen: false)
-                                                      .childId !=
-                                                  '')
-                                                Get.toNamed('/chat',
-                                                    arguments:
-                                                        chatsWithoutFolders[
-                                                            index]);
-                                            });
-                                          } else {
-                                            Get.toNamed('/chat',
-                                                arguments:
-                                                    chatsWithoutFolders[index]);
-                                          }
+                                          Get.toNamed('/chat',
+                                              arguments:
+                                                  chatsWithoutFolders[index]);
                                         },
                                         child: ChatTile(
                                             chatsWithoutFolders[index])),
@@ -121,7 +100,7 @@ class _FolderScreenState extends State<FolderScreen> {
                           : Container(),
                     ))
                 : Center(
-                    child: Text('Нет новостей'),
+                    child: Text('Нет чатов'),
                   )
             : Center(child: CircularProgressIndicator()));
   }

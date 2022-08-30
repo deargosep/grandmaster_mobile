@@ -59,6 +59,8 @@ dependencies:
   image_picker_for_web: ^2.1.8
   mask_text_input_formatter: ^2.4.0
   masked_text: ^1.0.2
+  phone_number: ^1.0.0
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"

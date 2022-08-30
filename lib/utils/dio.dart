@@ -37,7 +37,12 @@ Dio createDio(
     return handler.next(options);
   }, onError: (error, handler) {
     if (showSnackbar) {
-      showErrorSnackbar(error.message);
+      if (error.response?.statusCode != 500) {
+        if (error.response?.data["details"] != null)
+          showErrorSnackbar(error.response?.data["details"]);
+      } else {
+        showErrorSnackbar('Ошибка сервера. Попробуйте позднее');
+      }
     }
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {

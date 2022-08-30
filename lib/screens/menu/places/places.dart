@@ -114,7 +114,7 @@ class PlaceCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 child: item.cover != null
                     ? LoadingImage(item.cover!)
-                    : Container(),
+                    : Container(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
             // meta info

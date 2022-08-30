@@ -126,7 +126,11 @@ class AboutCard extends StatelessWidget {
           Container(
             height: 132,
             width: double.infinity,
-            child: item.cover != null ? LoadingImage(item.cover) : Container(),
+            child: item.cover != null
+                ? LoadingImage(item.cover)
+                : Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
           ), // TODO: should be an Image (backend)
           // meta info
           Padding(

@@ -38,6 +38,32 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
   var groupId = Get.arguments["groupId"];
   var createMode = Get.arguments["createMode"];
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ScheduleType schedule =
+          Provider.of<ScheduleState>(context, listen: false).schedule;
+      try {
+        monday1.text = schedule.days["monday"]?.first ?? '';
+        monday2.text = schedule.days["monday"]?.last ?? '';
+        tuesday1.text = schedule.days["tuesday"]?.first ?? '';
+        tuesday2.text = schedule.days["tuesday"]?.last ?? '';
+        wednesday1.text = schedule.days["wednesday"]?.first ?? '';
+        wednesday2.text = schedule.days["wednesday"]?.last ?? '';
+        thursday1.text = schedule.days["thursday"]?.first ?? '';
+        thursday2.text = schedule.days["thursday"]?.last ?? '';
+        friday1.text = schedule.days["friday"]?.first ?? '';
+        friday2.text = schedule.days["friday"]?.last ?? '';
+        saturday1.text = schedule.days["saturday"]?.first ?? '';
+        saturday2.text = schedule.days["saturday"]?.last ?? '';
+        sunday1.text = schedule.days["sunday"]?.first ?? '';
+        sunday2.text = schedule.days["sunday"]?.last ?? '';
+      } catch (e) {}
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Map<String, List<String>> schedule = {
     //   "Понедельник": ['10:30', '10:30'],
@@ -53,6 +79,7 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
 
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         bottomNavigationBar: BottomPanel(
             withShadow: false,
             child: BrandButton(

@@ -14,33 +14,50 @@ import '../../../utils/dio.dart';
 import '../../../widgets/checkboxes_list.dart';
 import '../../../widgets/input.dart';
 
-class GroupAddScreen extends StatefulWidget {
-  const GroupAddScreen({Key? key}) : super(key: key);
+class GroupAddEditScreen extends StatefulWidget {
+  const GroupAddEditScreen({Key? key}) : super(key: key);
 
   @override
-  State<GroupAddScreen> createState() => _GroupAddScreenState();
+  State<GroupAddEditScreen> createState() => _GroupAddEditScreenState();
 }
 
-class _GroupAddScreenState extends State<GroupAddScreen> {
+class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
   Map<String, bool>? checkboxes;
-
+  GroupType? group = Get.arguments;
   TextEditingController name = TextEditingController();
   TextEditingController minAge = TextEditingController();
   TextEditingController maxAge = TextEditingController();
-
+  bool isLoaded = false;
   @override
   void initState() {
     super.initState();
     setState(() {
       checkboxes = {};
     });
+    name.text = group?.name ?? '';
+    minAge.text = group?.minAge.toString() ?? '';
+    maxAge.text = group?.maxAge.toString() ?? '';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<GroupsState>(context, listen: false)
           .setSportsmens()
           .then((value) {
-        setState(() {
-          checkboxes = {for (var v in value) '${v.id}_${v.fullName}': false};
-        });
+        if (group != null) {
+          List<MinimalUser> members = group!.members;
+          setState(() {
+            checkboxes = {
+              for (var v in value)
+                '${v.id}_${v.fullName}':
+                    members.firstWhereOrNull((element) => element.id == v.id) !=
+                        null
+            };
+            isLoaded = true;
+          });
+        } else {
+          setState(() {
+            checkboxes = {for (var v in value) '${v.id}_${v.fullName}': false};
+            isLoaded = true;
+          });
+        }
       });
     });
   }
@@ -53,43 +70,70 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
       });
     }
 
+    bool editMode = group != null;
+
     return CustomScaffold(
       // scrollable: true,
       noTopPadding: true,
       noPadding: false,
       appBar: AppHeader(
-        text: 'Создание группы',
+        text: '${editMode ? 'Редактирование' : 'Создание'} группы',
       ),
       bottomNavigationBar: BottomPanel(
         withShadow: false,
         child: BrandButton(
           text: Get.arguments != null ? 'Сохранить' : 'Опубликовать',
           onPressed: () {
-            Map data = {
-              "name": name.text,
-              "min_age": int.parse(minAge.text),
-              "max_age": int.parse(maxAge.text),
-              "members": [
-                ...?checkboxes?.entries
-                    .where((map) => map.value)
-                    .toList()
-                    .map((e) => e.key.split('_')[0])
-              ],
-              "trainer": Provider.of<UserState>(context, listen: false)
-                  .user
-                  .id
-                  .toString()
-            };
-            createDio()
-                .post(
-              '/sport_groups/',
-              data: data,
-            )
-                .then((value) {
-              log(value.toString());
-              Provider.of<GroupsState>(context, listen: false).setGroups();
-              Get.back();
-            });
+            Map data;
+            if (group != null) {
+              data = {
+                "name": name.text,
+                "min_age": int.parse(minAge.text),
+                "max_age": int.parse(maxAge.text),
+                "members": [
+                  ...?checkboxes?.entries
+                      .where((map) => map.value)
+                      .toList()
+                      .map((e) => e.key.split('_')[0])
+                ],
+              };
+              createDio()
+                  .patch(
+                '/sport_groups/${group?.id}/',
+                data: data,
+              )
+                  .then((value) {
+                log(value.toString());
+                Provider.of<GroupsState>(context, listen: false).setGroups();
+                Get.back();
+              });
+            } else {
+              data = {
+                "name": name.text,
+                "min_age": int.parse(minAge.text),
+                "max_age": int.parse(maxAge.text),
+                "members": [
+                  ...?checkboxes?.entries
+                      .where((map) => map.value)
+                      .toList()
+                      .map((e) => e.key.split('_')[0])
+                ],
+                "trainer": Provider.of<UserState>(context, listen: false)
+                    .user
+                    .id
+                    .toString()
+              };
+              createDio()
+                  .post(
+                '/sport_groups/',
+                data: data,
+              )
+                  .then((value) {
+                log(value.toString());
+                Provider.of<GroupsState>(context, listen: false).setGroups();
+                Get.back();
+              });
+            }
           },
         ),
       ),
@@ -155,10 +199,14 @@ class _GroupAddScreenState extends State<GroupAddScreen> {
           SizedBox(
             height: 32,
           ),
-          CheckboxesList(
-            changeCheckbox: changeCheckboxesState,
-            checkboxes: checkboxes,
-          )
+          isLoaded
+              ? CheckboxesList(
+                  changeCheckbox: changeCheckboxesState,
+                  checkboxes: checkboxes,
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                )
         ],
       ),
     );
