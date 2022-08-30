@@ -58,7 +58,7 @@ class Header extends StatelessWidget {
                   child: Text(
                     text ?? '',
                     textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
+                    overflow: TextOverflow.fade,
                     softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -101,7 +101,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       this.iconOnTap,
       this.padding,
       this.bottomChild,
-      this.onTap})
+      this.onTap,
+      this.textColor})
       : super(key: key);
   final text;
   bool withPadding;
@@ -111,6 +112,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget? bottomChild;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;
+  final Color? textColor;
 
   @override
   final Size preferredSize = Size(56, 66); // default is 56.0
@@ -141,7 +143,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         onTap: onTap,
                         height: 17,
                         width: 10,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: textColor ??
+                            Theme.of(context).colorScheme.secondary,
                       ),
                     ]),
               Container(
@@ -149,12 +152,13 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     icon != '' ? 250 : MediaQuery.of(context).size.width - 80,
                 child: Text(
                   text ?? '',
-                  overflow: TextOverflow.clip,
+                  overflow: TextOverflow.fade,
                   softWrap: false,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
-                      color: Theme.of(context).colorScheme.secondary),
+                      color:
+                          textColor ?? Theme.of(context).colorScheme.secondary),
                 ),
               ),
               Spacer(),

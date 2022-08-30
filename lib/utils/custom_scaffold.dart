@@ -13,7 +13,8 @@ class CustomScaffold extends StatefulWidget {
       this.onlyTopPadding,
       EdgeInsets? this.padding,
       this.bottomNavigationBar,
-      this.appBar})
+      this.appBar,
+      this.backgroundColor})
       : super(key: key);
   final body;
   bool? scrollable = false;
@@ -26,6 +27,7 @@ class CustomScaffold extends StatefulWidget {
   EdgeInsets? padding = EdgeInsets.zero;
   final bottomNavigationBar;
   final appBar;
+  final Color? backgroundColor;
 
   @override
   State<CustomScaffold> createState() => _CustomScaffoldState();
@@ -54,6 +56,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Scaffold(
+          backgroundColor: widget.backgroundColor,
           appBar: widget.appBar,
           bottomNavigationBar: widget.bottomNavigationBar,
           body: LayoutBuilder(builder: (context, constraint) {
@@ -105,6 +108,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
+        backgroundColor: widget.backgroundColor,
         appBar: widget.appBar,
         bottomNavigationBar: widget.bottomNavigationBar,
         body: Center(

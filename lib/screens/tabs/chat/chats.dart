@@ -303,7 +303,7 @@ class ChatTile extends StatelessWidget {
                     data.name,
                     textAlign: TextAlign.start,
                     maxLines: 1,
-                    overflow: TextOverflow.clip,
+                    overflow: TextOverflow.fade,
                     softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,

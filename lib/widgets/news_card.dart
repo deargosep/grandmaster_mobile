@@ -53,7 +53,7 @@ class NewsCard extends StatelessWidget {
                         item.name,
                         textAlign: TextAlign.start,
                         maxLines: 1,
-                        overflow: TextOverflow.clip,
+                        overflow: TextOverflow.fade,
                         softWrap: false,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -68,18 +68,15 @@ class NewsCard extends StatelessWidget {
             // description
             Container(
               padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-              child: Container(
-                height: 33,
-                child: Text(
-                  item.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.clip,
-                  softWrap: false,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFFAC9595)),
-                ),
+              child: Text(
+                item.description,
+                maxLines: 2,
+                overflow: TextOverflow.fade,
+                softWrap: true,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFAC9595)),
               ),
             ),
             SizedBox(
