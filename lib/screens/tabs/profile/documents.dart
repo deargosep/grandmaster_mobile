@@ -23,7 +23,8 @@ class DocumentsScreen extends StatelessWidget {
       OptionType('Загранпаспорт', destination, arguments: 6),
       OptionType('ИНН', destination, arguments: 7),
       OptionType('Диплом об образовании', destination, arguments: 8),
-      OptionType('СНИЛС', destination, arguments: 9)
+      OptionType('СНИЛС', destination, arguments: 9),
+      OptionType('Другие документы', destination, arguments: "other")
     ];
     User user = Provider.of<UserState>(context, listen: false).user;
     if (user.role == 'trainer') {
@@ -37,7 +38,8 @@ class DocumentsScreen extends StatelessWidget {
         OptionType('Загранпаспорт', destination, arguments: 6),
         OptionType('ИНН', destination, arguments: 7),
         OptionType('Диплом об образовании', destination, arguments: 8),
-        OptionType('СНИЛС', destination, arguments: 9)
+        OptionType('СНИЛС', destination, arguments: 9),
+        OptionType('Другие документы', destination, arguments: "other")
       ];
     }
     return CustomScaffold(

@@ -18,14 +18,14 @@ class DocumentScreen extends StatefulWidget {
 }
 
 class _DocumentScreenState extends State<DocumentScreen> {
-  final initialIndex = Get.arguments;
+  final arguments = Get.arguments;
   int currentIndex = 0;
   CarouselController controller = CarouselController();
 
   @override
   void initState() {
     super.initState();
-    currentIndex = initialIndex;
+    if (arguments != 'other') currentIndex = arguments;
   }
 
   List<Map> optionList = [
@@ -46,6 +46,80 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (arguments == 'other') {
+      return FutureBuilder<Response>(
+          future: createDio().get(Provider.of<UserState>(context, listen: false)
+              .user
+              .documentsUrl!),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return CustomScaffold(
+                  appBar: AppHeader(
+                    text: "Другие документы",
+                  ),
+                  body: Center(child: CircularProgressIndicator()));
+            List other_documents = snapshot.data?.data["other_documents"];
+            if (other_documents.isEmpty)
+              return CustomScaffold(
+                  appBar: AppHeader(
+                    text: "Другие документы",
+                  ),
+                  body: Center(
+                    child: Text('Нет других документов'),
+                  ));
+            return CustomScaffold(
+                noHorPadding: true,
+                noPadding: false,
+                appBar: AppHeader(
+                  text: "Другие документы",
+                ),
+                body: Center(
+                    child: CarouselSlider(
+                  carouselController: controller,
+                  options: CarouselOptions(
+                    onPageChanged: (ind, CarouselPageChangedReason reason) {
+                      setState(() {
+                        currentIndex = ind;
+                      });
+                    },
+                    initialPage: 0,
+                    viewportFraction: 1,
+                    height: 335.0,
+                    enableInfiniteScroll: false,
+                  ),
+                  items: other_documents.map((i) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (other_documents[i] != null)
+                              Get.toNamed(
+                                  '/my_profile/documents/document/watch',
+                                  arguments: other_documents[i]);
+                          },
+                          child: Container(
+                            height: 335,
+                            width: 335,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFEFEFEF),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: other_documents[i] != null
+                                ? LoadingImage(other_documents[i])
+                                : Center(
+                                    child: Text(
+                                    "Нет документа",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  )),
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                )));
+          });
+    }
     return FutureBuilder<Response>(
         future: createDio().get(
             Provider.of<UserState>(context, listen: false).user.documentsUrl!),
@@ -65,7 +139,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                       currentIndex = ind;
                     });
                   },
-                  initialPage: initialIndex,
+                  initialPage: arguments,
                   viewportFraction: 1,
                   height: 335.0,
                   enableInfiniteScroll: false,
