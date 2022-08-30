@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide FormData;
+import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -59,7 +59,16 @@ class _AddEditPlaceState extends State<AddEditPlace> {
               };
               FormData formData = FormData.fromMap(data);
               if (cover != null) {
-                formData = await getFormFromFile(cover!, 'cover', data);
+                if (!kIsWeb) {
+                  formData = await getFormFromFile(cover!, 'cover', data);
+                } else {
+                  formData = FormData.fromMap({
+                    ...data,
+                    "cover": await MultipartFile.fromBytes(
+                        await cover!.readAsBytes(),
+                        filename: cover!.name.substring(cover!.name.length - 8))
+                  });
+                }
               }
               if (item != null) {
                 Get.toNamed('/places/add/trainers', arguments: {
@@ -184,17 +193,17 @@ class _AddEditPlaceState extends State<AddEditPlace> {
                   decoration: BoxDecoration(
                       color: Color(0xFFFBF7F7),
                       borderRadius: BorderRadius.all(Radius.circular(15))),
-                  child: item?.cover != null
-                      ? Image.network(item!.cover!)
-                      : cover != null
-                          ? !kIsWeb
-                              ? Image.file(
-                                  File(cover!.path),
-                                  height: 132,
-                                  width: double.maxFinite,
-                                )
-                              : Image.network(cover!.path,
-                                  height: 132, width: double.maxFinite)
+                  child: cover != null
+                      ? !kIsWeb
+                          ? Image.file(
+                              File(cover!.path),
+                              height: 132,
+                              width: double.maxFinite,
+                            )
+                          : Image.network(cover!.path,
+                              height: 132, width: double.maxFinite)
+                      : item?.cover != null
+                          ? Image.network(item!.cover!)
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 133, vertical: 28),

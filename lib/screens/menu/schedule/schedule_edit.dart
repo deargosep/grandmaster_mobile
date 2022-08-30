@@ -44,22 +44,34 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ScheduleType schedule =
           Provider.of<ScheduleState>(context, listen: false).schedule;
-      try {
-        monday1.text = schedule.days["monday"]?.first ?? '';
-        monday2.text = schedule.days["monday"]?.last ?? '';
-        tuesday1.text = schedule.days["tuesday"]?.first ?? '';
-        tuesday2.text = schedule.days["tuesday"]?.last ?? '';
-        wednesday1.text = schedule.days["wednesday"]?.first ?? '';
-        wednesday2.text = schedule.days["wednesday"]?.last ?? '';
-        thursday1.text = schedule.days["thursday"]?.first ?? '';
-        thursday2.text = schedule.days["thursday"]?.last ?? '';
-        friday1.text = schedule.days["friday"]?.first ?? '';
-        friday2.text = schedule.days["friday"]?.last ?? '';
-        saturday1.text = schedule.days["saturday"]?.first ?? '';
-        saturday2.text = schedule.days["saturday"]?.last ?? '';
-        sunday1.text = schedule.days["sunday"]?.first ?? '';
-        sunday2.text = schedule.days["sunday"]?.last ?? '';
-      } catch (e) {}
+      if (schedule.days["monday"]!.isNotEmpty) {
+        monday1.text = schedule.days["monday"]?[0] ?? '';
+        monday2.text = schedule.days["monday"]?[1] ?? '';
+      }
+      if (schedule.days["tuesday"]!.isNotEmpty) {
+        tuesday1.text = schedule.days["tuesday"]?[0] ?? '';
+        tuesday2.text = schedule.days["tuesday"]?[1] ?? '';
+      }
+      if (schedule.days["wednesday"]!.isNotEmpty) {
+        wednesday1.text = schedule.days["wednesday"]?[0] ?? '';
+        wednesday2.text = schedule.days["wednesday"]?[1] ?? '';
+      }
+      if (schedule.days["thursday"]!.isNotEmpty) {
+        thursday1.text = schedule.days["thursday"]?[0] ?? '';
+        thursday2.text = schedule.days["thursday"]?[1] ?? '';
+      }
+      if (schedule.days["friday"]!.isNotEmpty) {
+        friday1.text = schedule.days["friday"]?[0] ?? '';
+        friday2.text = schedule.days["friday"]?[1] ?? '';
+      }
+      if (schedule.days["saturday"]!.isNotEmpty) {
+        saturday1.text = schedule.days["saturday"]?[0] ?? '';
+        saturday2.text = schedule.days["saturday"]?[1] ?? '';
+      }
+      if (schedule.days["sunday"]!.isNotEmpty) {
+        sunday1.text = schedule.days["sunday"]?[0] ?? '';
+        sunday2.text = schedule.days["sunday"]?[1] ?? '';
+      }
     });
   }
 

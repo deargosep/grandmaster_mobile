@@ -264,33 +264,38 @@ class TimePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (editMode)
-      return Input(
-        height: 37,
-        width: 82,
-        controller: controller,
-        validator: (text) => null,
-        defaultText: text,
-        onTap: () async {
-          TimeOfDay? time = await showTimePicker(
-              context: context,
-              initialTime: controller!.text != ''
-                  ? TimeOfDay(
-                      hour: int.parse(controller!.text.split(':')[0]),
-                      minute: int.parse(controller!.text.split(':')[1]))
-                  : TimeOfDay(hour: 0, minute: 0));
-          if (time != null) {
-            controller!.text =
-                '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
-          }
+      return GestureDetector(
+        onLongPress: () {
+          controller!.text = '';
         },
-        keyboardType: TextInputType.number,
-        centerText: true,
-        maxLength: 5,
-        textAlign: TextAlign.start,
-        textStyle: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Theme.of(context).colorScheme.secondary),
+        child: Input(
+          height: 37,
+          width: 82,
+          controller: controller,
+          validator: (text) => null,
+          defaultText: text,
+          onTap: () async {
+            TimeOfDay? time = await showTimePicker(
+                context: context,
+                initialTime: controller!.text != ''
+                    ? TimeOfDay(
+                        hour: int.parse(controller!.text.split(':')[0]),
+                        minute: int.parse(controller!.text.split(':')[1]))
+                    : TimeOfDay(hour: 0, minute: 0));
+            if (time != null) {
+              controller!.text =
+                  '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+            }
+          },
+          keyboardType: TextInputType.number,
+          centerText: true,
+          maxLength: 5,
+          textAlign: TextAlign.start,
+          textStyle: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.secondary),
+        ),
       );
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),

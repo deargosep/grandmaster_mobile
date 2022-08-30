@@ -58,7 +58,7 @@ class PlacesState extends ChangeNotifier {
                             ]))
                     .toList()
               ],
-              order: e["order"] ?? e["number"]);
+              order: e["order"]);
         }).toList()
       ];
       _places = newList;

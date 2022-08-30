@@ -49,8 +49,9 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
                     ? true
                     : false,
             };
+          } else {
+            checkboxes = {for (var v in trainers) '${v.id}_${v.fio}': false};
           }
-          checkboxes = {for (var v in trainers) '${v.id}_${v.fio}': false};
         });
       });
     });

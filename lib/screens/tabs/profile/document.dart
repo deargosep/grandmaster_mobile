@@ -92,10 +92,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                       builder: (BuildContext context) {
                         return GestureDetector(
                           onTap: () {
-                            if (other_documents[i] != null)
+                            if (i != null)
                               Get.toNamed(
                                   '/my_profile/documents/document/watch',
-                                  arguments: other_documents[i]);
+                                  arguments: i);
                           },
                           child: Container(
                             height: 335,
@@ -104,8 +104,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 color: Color(0xFFEFEFEF),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
-                            child: other_documents[i] != null
-                                ? LoadingImage(other_documents[i])
+                            child: i != null
+                                ? LoadingImage(i)
                                 : Center(
                                     child: Text(
                                     "Нет документа",

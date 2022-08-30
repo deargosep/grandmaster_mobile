@@ -21,7 +21,8 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<PlacesState>(context, listen: false).setPlaces();
+      Provider.of<PlacesState>(context, listen: false)
+          .setPlaces(url: '/gyms/trainers/');
     });
   }
 

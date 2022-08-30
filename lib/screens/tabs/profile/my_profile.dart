@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
-import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +42,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       user = Get.arguments;
     }
     bool isAdmitted() {
-      return !user.admitted;
+      return user.admitted;
     }
 
     if (user.role == 'moderator' || user.children.isNotEmpty)
@@ -177,7 +176,8 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                   height: 18,
                                   width: 18,
                                   child: CircleAvatar(
-                                    backgroundColor: isAdmitted() ? red : green,
+                                    backgroundColor:
+                                        !isAdmitted() ? red : green,
                                   )),
                               SizedBox(
                                 width: 8,

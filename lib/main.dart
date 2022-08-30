@@ -278,6 +278,10 @@ class _MyAppState extends State<MyApp> {
       ],
       child: GetMaterialApp(
         title: 'Grandmaster',
+
+        builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!),
         // onGenerateRoute: (settings) {
         //   print(settings);
         //   if (settings.name != null) {

@@ -33,7 +33,7 @@ class EventsState extends ChangeNotifier {
               cover: e["cover"],
               open: e["open"],
               ended: e["ended"],
-              order: e["number"],
+              order: e["order"],
               timeDateDeadline: DateTime.parse(e["deadline_date"]),
               isAfter: DateTime.now().isAfter(deadlineDate),
               members: <MinimalUser>[

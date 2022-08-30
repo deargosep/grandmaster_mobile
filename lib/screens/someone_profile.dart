@@ -62,7 +62,10 @@ class SomeoneProfile extends StatelessWidget {
                         createDio().get('/chats/${user.chatId}/').then((value) {
                           print(value.data);
                           Provider.of<ChatsState>(context, listen: false)
-                              .setChats()
+                              .setChats(
+                                  childId: Provider.of<UserState>(context,
+                                          listen: false)
+                                      .childId)
                               .then((value) {
                             Get.toNamed('/chat',
                                 arguments: Provider.of<ChatsState>(context,

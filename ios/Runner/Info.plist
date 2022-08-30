@@ -16,6 +16,7 @@
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>grandmaster</string>
+					<string>https</string>
 				</array>
 			</dict>
 		</array>

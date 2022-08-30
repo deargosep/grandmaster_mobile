@@ -52,12 +52,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
     // .initSocket(connectListener, messageListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (Provider.of<UserState>(context, listen: false).childId == null) {
-        Provider.of<ChatsState>(context, listen: false).setChats(
-            childId: Provider.of<UserState>(context, listen: false).childId);
-      } else {
-        Provider.of<ChatsState>(context, listen: false).setChats();
-      }
+      Provider.of<ChatsState>(context, listen: false).setChats(
+          childId: Provider.of<UserState>(context, listen: false).childId);
       SharedPreferences.getInstance().then((value) {
         channel = WebSocketChannel.connect(
           Uri.parse(

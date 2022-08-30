@@ -4,16 +4,25 @@ import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-class ArticlePhotosScreen extends StatelessWidget {
+class ArticlePhotosScreen extends StatefulWidget {
   const ArticlePhotosScreen({Key? key}) : super(key: key);
 
   @override
+  State<ArticlePhotosScreen> createState() => _ArticlePhotosScreenState();
+}
+
+class _ArticlePhotosScreenState extends State<ArticlePhotosScreen> {
+  var initialId = Get.arguments["id"];
+  PageController controller = PageController(
+      initialPage: Get.arguments["images"].indexOf(Get.arguments["images"]
+          .firstWhere((element) => element["id"] == Get.arguments["id"])));
+  List<Map> images = [...Get.arguments["images"].map((e) => e).toList()];
+  @override
   Widget build(BuildContext context) {
-    List<Map> images = [...Get.arguments["images"].map((e) => e).toList()];
-    var initialId = Get.arguments["id"];
     return Stack(
       children: [
         PhotoViewGallery.builder(
+            pageController: controller,
             itemCount: images.length,
             builder: (context, index) {
               return PhotoViewGalleryPageOptions(

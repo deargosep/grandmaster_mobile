@@ -59,11 +59,21 @@ class ScheduleState extends ChangeNotifier {
     return completer.future;
   }
 
-  // /// Removes all items from the cart.
-  // void removeAll() {
-  //   _schedule =
-  //   notifyListeners();
-  // }
+  /// Removes all items from the cart.
+  void clear() {
+    _schedule = ScheduleType(
+      days: {
+        "monday": [],
+        "tuesday": [],
+        "wednesday": [],
+        "thursday": [],
+        "friday": [],
+        "saturday": [],
+        "sunday": [],
+      },
+    );
+    notifyListeners();
+  }
 }
 
 class ScheduleType {

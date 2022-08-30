@@ -47,7 +47,8 @@ Dio createDio(
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {
       if (error.response?.data.runtimeType != 'String') {
-        print('dio error: ${error.error}, WHY?: ${error.response?.data}');
+        print(
+            'dio error: ${error.error}, WHY?: ${error.response?.data["details"]}');
         if (error.response?.data?["code"] == 'token_not_valid') {
           createDio()
               .post('/auth/token/refresh/',

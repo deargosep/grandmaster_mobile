@@ -40,6 +40,8 @@ class _GroupsScheduleScreenState extends State<GroupsScheduleScreen> {
                         .setSchedule(Get.arguments, e.id, showSnackbar: false,
                             errHandler: (err, handler) {
                       if (err.response?.statusCode == 404) {
+                        Provider.of<ScheduleState>(context, listen: false)
+                            .clear();
                         Get.toNamed('/schedule/edit', arguments: {
                           "placeId": placeId,
                           "groupId": e.id,

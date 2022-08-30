@@ -21,7 +21,7 @@ class AboutState extends ChangeNotifier {
               id: e["id"],
               name: e["name"],
               description: e["description"],
-              order: e["number"],
+              order: e["order"],
               cover: e["cover"]);
         }).toList()
       ];
