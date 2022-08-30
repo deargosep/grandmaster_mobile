@@ -32,6 +32,7 @@ class EventsState extends ChangeNotifier {
               timeDateEnd: DateTime.parse(e["end_date"]),
               cover: e["cover"],
               open: e["open"],
+              ended: e["ended"],
               order: e["number"],
               timeDateDeadline: DateTime.parse(e["deadline_date"]),
               isAfter: DateTime.now().isAfter(deadlineDate),
@@ -77,6 +78,7 @@ class EventType {
   final String? cover;
   final order;
   final bool open;
+  final bool ended;
   final bool isAfter;
   EventType(
       {required this.id,
@@ -88,6 +90,7 @@ class EventType {
       required this.address,
       required this.cover,
       required this.order,
+      required this.ended,
       required this.open,
       this.isAfter = false,
       members})

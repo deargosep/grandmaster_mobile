@@ -59,7 +59,7 @@ class _EventScreenState extends State<EventScreen> {
           child: getRole() == 'moderator' ||
                   getRole() == 'guest' ||
                   (getRole() == 'sportsmen' && !item.open) ||
-                  (getRole() == 'sportsmen' && item.isAfter)
+                  (getRole() == 'sportsmen' && item.ended)
               ? Container()
               : Column(
                   children: [
