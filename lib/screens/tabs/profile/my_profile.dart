@@ -354,11 +354,6 @@ class PassportInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _Item(
-                name: "Регион",
-                ifNullRed: true,
-                value: passport.region,
-              ),
-              _Item(
                 name: "Город",
                 ifNullRed: true,
                 value: passport.city,
