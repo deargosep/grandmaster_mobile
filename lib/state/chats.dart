@@ -26,7 +26,9 @@ class ChatsState extends ChangeNotifier {
     var decoded = jsonDecode(data);
     print(decoded);
     return MessageType(
-        user: decoded["message"]["author"]["full_name"],
+        fullName: decoded["message"]["author"]["full_name"],
+        userId: decoded["message"]["author"]["id"],
+        me: decoded["message"]["author"]["me"],
         text: decoded["message"]["text"],
         photo: decoded["message"]["image"],
         timedate: DateTime.parse(decoded["message"]["created_at"]));

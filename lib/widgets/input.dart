@@ -28,7 +28,8 @@ class Input extends StatelessWidget {
       this.onTap,
       this.validator,
       this.padding,
-      this.textAlign = TextAlign.start})
+      this.textAlign = TextAlign.start,
+      this.textCapitalization = TextCapitalization.sentences})
       : super(key: key);
 
   final String? label;
@@ -52,6 +53,7 @@ class Input extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final EdgeInsets? padding;
   final TextAlign textAlign;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class Input extends StatelessWidget {
       height: height,
       width: width,
       child: TextFormField(
+        textCapitalization: textCapitalization,
         validator: validator ??
             (String? text) {
               if (label != null && label!.contains('сообщение')) return null;

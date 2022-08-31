@@ -451,7 +451,7 @@ class PassportInfo extends StatelessWidget {
           child: BrandButton(
             text: 'Документы',
             onPressed: () {
-              Get.toNamed('/my_profile/documents');
+              Get.toNamed('/my_profile/documents', arguments: user);
             },
           ),
         )

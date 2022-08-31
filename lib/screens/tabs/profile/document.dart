@@ -5,7 +5,6 @@ import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
@@ -18,14 +17,15 @@ class DocumentScreen extends StatefulWidget {
 }
 
 class _DocumentScreenState extends State<DocumentScreen> {
-  final arguments = Get.arguments;
+  Map arguments = Get.arguments;
+  User user = Get.arguments["user"];
   int currentIndex = 0;
   CarouselController controller = CarouselController();
 
   @override
   void initState() {
     super.initState();
-    if (arguments != 'other') currentIndex = arguments;
+    if (arguments["type"] != 'other') currentIndex = arguments["index"];
   }
 
   List<Map> optionList = [
@@ -46,11 +46,9 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (arguments == 'other') {
+    if (arguments["type"] == 'other') {
       return FutureBuilder<Response>(
-          future: createDio().get(Provider.of<UserState>(context, listen: false)
-              .user
-              .documentsUrl!),
+          future: createDio().get(user.documentsUrl!),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return CustomScaffold(
@@ -105,7 +103,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
                             child: i != null
-                                ? LoadingImage(i)
+                                ? LoadingImage(
+                                    i,
+                                    height: 335,
+                                    width: 335,
+                                  )
                                 : Center(
                                     child: Text(
                                     "Нет документа",
@@ -121,8 +123,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
           });
     }
     return FutureBuilder<Response>(
-        future: createDio().get(
-            Provider.of<UserState>(context, listen: false).user.documentsUrl!),
+        future: createDio().get(user.documentsUrl!),
         builder: (context, snapshot) {
           return CustomScaffold(
               noHorPadding: true,
@@ -139,7 +140,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                       currentIndex = ind;
                     });
                   },
-                  initialPage: arguments,
+                  initialPage: arguments["index"],
                   viewportFraction: 1,
                   height: 335.0,
                   enableInfiniteScroll: false,
@@ -161,7 +162,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                           child: snapshot.data?.data[i["code"]] != null
-                              ? LoadingImage(snapshot.data?.data[i["code"]])
+                              ? LoadingImage(
+                                  snapshot.data?.data[i["code"]],
+                                  height: 335,
+                                  width: 335,
+                                )
                               : Center(
                                   child: Text(
                                   "Нет документа",

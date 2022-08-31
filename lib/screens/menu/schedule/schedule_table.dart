@@ -284,7 +284,7 @@ class TimePill extends StatelessWidget {
                     : TimeOfDay(hour: 0, minute: 0));
             if (time != null) {
               controller!.text =
-                  '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                  '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
             }
           },
           keyboardType: TextInputType.number,

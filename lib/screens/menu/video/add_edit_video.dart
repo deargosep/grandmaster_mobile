@@ -112,6 +112,7 @@ class _AddEditVideoScreenState extends State<AddEditVideoScreen> {
               Input(
                 label: 'Ссылка',
                 controller: link,
+                textCapitalization: TextCapitalization.none,
                 validator: (text) {
                   var uri = Uri.tryParse(link.text);
                   if (uri != null) {

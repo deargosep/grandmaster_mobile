@@ -31,7 +31,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: numbers["trainer"]);
+      TextEditingController(text: numbers["schedule"]);
   bool isLoaded = false;
 
   @override

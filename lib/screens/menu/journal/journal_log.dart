@@ -136,7 +136,7 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
                           : TimeOfDay(hour: 0, minute: 0));
                   if (time != null) {
                     timeStart.text =
-                        '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                        '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
                   }
                 },
               ),
@@ -174,7 +174,7 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
                           : TimeOfDay(hour: 0, minute: 0));
                   if (time != null) {
                     timeEnd.text =
-                        '${time.hour}:${time.minute}${time.minute < 10 ? '0' : ''}';
+                        '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
                   }
                 },
               ),

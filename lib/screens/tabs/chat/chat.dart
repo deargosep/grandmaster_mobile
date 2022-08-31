@@ -83,7 +83,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         if (value.data.isNotEmpty) {
           newMessages.addAll([
             ...value.data.map((e) => MessageType(
-                user: e["author"]["full_name"],
+                fullName: e["author"]["full_name"],
+                userId: e["author"]["id"],
+                me: e["author"]["me"],
                 text: e["text"],
                 photo: e["image"],
                 prefix: e["prefix"],
@@ -261,8 +263,7 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMine() {
-      return item.user ==
-          Provider.of<UserState>(context, listen: false).user.fullName;
+      return item.me;
     }
 
     return Row(
@@ -296,7 +297,7 @@ class Message extends StatelessWidget {
                   ? Column(
                       children: [
                         Text(
-                          '${item.prefix ?? ''}${item.prefix != null ? '  ' : ''}${item.user}',
+                          '${item.prefix ?? ''}${item.prefix != null ? '  ' : ''}${item.fullName}',
                           style: TextStyle(color: Color(0xFF9FA6BA)),
                         ),
                         SizedBox(
@@ -429,6 +430,7 @@ class _SendMessageState extends State<SendMessage> {
         Expanded(
           child: Input(
             controller: controller,
+            textCapitalization: TextCapitalization.sentences,
             onFieldSubmitted: sendMessage,
             height: 40.0,
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -564,13 +566,17 @@ class _Header extends StatelessWidget {
 }
 
 class MessageType {
-  String user;
+  String fullName;
+  bool me;
+  var userId;
   String text;
   DateTime timedate;
   String? photo;
   String? prefix;
   MessageType(
-      {required this.user,
+      {required this.fullName,
+      required this.userId,
+      required this.me,
       this.photo,
       this.prefix,
       required this.text,

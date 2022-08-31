@@ -154,8 +154,11 @@ class BrandCard extends StatelessWidget {
 }
 
 class LoadingImage extends StatelessWidget {
-  const LoadingImage(this.url, {Key? key}) : super(key: key);
+  const LoadingImage(this.url, {Key? key, this.height, this.width})
+      : super(key: key);
   final String url;
+  final double? width;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return Image.network(url, fit: BoxFit.cover,
@@ -166,7 +169,10 @@ class LoadingImage extends StatelessWidget {
       return Skeleton(
           isLoading: true,
           skeleton: SkeletonLine(
-            style: SkeletonLineStyle(height: 132, width: double.infinity),
+            style: SkeletonLineStyle(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                height: height ?? 132,
+                width: width ?? double.infinity),
           ),
           child: child);
     });
