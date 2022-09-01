@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 
 import '../schedule/schedule_table.dart';
@@ -33,9 +34,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
                   ? null
                   : Theme.of(context).colorScheme.secondary,
               child: item.cover != null
-                  ? Image.network(
+                  ? LoadingImage(
                       item.cover!,
-                      fit: BoxFit.cover,
                     )
                   : null,
             ),
@@ -230,11 +230,16 @@ class _TrainerCardState extends State<TrainerCard> {
                 SizedBox(
                   width: 16,
                 ),
-                Text(
-                  widget.item.fio,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.w500),
+                Expanded(
+                  child: Text(
+                    widget.item.fio,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
               ],
             ),

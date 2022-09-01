@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<UserState>(context, listen: false).user;
+    User user = Provider.of<UserState>(context).user;
     if (user.children.isEmpty) {
       return MyProfileScreen();
     }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -45,8 +46,12 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       return user.admitted;
     }
 
-    if (user.role == 'moderator' || user.children.isNotEmpty)
+    if (user.role == 'moderator' ||
+        user.children.isNotEmpty ||
+        user.role == 'specialist')
       return CustomScaffold(
+        bottomNavigationBar:
+            user.children.isNotEmpty ? BottomBarWrap(currentTab: 3) : null,
         body: Column(
           children: [
             SizedBox(

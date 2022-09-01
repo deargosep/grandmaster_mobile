@@ -180,7 +180,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                           : TimeOfDay(hour: 0, minute: 0));
                   if (time != null) {
                     timeStart.text =
-                        '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
+                        '${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
                   }
                 },
               ),
@@ -218,7 +218,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                           : TimeOfDay(hour: 0, minute: 0));
                   if (time != null) {
                     timeEnd.text =
-                        '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
+                        '${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
                   }
                 },
               ),
@@ -257,7 +257,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
                           : TimeOfDay(hour: 0, minute: 0));
                   if (time != null) {
                     timeDeadline.text =
-                        '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
+                        '${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
                   }
                 },
               ),

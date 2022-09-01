@@ -6,6 +6,7 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +59,7 @@ class _EventScreenState extends State<EventScreen> {
           height: zapisan ? 148.0 : 85.0,
           child: getRole() == 'moderator' ||
                   getRole() == 'guest' ||
+                  getRole() == 'specialist' ||
                   (getRole() == 'sportsmen' && !item.open) ||
                   (getRole() == 'sportsmen' && item.ended)
               ? Container()
@@ -225,9 +227,8 @@ class _EventScreenState extends State<EventScreen> {
             height: 220,
             width: double.infinity,
             child: item.cover != null
-                ? Image.network(
+                ? LoadingImage(
                     item.cover!,
-                    fit: BoxFit.cover,
                   )
                 : Container(
                     height: 220,

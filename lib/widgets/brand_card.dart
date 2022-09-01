@@ -161,20 +161,22 @@ class LoadingImage extends StatelessWidget {
   final double? height;
   @override
   Widget build(BuildContext context) {
-    return Image.network(url, fit: BoxFit.cover,
+    return Image.network(url, fit: BoxFit.cover, height: height, width: width,
         loadingBuilder: (context, child, loading) {
       if (loading == null)
         return ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(15)), child: child);
-      return Skeleton(
-          isLoading: true,
-          skeleton: SkeletonLine(
-            style: SkeletonLineStyle(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                height: height ?? 132,
-                width: width ?? double.infinity),
-          ),
-          child: child);
+      return Container(
+        height: height,
+        width: width,
+        child: Skeleton(
+            isLoading: true,
+            skeleton: SkeletonLine(
+              style: SkeletonLineStyle(
+                  height: height ?? 132, width: width ?? double.infinity),
+            ),
+            child: child),
+      );
     });
   }
 }

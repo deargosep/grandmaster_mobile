@@ -185,7 +185,7 @@ class _ChildProfileScreenState extends State<ChildProfileScreen>
                                 text: 'Информация',
                               ),
                               TopTab(
-                                text: 'Паспорт ребенка',
+                                text: 'Паспорт',
                               )
                             ],
                           ),

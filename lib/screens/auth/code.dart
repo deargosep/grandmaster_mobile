@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/images/logo.dart';
 import 'package:grandmaster/widgets/input.dart';
@@ -22,7 +23,9 @@ class InputCodeScreen extends StatefulWidget {
 }
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
-  TextEditingController controller = TextEditingController(text: '12345');
+  TextEditingController controller = TextEditingController(
+      // text: '12345'
+      );
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -38,6 +41,33 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
         noPadding: false,
+        bottomNavigationBar: BottomPanel(
+          withShadow: false,
+          child: BrandButton(
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              createDio().post('/auth/validate_code/', data: {
+                "phone_number": Get.arguments["raw"],
+                "code": controller.text
+              }).then((value) async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('access', value.data["access"]);
+                await prefs.setString('refresh', value.data["refresh"]);
+                createDio().get('/users/self/').then((value) {
+                  log(value.data.toString());
+                  var data = value.data;
+                  log(data.toString());
+                  Provider.of<UserState>(context, listen: false).setUser(data);
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  Get.offAllNamed('/bar', arguments: 1);
+                });
+              });
+            },
+            text: 'Вход',
+            type: 'primary',
+          ),
+        ),
         body: Form(
           key: _formKey,
           child: Column(
@@ -85,7 +115,9 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 textAlign: TextAlign.center,
                 controller: controller,
                 keyboardType: TextInputType.number,
-                label: 'Код',
+                labelWidget: Center(
+                  child: Text('Код'),
+                ),
                 validator: (text) {
                   if (controller.text.length < 5)
                     return 'Введите код';
@@ -98,32 +130,6 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 height: 32,
               ),
               Timer(),
-              Spacer(),
-              BrandButton(
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.clear();
-                  createDio().post('/auth/validate_code/', data: {
-                    "phone_number": Get.arguments["raw"],
-                    "code": controller.text
-                  }).then((value) async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString('access', value.data["access"]);
-                    await prefs.setString('refresh', value.data["refresh"]);
-                    createDio().get('/users/self/').then((value) {
-                      log(value.data.toString());
-                      var data = value.data;
-                      log(data.toString());
-                      Provider.of<UserState>(context, listen: false)
-                          .setUser(data);
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      Get.offAllNamed('/bar', arguments: 1);
-                    });
-                  });
-                },
-                text: 'Вход',
-                type: 'primary',
-              ),
             ],
           ),
         ));

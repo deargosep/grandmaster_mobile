@@ -15,13 +15,17 @@ class PlacesScheduleScreen extends StatefulWidget {
 }
 
 class _PlacesScheduleScreenState extends State<PlacesScheduleScreen> {
+  bool isLoaded = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<PlacesState>(context, listen: false)
-          .setPlaces(url: '/gyms/trainers/');
+          .setPlaces(url: '/gyms/trainers/')
+          .then((value) {
+        isLoaded = true;
+      });
     });
   }
 
@@ -39,30 +43,34 @@ class _PlacesScheduleScreenState extends State<PlacesScheduleScreen> {
         appBar: AppHeader(
           text: 'Расписание',
         ),
-        body: list.isNotEmpty
-            ? ListView(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    list.isNotEmpty ? 'Выберите зал' : '',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  ListOfOptions(
-                    list: list,
-                    noArrow: true,
+        body: isLoaded
+            ? list.isNotEmpty
+                ? ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        list.isNotEmpty ? 'Выберите зал' : '',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                      SizedBox(
+                        height: 32,
+                      ),
+                      ListOfOptions(
+                        list: list,
+                        noArrow: true,
+                      )
+                    ],
                   )
-                ],
-              )
-            : Center(child: Text('Нет залов')));
+                : Center(child: Text('Нет залов'))
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }

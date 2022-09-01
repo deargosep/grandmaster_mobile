@@ -12,14 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Map numbers = {
   "parent": '(918) 546-85-81',
-  "child": '(928) 900-06-80',
+  "child": '(918) 5528722',
   "moderator": "(909) 283-21-21",
   "trainer": "(988) 250-30-03",
   "payment": "(900) 126-16-92",
   "documents": "(900) 123-09-56",
   "schedule": "(938) 115-54-47",
   "parent_chats": '(928) 111-02-00',
-  "other_documents": '(928) 601-66-92'
+  "other_documents": '(928) 601-66-92',
+  "specialist": '(928) 270-13-53'
 };
 
 class AuthRegisterScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: numbers["schedule"]);
+      TextEditingController(text: numbers["trainer"]);
   bool isLoaded = false;
 
   @override
@@ -137,17 +138,25 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                             }));
                   }
                 }),
-            SizedBox(
-              height: 16,
-            ),
-            BrandButton(
-              onPressed: () {
-                Provider.of<UserState>(context, listen: false)
-                    .setUserCustom(User(role: 'guest', passport: Passport()));
-                Get.offAllNamed('/bar', arguments: 1);
-              },
-              text: 'Войти как гость',
-              type: 'secondary',
+            Visibility(
+              visible: MediaQuery.of(context).viewInsets.bottom == 0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  BrandButton(
+                    onPressed: () {
+                      Provider.of<UserState>(context, listen: false)
+                          .setUserCustom(
+                              User(role: 'guest', passport: Passport()));
+                      Get.offAllNamed('/bar', arguments: 1);
+                    },
+                    text: 'Войти как гость',
+                    type: 'secondary',
+                  ),
+                ],
+              ),
             ),
           ],
         ));

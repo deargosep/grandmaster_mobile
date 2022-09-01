@@ -11,6 +11,7 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:grandmaster/widgets/input.dart';
@@ -269,9 +270,8 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                                   )
                                 : Image.network(coverPath!)
                             : item?.cover != null
-                                ? Image.network(
+                                ? LoadingImage(
                                     item?.cover,
-                                    fit: BoxFit.cover,
                                   )
                                 : Padding(
                                     padding: EdgeInsets.symmetric(

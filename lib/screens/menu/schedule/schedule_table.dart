@@ -268,29 +268,30 @@ class TimePill extends StatelessWidget {
         onLongPress: () {
           controller!.text = '';
         },
+        onTap: () async {
+          TimeOfDay? time = await showTimePicker(
+              context: context,
+              initialTime: controller!.text != ''
+                  ? TimeOfDay(
+                      hour: int.parse(controller!.text.split(':')[0]),
+                      minute: int.parse(controller!.text.split(':')[1]))
+                  : TimeOfDay(hour: 0, minute: 0));
+          if (time != null) {
+            controller!.text =
+                '${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
+          }
+        },
         child: Input(
+          enabled: false,
           height: 37,
           width: 82,
           controller: controller,
           validator: (text) => null,
           defaultText: text,
-          onTap: () async {
-            TimeOfDay? time = await showTimePicker(
-                context: context,
-                initialTime: controller!.text != ''
-                    ? TimeOfDay(
-                        hour: int.parse(controller!.text.split(':')[0]),
-                        minute: int.parse(controller!.text.split(':')[1]))
-                    : TimeOfDay(hour: 0, minute: 0));
-            if (time != null) {
-              controller!.text =
-                  '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
-            }
-          },
           keyboardType: TextInputType.number,
           centerText: true,
           maxLength: 5,
-          textAlign: TextAlign.start,
+          textAlign: TextAlign.center,
           textStyle: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -303,6 +304,7 @@ class TimePill extends StatelessWidget {
           color: Theme.of(context).inputDecorationTheme.fillColor,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       height: 37,
+      width: 82,
       child: Center(
         child: Text(
           text,

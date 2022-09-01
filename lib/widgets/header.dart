@@ -149,7 +149,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     ]),
               Container(
                 width:
-                    icon != '' ? 250 : MediaQuery.of(context).size.width - 80,
+                    icon != '' ? MediaQuery.of(context).size.width - 120 : MediaQuery.of(context).size.width - 80,
                 child: Text(
                   text ?? '',
                   overflow: TextOverflow.fade,

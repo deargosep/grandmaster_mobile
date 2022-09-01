@@ -4,6 +4,7 @@ import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -44,9 +45,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     item.cover != null ? null : Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: item.cover != null
-                ? Image.network(
+                ? LoadingImage(
                     item.cover,
-                    fit: BoxFit.cover,
                   )
                 : Container(color: Theme.of(context).colorScheme.secondary),
           ),
@@ -158,9 +158,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                   child: ClipRRect(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(15)),
-                                    child: Image.network(
+                                    child: LoadingImage(
                                       photo["image"],
-                                      fit: BoxFit.cover,
                                     ),
                                   )),
                             );

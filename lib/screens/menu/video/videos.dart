@@ -6,7 +6,6 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,33 +136,17 @@ class VideoCard extends StatelessWidget {
       },
       child: Container(
         height: 219,
-        color: Colors.white,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: item.link.contains('youtube')
-                  ? Container(
-                      height: 132,
-                      width: double.infinity,
-                      child: LoadingImage(
-                          'https://app.grandmaster.center/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}'),
-                    )
-                  : Container(
-                      height: 132,
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 35),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFE7E7E7),
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                      child: BrandIcon(
-                        height: 61,
-                        width: 61,
-                        icon: 'play',
-                        color: Color(0xFFA8A8A8),
-                      ),
-                    ),
-            ),
+            Container(
+                height: 132,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: LoadingImage(
+                  'https://app.grandmaster.center/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}',
+                )),
             SizedBox(
               height: 16,
             ),

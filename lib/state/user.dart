@@ -53,6 +53,8 @@ class UserState extends ChangeNotifier {
         return 'trainer';
       case 'MODERATOR':
         return 'moderator';
+      case '1':
+        return 'specialist';
       default:
         return 'guest';
     }

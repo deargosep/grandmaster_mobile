@@ -29,7 +29,9 @@ class Input extends StatelessWidget {
       this.validator,
       this.padding,
       this.textAlign = TextAlign.start,
-      this.textCapitalization = TextCapitalization.sentences})
+      this.textCapitalization = TextCapitalization.sentences,
+      this.enabled = true,
+      this.labelWidget})
       : super(key: key);
 
   final String? label;
@@ -54,6 +56,8 @@ class Input extends StatelessWidget {
   final EdgeInsets? padding;
   final TextAlign textAlign;
   final TextCapitalization textCapitalization;
+  final bool enabled;
+  final Widget? labelWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,7 @@ class Input extends StatelessWidget {
       height: height,
       width: width,
       child: TextFormField(
+        enabled: enabled,
         textCapitalization: textCapitalization,
         validator: validator ??
             (String? text) {
@@ -124,7 +129,8 @@ class Input extends StatelessWidget {
               : null,
           alignLabelWithHint: true,
           counterText: '',
-          labelText: label ?? '',
+          labelText: label,
+          label: labelWidget,
           border: OutlineInputBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(10),
             borderSide: const BorderSide(

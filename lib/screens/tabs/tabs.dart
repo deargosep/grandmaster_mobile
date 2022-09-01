@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../state/user.dart';
 import '../../utils/custom_scaffold.dart';
+import '../../utils/dio.dart';
 import 'menu/menu.dart';
 
 class BarScreen extends StatefulWidget {
@@ -32,9 +33,18 @@ class _BarScreenState extends State<BarScreen> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 3) {
+      createDio().get('/users/self/').then((value) {
+        Provider.of<UserState>(context, listen: false).setUser(value.data);
+        setState(() {
+          _selectedIndex = index;
+        });
+      });
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
