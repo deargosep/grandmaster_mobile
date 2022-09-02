@@ -52,8 +52,7 @@ class _LearningsScreenState extends State<LearningsScreen> {
         body: isLoaded
             ? items.isNotEmpty
                 ? Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: RefreshIndicator(
                       onRefresh:
                           Provider.of<LearningsState>(context, listen: false)
@@ -106,7 +105,7 @@ class LearningCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 72,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         color: Theme.of(context).inputDecorationTheme.fillColor,

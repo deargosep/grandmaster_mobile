@@ -16,7 +16,7 @@ class NewsCard extends StatelessWidget {
       },
       child: Container(
         height: 244,
-        width: 335,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
         ),
@@ -47,36 +47,36 @@ class NewsCard extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Container(
-                      height: 23,
-                      child: Text(
-                        item.name,
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.secondary),
-                      ),
+                    child: Text(
+                      item.name,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ],
               ),
             ),
             // description
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-              child: Text(
-                item.description,
-                maxLines: 2,
-                overflow: TextOverflow.fade,
-                softWrap: true,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFAC9595)),
+            Expanded(
+              flex: 0,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Text(
+                  item.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFFAC9595)),
+                ),
               ),
             ),
             SizedBox(

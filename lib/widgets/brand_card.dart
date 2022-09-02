@@ -142,11 +142,7 @@ class BrandCard extends StatelessWidget {
                 : Border(
                     bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
         child: Padding(
-            padding: withPadding
-                ? const EdgeInsets.all(20)
-                : type == 'learning'
-                    ? EdgeInsets.only(right: 20)
-                    : EdgeInsets.zero,
+            padding: withPadding ? const EdgeInsets.all(20) : EdgeInsets.zero,
             child: getCard()),
       ),
     );
@@ -173,7 +169,9 @@ class LoadingImage extends StatelessWidget {
             isLoading: true,
             skeleton: SkeletonLine(
               style: SkeletonLineStyle(
-                  height: height ?? 132, width: width ?? double.infinity),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  height: height ?? 132,
+                  width: width ?? double.infinity),
             ),
             child: child),
       );

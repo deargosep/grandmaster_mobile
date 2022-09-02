@@ -90,11 +90,11 @@ class _OptionState extends State<Option> {
                     width: 10,
                   )
                 : Container(),
-            Container(
+            Expanded(
               child: Text(
                 widget.text ?? '',
                 maxLines: 1,
-                // overflow: TextOverflow.fade,
+                overflow: TextOverflow.fade,
                 softWrap: false,
                 style: TextStyle(
                     color: getColor('text'),
@@ -102,7 +102,11 @@ class _OptionState extends State<Option> {
                     fontWeight: FontWeight.w500),
               ),
             ),
-            widget.type != 'create' ? Spacer() : Container(),
+            widget.type != 'create' && !widget.noArrow
+                ? SizedBox(
+                    width: 16,
+                  )
+                : Container(),
             widget.type != 'create' && !widget.noArrow
                 ? BrandIcon(
                     icon: 'right_arrow',

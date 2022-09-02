@@ -83,137 +83,137 @@ class _ChatsScreenState extends State<ChatsScreen> {
                             // shrinkWrap: true,
                             children: [
                               chatsSpecialists.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        GestureDetector(
-                                            behavior:
-                                                HitTestBehavior.translucent,
-                                            onTap: () {
-                                              Get.toNamed('/chat/folder',
-                                                  arguments: 'specialists');
-                                            },
-                                            child: ChatTile(
-                                              ChatType(
-                                                  name: 'Специалисты',
-                                                  lastMessage: '',
-                                                  lastTime: '',
-                                                  id: '',
-                                                  unread: 0,
-                                                  members: []),
-                                              folder: true,
-                                            )),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Divider(),
-                                            SizedBox(
-                                              height: 16,
-                                            )
-                                          ],
-                                        )
-                                      ],
+                                  ? GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Get.toNamed('/chat/folder',
+                                            arguments: 'specialists');
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ChatTile(
+                                            ChatType(
+                                                name: 'Специалисты',
+                                                lastMessage: '',
+                                                lastTime: '',
+                                                id: '',
+                                                unread: 0,
+                                                members: []),
+                                            folder: true,
+                                          ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Divider(),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     )
                                   : Container(),
                               chatsModerators.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        GestureDetector(
-                                            behavior:
-                                                HitTestBehavior.translucent,
-                                            onTap: () {
-                                              Get.toNamed('/chat/folder',
-                                                  arguments: 'moderators');
-                                            },
-                                            child: ChatTile(
+                                  ? GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Get.toNamed('/chat/folder',
+                                            arguments: 'moderators');
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ChatTile(
+                                            ChatType(
+                                                name: 'Модераторы',
+                                                lastMessage: '',
+                                                lastTime: '',
+                                                id: '',
+                                                unread: 0,
+                                                members: []),
+                                            folder: true,
+                                          ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Divider(),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                              chatsTrainers.isNotEmpty
+                                  ? GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Get.toNamed('/chat/folder',
+                                            arguments: 'trainers');
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ChatTile(
                                               ChatType(
-                                                  name: 'Модераторы',
+                                                  name: 'Тренеры',
                                                   lastMessage: '',
                                                   lastTime: '',
                                                   id: '',
                                                   unread: 0,
                                                   members: []),
-                                              folder: true,
-                                            )),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Divider(),
-                                            SizedBox(
-                                              height: 16,
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                  : Container(),
-                              chatsTrainers.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        GestureDetector(
-                                            behavior:
-                                                HitTestBehavior.translucent,
-                                            onTap: () {
-                                              Get.toNamed('/chat/folder',
-                                                  arguments: 'trainers');
-                                            },
-                                            child: ChatTile(
-                                                ChatType(
-                                                    name: 'Тренеры',
-                                                    lastMessage: '',
-                                                    lastTime: '',
-                                                    id: '',
-                                                    unread: 0,
-                                                    members: []),
-                                                folder: true)),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Divider(),
-                                            SizedBox(
-                                              height: 16,
-                                            )
-                                          ],
-                                        )
-                                      ],
+                                              folder: true),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Divider(),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     )
                                   : Container(),
                               chatsStudents.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        GestureDetector(
-                                            behavior:
-                                                HitTestBehavior.translucent,
-                                            onTap: () {
-                                              Get.toNamed('/chat/folder',
-                                                  arguments: 'students');
-                                            },
-                                            child: ChatTile(
-                                                ChatType(
-                                                    name: 'Студенты',
-                                                    lastMessage: '',
-                                                    lastTime: '',
-                                                    id: '',
-                                                    unread: 0,
-                                                    members: []),
-                                                folder: true)),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Divider(),
-                                            SizedBox(
-                                              height: 16,
-                                            )
-                                          ],
-                                        )
-                                      ],
+                                  ? GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Get.toNamed('/chat/folder',
+                                            arguments: 'students');
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ChatTile(
+                                              ChatType(
+                                                  name: 'Студенты',
+                                                  lastMessage: '',
+                                                  lastTime: '',
+                                                  id: '',
+                                                  unread: 0,
+                                                  members: []),
+                                              folder: true),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Column(
+                                            children: [
+                                              Divider(),
+                                              SizedBox(
+                                                height: 16,
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     )
                                   : Container(),
                               chatsWithoutFolders.isNotEmpty
@@ -222,36 +222,35 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                       shrinkWrap: true,
                                       itemCount: chatsWithoutFolders.length,
                                       itemBuilder: (context, index) {
-                                        return Column(
-                                          children: [
-                                            GestureDetector(
-                                                behavior:
-                                                    HitTestBehavior.translucent,
-                                                onTap: () {
-                                                  Get.toNamed('/chat',
-                                                      arguments:
-                                                          chatsWithoutFolders[
-                                                              index]);
-                                                },
-                                                child: ChatTile(
-                                                    chatsWithoutFolders[
-                                                        index])),
-                                            SizedBox(
-                                              height: 16,
-                                            ),
-                                            index !=
-                                                    chatsWithoutFolders.length -
-                                                        1
-                                                ? Column(
-                                                    children: [
-                                                      Divider(),
-                                                      SizedBox(
-                                                        height: 16,
-                                                      )
-                                                    ],
-                                                  )
-                                                : Container(),
-                                          ],
+                                        return GestureDetector(
+                                          behavior: HitTestBehavior.translucent,
+                                          onTap: () {
+                                            Get.toNamed('/chat',
+                                                arguments:
+                                                    chatsWithoutFolders[index]);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              ChatTile(
+                                                  chatsWithoutFolders[index]),
+                                              SizedBox(
+                                                height: 16,
+                                              ),
+                                              index !=
+                                                      chatsWithoutFolders
+                                                              .length -
+                                                          1
+                                                  ? Column(
+                                                      children: [
+                                                        Divider(),
+                                                        SizedBox(
+                                                          height: 16,
+                                                        )
+                                                      ],
+                                                    )
+                                                  : Container(),
+                                            ],
+                                          ),
                                         );
                                       })
                                   : Container(),
@@ -294,12 +293,14 @@ class ChatTile extends StatelessWidget {
             SizedBox(
               width: 16,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width - 160,
-                  child: Text(
+            Container(
+              height: 60,
+              width: MediaQuery.of(context).size.width - 150,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
                     data.name,
                     textAlign: TextAlign.start,
                     maxLines: 1,
@@ -310,62 +311,69 @@ class ChatTile extends StatelessWidget {
                         fontSize: 16,
                         color: Color(0xFF4F3333)),
                   ),
-                ),
-                !folder
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            data.lastMessage,
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                          )
-                        ],
-                      )
-                    : Container(),
-              ],
+                  !folder
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              data.lastMessage,
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            )
+                          ],
+                        )
+                      : Container(),
+                ],
+              ),
             ),
           ],
         ),
-        Container(
-          height: 40,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                data.lastTime,
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.secondary),
-              ),
-              data.type != 'system'
-                  ? Container()
-                  : SizedBox(
-                      height: 8,
+        data.lastTime == '' && data.unread == 0
+            ? Container()
+            : Container(
+                height: 40,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      data.lastTime,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
-              data.unread == 0
-                  ? Container()
-                  : Container(
-                      height: 15,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                      ),
-                      child: Center(
-                        child: Text(data.unread.toString(),
-                            style: TextStyle(color: Colors.white, height: 1.1)),
-                      ),
-                    ),
-            ],
-          ),
-        )
+                    data.type != 'system'
+                        ? Container()
+                        : SizedBox(
+                            height: 8,
+                          ),
+                    data.unread == 0
+                        ? Container()
+                        : Container(
+                            height: 15,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 0.5),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                            ),
+                            child: Center(
+                              child: Text(data.unread.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, height: 1.1)),
+                            ),
+                          ),
+                  ],
+                ),
+              )
       ],
     );
   }

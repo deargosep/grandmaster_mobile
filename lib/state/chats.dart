@@ -35,10 +35,7 @@ class ChatsState extends ChangeNotifier {
   }
 
   List<ChatType> getChats() {
-    return _chats
-        .where((element) =>
-            element.folder == 'none' || element.folder == 'specialists')
-        .toList();
+    return _chats.where((element) => element.folder == 'none').toList();
   }
 
   List<ChatType> getSpecialistsChats() {
