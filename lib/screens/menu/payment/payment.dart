@@ -31,7 +31,8 @@ class _PaymentScreenState extends State<PaymentScreen>
       Provider.of<PaymentsState>(context, listen: false).setPayments();
       if (mounted)
         Timer.periodic(Duration(seconds: 20), (timer) {
-          Provider.of<PaymentsState>(context, listen: false).setPayments();
+          if (mounted)
+            Provider.of<PaymentsState>(context, listen: false).setPayments();
         });
     });
     controller = TabController(vsync: this, length: 2);

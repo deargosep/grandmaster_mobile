@@ -33,11 +33,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
       }
       Provider.of<ChatsState>(context, listen: false).setChats(
           childId: Provider.of<UserState>(context, listen: false).childId);
-      Timer.periodic(Duration(seconds: 10), (timer) {
-        if (mounted)
-          Provider.of<ChatsState>(context, listen: false).setChats(
-              childId: Provider.of<UserState>(context, listen: false).childId);
-      });
+      if (mounted)
+        Timer.periodic(Duration(seconds: 10), (timer) {
+          if (mounted)
+            Provider.of<ChatsState>(context, listen: false).setChats(
+                childId:
+                    Provider.of<UserState>(context, listen: false).childId);
+        });
     });
   }
 
@@ -294,7 +296,7 @@ class ChatTile extends StatelessWidget {
               width: 16,
             ),
             Container(
-              height: 60,
+              height: !folder ? 60 : null,
               width: MediaQuery.of(context).size.width - 150,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

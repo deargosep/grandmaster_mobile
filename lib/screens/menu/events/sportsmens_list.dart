@@ -231,6 +231,8 @@ class _EditState extends State<_Edit> {
     }
 
     return CustomScaffold(
+        noPadding: false,
+        noBottomPadding: true,
         bottomNavigationBar: BottomPanel(
           child: BrandButton(
             text: 'Сохранить',
@@ -242,8 +244,8 @@ class _EditState extends State<_Edit> {
                     .map((e) => int.parse(e.key.split('_')[0]))
                     .toList()
               }).then((value) {
-                Provider.of<EventsState>(context, listen: false).setEvents();
                 Get.back();
+                Provider.of<EventsState>(context, listen: false).setEvents();
               });
             },
           ),

@@ -38,35 +38,37 @@ Dio createDio(
   }, onError: (error, handler) {
     if (showSnackbar) {
       if (error.response?.statusCode != 500) {
-        if (error.response?.data["details"] != null)
+        if (error.response?.data != null) {
+          print(
+              'dio error: ${error.error}, WHY?: ${error.response?.data["details"]}');
           showErrorSnackbar(error.response?.data["details"]);
+        } else {
+          print('dio error: ${error.error}, WHY?: ${error.message}');
+          showErrorSnackbar(error.message);
+        }
       } else {
         showErrorSnackbar('Ошибка сервера. Попробуйте позднее');
       }
     }
     if (errHandler != null) errHandler(error, handler);
     SharedPreferences.getInstance().then((sp) {
-      if (error.response?.data.runtimeType != 'String') {
-        print(
-            'dio error: ${error.error}, WHY?: ${error.response?.data["details"]}');
-        if (error.response?.data?["code"] == 'token_not_valid') {
-          createDio()
-              .post('/auth/token/refresh/',
-                  data: {"refresh": sp.getString('refresh')},
-                  options: Options(headers: {"Authorization": null}))
-              .then((value) {
-            sp.setString('access', value.data["access"]);
-            sp.setString('refresh', value.data["refresh"]).then((value) {
-              createDio().get('/users/self/').then((value) {
-                Get.offAllNamed('/bar', arguments: 1);
-              });
+      if (error.response?.data?["code"] == 'token_not_valid') {
+        createDio()
+            .post('/auth/token/refresh/',
+                data: {"refresh": sp.getString('refresh')},
+                options: Options(headers: {"Authorization": null}))
+            .then((value) {
+          sp.setString('access', value.data["access"]);
+          sp.setString('refresh', value.data["refresh"]).then((value) {
+            createDio().get('/users/self/').then((value) {
+              Get.offAllNamed('/bar', arguments: 1);
             });
           });
-        }
-        if (error.response?.data["code"] == 'user_inactive') {
-          sp.clear();
-          Get.offAllNamed('/');
-        }
+        });
+      }
+      if (error.response?.data["code"] == 'user_inactive') {
+        sp.clear();
+        Get.offAllNamed('/');
       }
     });
   }));
