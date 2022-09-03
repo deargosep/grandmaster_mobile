@@ -114,7 +114,7 @@ class AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 244,
+      height: 290,
       width: 335,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -124,7 +124,7 @@ class AboutCard extends StatelessWidget {
         children: [
           // Image cover
           Container(
-            height: 132,
+            height: 200,
             width: double.infinity,
             child: item.cover != null
                 ? LoadingImage(item.cover)
@@ -139,6 +139,7 @@ class AboutCard extends StatelessWidget {
               children: [
                 Text(
                   item.name,
+                  maxLines: 3,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -148,19 +149,19 @@ class AboutCard extends StatelessWidget {
             ),
           ),
           // description
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-            child: Text(
-              item.description,
-              maxLines: 3,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFFAC9595)),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
+          //   child: Text(
+          //     item.description,
+          //     maxLines: 3,
+          //     overflow: TextOverflow.fade,
+          //     softWrap: false,
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         fontWeight: FontWeight.w500,
+          //         color: Color(0xFFAC9595)),
+          //   ),
+          // ),
         ],
       ),
     );

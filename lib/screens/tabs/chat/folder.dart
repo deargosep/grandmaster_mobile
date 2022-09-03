@@ -54,7 +54,7 @@ class _FolderScreenState extends State<FolderScreen> {
                   : folder == 'moderators'
                       ? 'Модераторы'
                       : folder == 'students'
-                          ? 'Студенты'
+                          ? 'Спортсмены'
                           : folder == 'specialists'
                               ? 'Специалисты'
                               : ''),

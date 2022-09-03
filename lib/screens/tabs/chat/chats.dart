@@ -93,6 +93,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                       },
                                       child: Column(
                                         children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
                                           ChatTile(
                                             ChatType(
                                                 name: 'Специалисты',
@@ -106,14 +109,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Column(
-                                            children: [
-                                              Divider(),
-                                              SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
-                                          )
+                                          Divider()
                                         ],
                                       ),
                                     )
@@ -127,6 +123,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                       },
                                       child: Column(
                                         children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
                                           ChatTile(
                                             ChatType(
                                                 name: 'Модераторы',
@@ -140,14 +139,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Column(
-                                            children: [
-                                              Divider(),
-                                              SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
-                                          )
+                                          Divider()
                                         ],
                                       ),
                                     )
@@ -161,6 +153,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                       },
                                       child: Column(
                                         children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
                                           ChatTile(
                                               ChatType(
                                                   name: 'Тренеры',
@@ -173,14 +168,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                           SizedBox(
                                             height: 16,
                                           ),
-                                          Column(
-                                            children: [
-                                              Divider(),
-                                              SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
-                                          )
+                                          Divider()
                                         ],
                                       ),
                                     )
@@ -194,9 +182,12 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                       },
                                       child: Column(
                                         children: [
+                                          SizedBox(
+                                            height: 16,
+                                          ),
                                           ChatTile(
                                               ChatType(
-                                                  name: 'Студенты',
+                                                  name: 'Спортсмены',
                                                   lastMessage: '',
                                                   lastTime: '',
                                                   id: '',
@@ -233,6 +224,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                           },
                                           child: Column(
                                             children: [
+                                              SizedBox(
+                                                height: 16,
+                                              ),
                                               ChatTile(
                                                   chatsWithoutFolders[index]),
                                               SizedBox(
@@ -245,9 +239,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                                   ? Column(
                                                       children: [
                                                         Divider(),
-                                                        SizedBox(
-                                                          height: 16,
-                                                        )
                                                       ],
                                                     )
                                                   : Container(),

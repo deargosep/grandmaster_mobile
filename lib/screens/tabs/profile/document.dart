@@ -22,12 +22,6 @@ class _DocumentScreenState extends State<DocumentScreen> {
   int currentIndex = 0;
   CarouselController controller = CarouselController();
 
-  @override
-  void initState() {
-    super.initState();
-    if (arguments["type"] != 'other') currentIndex = arguments["index"];
-  }
-
   List<Map> optionList = [
     {
       "title": 'Паспорт / Свидетельство о рождении',
@@ -43,6 +37,29 @@ class _DocumentScreenState extends State<DocumentScreen> {
     {"title": 'Диплом об образовании', "code": "diploma"},
     {"title": 'СНИЛС', "code": "snils"},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (arguments["type"] != 'other') currentIndex = arguments["index"];
+    if (user.role == 'trainer')
+      optionList = [
+        {
+          "title": 'Паспорт / Свидетельство о рождении',
+          "code": "passport_or_birth_certificate"
+        },
+        {"title": 'Полис ОМС', "code": "oms_policy"},
+        {"title": 'Страховой полис', "code": "insurance_policy"},
+        {
+          "title": 'Диплом о технической квалификации',
+          "code": "tech_qual_diplo"
+        },
+        {"title": 'Загранпаспорт', "code": "foreign_passport"},
+        {"title": 'ИНН', "code": "inn"},
+        {"title": 'Диплом об образовании', "code": "diploma"},
+        {"title": 'СНИЛС', "code": "snils"},
+      ];
+  }
 
   @override
   Widget build(BuildContext context) {

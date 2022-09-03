@@ -7,12 +7,14 @@ class BrandCheckboxListTile extends StatelessWidget {
       required this.value,
       required this.title,
       required this.onChanged,
+      this.onTap,
       this.use_title = false})
       : super(key: key);
   final value;
   final title;
   final onChanged;
   final bool use_title;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,14 +39,17 @@ class BrandCheckboxListTile extends StatelessWidget {
             width: 13,
           ),
           Expanded(
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  fontWeight: FontWeight.w500),
+            child: GestureDetector(
+              onTap: onTap,
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    fontWeight: FontWeight.w500),
+              ),
             ),
           )
         ],

@@ -30,6 +30,8 @@ class _SomeoneProfileState extends State<SomeoneProfile>
     controller = TabController(length: 2, vsync: this);
   }
 
+  final green = Color(0xFF44E467);
+  final red = Color(0xFFE44444);
   @override
   Widget build(BuildContext context) {
     User user = Get.arguments;
@@ -86,6 +88,96 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18),
                           ),
+                          user.isMyStudent &&
+                                  Provider.of<UserState>(context, listen: false)
+                                          .user
+                                          .role ==
+                                      'trainer'
+                              ? Column(
+                                  children: [
+                                    user.passport.sport_qualification != null &&
+                                            (user.passport
+                                                        .sport_qualification !=
+                                                    '' &&
+                                                user.passport
+                                                        .sport_qualification !=
+                                                    'Нет квалификации')
+                                        ? Container(
+                                            width: 300,
+                                            child: Text(
+                                              'Спортивная квалификация: ${user.passport.sport_qualification}',
+                                              maxLines: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryContainer,
+                                                  fontSize: 14),
+                                            ),
+                                          )
+                                        : Container(),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    user.passport.tech_qualification != null &&
+                                            (user.passport.tech_qualification !=
+                                                    '' &&
+                                                user.passport
+                                                        .tech_qualification !=
+                                                    'Нет квалификации')
+                                        ? Container(
+                                            width: 300,
+                                            child: Text(
+                                              'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                                              maxLines: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondaryContainer,
+                                                  fontSize: 14),
+                                            ),
+                                          )
+                                        : Container(),
+                                    SizedBox(
+                                      height: 24,
+                                    ),
+                                    user.role != 'trainer'
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                  height: 18,
+                                                  width: 18,
+                                                  child: CircleAvatar(
+                                                    backgroundColor:
+                                                        !user.admitted
+                                                            ? red
+                                                            : green,
+                                                  )),
+                                              SizedBox(
+                                                width: 8,
+                                              ),
+                                              Text(
+                                                !user.admitted
+                                                    ? 'Не допущен'
+                                                    : 'Допущен',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .secondaryContainer,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
+                                  ],
+                                )
+                              : Container(),
                           SizedBox(
                             height: 33,
                           ),
@@ -159,9 +251,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
             ];
           },
           body: Provider.of<UserState>(context).user.role == 'trainer' &&
-                  (user.role != 'trainer' ||
-                      user.role != 'moderator' ||
-                      user.role != 'specialist')
+                  user.isMyStudent
               ? TabBarView(controller: controller, children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

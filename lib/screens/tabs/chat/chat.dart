@@ -604,7 +604,8 @@ class Avatar extends StatelessWidget {
               child: Skeleton(
                 isLoading: true,
                 skeleton: SkeletonAvatar(
-                  style: SkeletonAvatarStyle(shape: BoxShape.circle),
+                  style: SkeletonAvatarStyle(
+                      height: height, width: width, shape: BoxShape.circle),
                 ),
                 child: Container(),
               ),

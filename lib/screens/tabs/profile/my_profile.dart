@@ -60,18 +60,15 @@ class _MyProfileScreenState extends State<MyProfileScreen>
             Container(
                 height: 136,
                 width: 136,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  child: user.photo != null
-                      ? Avatar(
-                          user.photo!,
-                          height: 136,
-                          width: 136,
-                        )
-                      : CircleAvatar(
-                          backgroundColor: Colors.black12,
-                        ),
-                )),
+                child: user.photo != null
+                    ? Avatar(
+                        user.photo!,
+                        height: 136,
+                        width: 136,
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.black12,
+                      )),
             SizedBox(
               height: 16,
             ),
@@ -217,8 +214,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                             text: 'Информация',
                           ),
                           TopTab(
-                            text:
-                                'Паспорт ${user.role == 'trainer' ? '' : "спортсмена"}',
+                            text: 'Паспорт',
                           )
                         ],
                       ),
@@ -257,7 +253,9 @@ class PassportInfo extends StatelessWidget {
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -368,6 +366,22 @@ class PassportInfo extends StatelessWidget {
                 ifNullRed: true,
                 value: passport.address,
               ),
+              Provider.of<UserState>(context, listen: false).user.role !=
+                      'trainer'
+                  ? _Item(
+                      name: "Место учебы (город, школа)",
+                      ifNullRed: true,
+                      value: passport.school,
+                    )
+                  : Container(),
+              _Item(
+                name: "Медицинская справка / Дата окончания",
+                value: passport.med_spravka_date,
+              ),
+              _Item(
+                name: "Страховой полис / Дата окончания",
+                value: passport.strah_date,
+              ),
             ],
           ),
         ),
@@ -387,14 +401,6 @@ class PassportInfo extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _Item(
-                          name: "Медицинская справка / Дата окончания",
-                          value: passport.med_spravka_date,
-                        ),
-                        _Item(
-                          name: "Страховой полис / Дата окончания",
-                          value: passport.strah_date,
-                        ),
                         _Item(
                           name: "Отец (ФИО)",
                           value: passport.father_fio,
@@ -459,6 +465,9 @@ class PassportInfo extends StatelessWidget {
               Get.toNamed('/my_profile/documents', arguments: user);
             },
           ),
+        ),
+        SizedBox(
+          height: 20,
         )
       ],
     );

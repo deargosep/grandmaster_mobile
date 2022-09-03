@@ -4,7 +4,6 @@ import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
-import 'package:provider/provider.dart';
 
 class DocumentsScreen extends StatefulWidget {
   const DocumentsScreen({Key? key}) : super(key: key);
@@ -40,7 +39,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       OptionType('Другие документы', destination,
           arguments: {"type": "other", "user": user})
     ];
-    if (Provider.of<UserState>(context, listen: false).user.role == 'trainer') {
+    if (user.role == 'trainer') {
       optionList = [
         OptionType('Паспорт', destination,
             arguments: {"index": 0, "user": user}),

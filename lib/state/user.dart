@@ -69,6 +69,7 @@ class UserState extends ChangeNotifier {
     print(data);
     return User(
         id: data["id"],
+        isMyStudent: data["is_my_student"],
         parents: data["parents"],
         chatId: data["dm"],
         children: <MinimalUser>[
@@ -269,6 +270,7 @@ class User {
   final DateTime? birthday;
   final role;
   // final age;
+  final bool isMyStudent;
   final country;
   final city;
   final firstName;
@@ -291,6 +293,7 @@ class User {
       this.lastName,
       this.middleName,
       this.phoneNumber,
+      this.isMyStudent = false,
       children,
       parents,
       this.role,
