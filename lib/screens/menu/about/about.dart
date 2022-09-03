@@ -127,7 +127,10 @@ class AboutCard extends StatelessWidget {
             height: 200,
             width: double.infinity,
             child: item.cover != null
-                ? LoadingImage(item.cover)
+                ? LoadingImage(
+                    item.cover,
+                    height: 200,
+                  )
                 : Container(
                     color: Theme.of(context).colorScheme.secondary,
                   ),

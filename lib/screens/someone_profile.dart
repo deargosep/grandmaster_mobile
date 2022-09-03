@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
@@ -227,9 +228,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                           ),
                           Provider.of<UserState>(context).user.role ==
                                       'trainer' &&
-                                  (user.role != 'trainer' ||
-                                      user.role != 'moderator' ||
-                                      user.role != 'specialist')
+                                  user.isMyStudent
                               ? TabsSwitch(
                                   controller: controller,
                                   children: [
@@ -252,13 +251,16 @@ class _SomeoneProfileState extends State<SomeoneProfile>
           },
           body: Provider.of<UserState>(context).user.role == 'trainer' &&
                   user.isMyStudent
-              ? TabBarView(controller: controller, children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Info(user: user),
-                  ),
-                  PassportInfo(user: user)
-                ])
+              ? Padding(
+                  padding: const EdgeInsets.only(top: kIsWeb ? 20 : 0),
+                  child: TabBarView(controller: controller, children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Info(user: user),
+                    ),
+                    PassportInfo(user: user)
+                  ]),
+                )
               : Container(),
         ),
       ),
