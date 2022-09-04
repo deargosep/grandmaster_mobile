@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '/utils/custom_scaffold.dart';
 import '../../../../widgets/brand_card.dart';
+import '../../../utils/tablet.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({Key? key}) : super(key: key);
@@ -61,27 +62,33 @@ class _ContentState extends State<Content> {
   Widget build(BuildContext context) {
     var list = Provider.of<EventsState>(context, listen: true).events;
     if (list.isNotEmpty) {
-      return ListView(
-          children: list.map((item) {
-        return BrandCard(
-          item,
-          // TODO
-          () {
-            createDio()
-                .patch('/events/${item.id}/',
-                    data: FormData.fromMap({"hidden": 'true'}))
-                .then((value) {
-              Provider.of<EventsState>(context, listen: false).setEvents();
-            });
-          },
-          () {
-            createDio().delete('/events/${item.id}/').then((value) {
-              Provider.of<EventsState>(context, listen: false).setEvents();
-            });
-          },
-          type: 'events',
-        );
-      }).toList());
+      return GridView.builder(
+          itemCount: list.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+              crossAxisSpacing: 0.0,
+              mainAxisSpacing: 0.0,
+              childAspectRatio: getDeviceType() == 'tablet' ? 0.9 : 1.15),
+          itemBuilder: ((context, index) {
+            return BrandCard(
+              list[index],
+              // TODO
+              () {
+                createDio()
+                    .patch('/events/${list[index].id}/',
+                        data: FormData.fromMap({"hidden": 'true'}))
+                    .then((value) {
+                  Provider.of<EventsState>(context, listen: false).setEvents();
+                });
+              },
+              () {
+                createDio().delete('/events/${list[index].id}/').then((value) {
+                  Provider.of<EventsState>(context, listen: false).setEvents();
+                });
+              },
+              type: 'events',
+            );
+          }));
     }
     return Center(child: Text('Нет мероприятий'));
   }

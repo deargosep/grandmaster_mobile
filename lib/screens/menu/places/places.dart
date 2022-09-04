@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../state/places.dart';
 import '../../../state/user.dart';
+import '../../../utils/tablet.dart';
 import '../../../widgets/images/brand_icon.dart';
 
 class PlacesScreen extends StatefulWidget {
@@ -56,7 +57,13 @@ class _PlacesScreenState extends State<PlacesScreen> {
                 ? RefreshIndicator(
                     onRefresh: Provider.of<PlacesState>(context, listen: false)
                         .setPlaces,
-                    child: ListView.builder(
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+                            crossAxisSpacing: 0.0,
+                            mainAxisSpacing: 0.0,
+                            childAspectRatio:
+                                getDeviceType() == 'tablet' ? 0.89 : 1.1),
                         itemCount: items.length,
                         itemBuilder: (context, index) => GestureDetector(
                               onTap: () {
@@ -142,34 +149,31 @@ class PlaceCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 13.33,
-                      width: 13.33,
-                      child: BrandIcon(
-                        icon: 'geo',
-                        height: 13.33,
-                        width: 13.33,
-                        color: color,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 279,
-                      child: Text(
-                        item.address,
-                        maxLines: 1,
-                        // "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: color),
-                      ),
-                    )
-                  ],
+                Container(
+                  height: 13.33,
+                  width: 13.33,
+                  child: BrandIcon(
+                    icon: 'geo',
+                    height: 13.33,
+                    width: 13.33,
+                    color: color,
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Text(
+                    item.address,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    // "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: color),
+                  ),
                 ),
               ],
             ),

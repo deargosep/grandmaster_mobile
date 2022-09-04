@@ -6,6 +6,7 @@ import 'package:get/get.dart' hide Response, FormData;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/utils/tablet.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/news_card.dart';
@@ -67,30 +68,35 @@ class _ContentState extends State<Content> {
             ? RefreshIndicator(
                 onRefresh:
                     Provider.of<Articles>(context, listen: false).setNews,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      var item = list[index];
-                      return BrandCard(
-                        item,
-                        // TODO
-                        () {
-                          createDio()
-                              .patch('/news/${item.id}/',
-                                  data: FormData.fromMap({"hidden": true}))
-                              .then((value) =>
-                                  Provider.of<Articles>(context, listen: false)
-                                      .setNews());
-                        },
-                        () {
-                          createDio().delete('/news/${item.id}/').then(
-                              (value) =>
-                                  Provider.of<Articles>(context, listen: false)
-                                      .setNews());
-                        },
-                      );
-                    }),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    var item = list[index];
+                    return BrandCard(
+                      item,
+                      // TODO
+                      () {
+                        createDio()
+                            .patch('/news/${item.id}/',
+                                data: FormData.fromMap({"hidden": true}))
+                            .then((value) =>
+                                Provider.of<Articles>(context, listen: false)
+                                    .setNews());
+                      },
+                      () {
+                        createDio().delete('/news/${item.id}/').then((value) =>
+                            Provider.of<Articles>(context, listen: false)
+                                .setNews());
+                      },
+                    );
+                  },
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      childAspectRatio: getDeviceType() == 'tablet' ? 1 : 1.25),
+                ),
               )
             : Center(
                 child: Text('Нет новостей'),
