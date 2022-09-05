@@ -37,6 +37,8 @@ class _PlacesScreenState extends State<PlacesScreen> {
       return user.role == 'moderator';
     }
 
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
     List<PlaceType> items = Provider.of<PlacesState>(context).places;
     bool isLoaded = Provider.of<PlacesState>(context).isLoaded;
 
@@ -62,8 +64,11 @@ class _PlacesScreenState extends State<PlacesScreen> {
                             crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
                             crossAxisSpacing: 0.0,
                             mainAxisSpacing: 0.0,
-                            childAspectRatio:
-                                getDeviceType() == 'tablet' ? 0.89 : 1.1),
+                            childAspectRatio: getDeviceType() == 'tablet'
+                                ? currentOrientation == Orientation.portrait
+                                    ? 0.89
+                                    : 1.4
+                                : 1.1),
                         itemCount: items.length,
                         itemBuilder: (context, index) => GestureDetector(
                               onTap: () {

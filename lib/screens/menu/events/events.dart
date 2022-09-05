@@ -60,6 +60,8 @@ class Content extends StatefulWidget {
 class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
     var list = Provider.of<EventsState>(context, listen: true).events;
     if (list.isNotEmpty) {
       return GridView.builder(
@@ -68,7 +70,11 @@ class _ContentState extends State<Content> {
               crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
               crossAxisSpacing: 0.0,
               mainAxisSpacing: 0.0,
-              childAspectRatio: getDeviceType() == 'tablet' ? 0.9 : 1.15),
+              childAspectRatio: getDeviceType() == 'tablet'
+                  ? currentOrientation == Orientation.portrait
+                      ? 0.9
+                      : 1.3
+                  : 1.15),
           itemBuilder: ((context, index) {
             return BrandCard(
               list[index],

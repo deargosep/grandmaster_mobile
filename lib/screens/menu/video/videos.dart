@@ -66,6 +66,8 @@ class _VideosScreenState extends State<VideosScreen> {
       return user.role == 'moderator';
     }
 
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
     List videos = context.watch<VideosState>().videos;
     bool isLoaded = Provider.of<VideosState>(context, listen: true).isLoaded;
     return CustomScaffold(
@@ -99,7 +101,10 @@ class _VideosScreenState extends State<VideosScreen> {
                                     mainAxisSpacing: 0.0,
                                     childAspectRatio:
                                         getDeviceType() == 'tablet'
-                                            ? 1.3
+                                            ? currentOrientation ==
+                                                    Orientation.portrait
+                                                ? 1.3
+                                                : 2
                                             : 1.5),
                             // shrinkWrap: true,
                             // itemCount: videos.length,

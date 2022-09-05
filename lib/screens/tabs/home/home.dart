@@ -61,7 +61,9 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     var list = Provider.of<Articles>(context, listen: true).news;
-    // var user = Provider.of<UserState>(context);
+
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
     bool isLoaded = Provider.of<Articles>(context).isLoaded;
     return isLoaded
         ? list.isNotEmpty
@@ -95,7 +97,11 @@ class _ContentState extends State<Content> {
                       crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
                       crossAxisSpacing: 0.0,
                       mainAxisSpacing: 0.0,
-                      childAspectRatio: getDeviceType() == 'tablet' ? 1 : 1.25),
+                      childAspectRatio: getDeviceType() == 'tablet'
+                          ? currentOrientation == Orientation.portrait
+                              ? 1
+                              : 1.5
+                          : 1.25),
                 ),
               )
             : Center(
