@@ -85,7 +85,7 @@ class MenuScreen extends StatelessWidget {
       }
       if (user.role == 'guest') {
         return <OptionType>[
-          OptionType('Мероприятия', links["events"]!),
+          // OptionType('Мероприятия', links["events"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Залы', links["places"]!),
           OptionType('О клубе', links["about"]!),

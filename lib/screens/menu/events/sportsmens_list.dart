@@ -165,6 +165,8 @@ class _AddState extends State<_Add> {
           text: 'Записать спортсменов',
         ),
         noTopPadding: true,
+        noBottomPadding: true,
+        noPadding: false,
         body: ListView(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [

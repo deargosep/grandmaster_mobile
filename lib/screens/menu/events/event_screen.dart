@@ -22,9 +22,9 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+  EventType oldItem = Get.arguments;
   @override
   Widget build(BuildContext context) {
-    EventType oldItem = Get.arguments;
     EventType item = Provider.of<EventsState>(context)
         .events
         .firstWhere((element) => element.id == oldItem.id);
@@ -124,10 +124,9 @@ class _EventScreenState extends State<EventScreen> {
                                 "event": item.id
                               }, data: {
                                 "members": [
-                                  int.parse(Provider.of<UserState>(context,
-                                          listen: false)
+                                  Provider.of<UserState>(context, listen: false)
                                       .user
-                                      .id)
+                                      .id
                                 ]
                               }).then((value) {
                                 Provider.of<EventsState>(context, listen: false)
