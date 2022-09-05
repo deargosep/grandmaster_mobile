@@ -36,6 +36,8 @@ class _LearningsScreenState extends State<LearningsScreen> {
       return user.role == 'moderator';
     }
 
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
     List<LearningType> items = Provider.of<LearningsState>(context).learnings;
     bool isLoaded = Provider.of<LearningsState>(context).isLoaded;
     return CustomScaffold(
@@ -65,8 +67,12 @@ class _LearningsScreenState extends State<LearningsScreen> {
                                       getDeviceType() == 'tablet' ? 2 : 1,
                                   crossAxisSpacing: 24.0,
                                   mainAxisSpacing: 0.0,
-                                  childAspectRatio:
-                                      getDeviceType() == 'tablet' ? 2.8 : 3.4),
+                                  childAspectRatio: getDeviceType() == 'tablet'
+                                      ? currentOrientation ==
+                                              Orientation.portrait
+                                          ? 2.8
+                                          : 4.4
+                                      : 3.4),
                           itemCount: items.length,
                           itemBuilder: (context, index) => Container(
                                 margin: EdgeInsets.only(bottom: 16),
