@@ -31,6 +31,7 @@ class Input extends StatelessWidget {
       this.textAlign = TextAlign.start,
       this.textCapitalization = TextCapitalization.sentences,
       this.enabled = true,
+      this.errorStyle,
       this.labelWidget})
       : super(key: key);
 
@@ -58,6 +59,7 @@ class Input extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final bool enabled;
   final Widget? labelWidget;
+  final TextStyle? errorStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +133,22 @@ class Input extends StatelessWidget {
           counterText: '',
           labelText: label,
           label: labelWidget,
+          errorBorder: OutlineInputBorder(
+            borderRadius: borderRadius ?? BorderRadius.circular(10),
+            borderSide: BorderSide(
+                color: Colors.red, width: 1.3, style: BorderStyle.solid),
+          ),
+          errorStyle: errorStyle,
           border: OutlineInputBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 0,
-              style: BorderStyle.none,
-            ),
+            borderSide:
+                validator != null && validator!(controller?.text) != null
+                    ? BorderSide(
+                        width: 2, style: BorderStyle.solid, color: Colors.red)
+                    : BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
           ),
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.never,

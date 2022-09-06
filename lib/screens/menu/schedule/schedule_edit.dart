@@ -75,6 +75,8 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
     });
   }
 
+  GlobalKey<FormState> formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     // Map<String, List<String>> schedule = {
@@ -97,38 +99,40 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
             child: BrandButton(
               text: 'Сохранить',
               onPressed: () {
-                Map days = {
-                  "monday": [monday1.text, monday2.text],
-                  "tuesday": [tuesday1.text, tuesday2.text],
-                  "wednesday": [wednesday1.text, wednesday2.text],
-                  "thursday": [thursday1.text, thursday2.text],
-                  "friday": [friday1.text, friday2.text],
-                  "saturday": [saturday1.text, saturday2.text],
-                  "sunday": [sunday1.text, sunday2.text],
-                };
-                if (!days.values
-                    .every((element) => element.isEmpty)) if (createMode !=
-                        null &&
-                    createMode == true) {
-                  createDio().post('/schedule/', data: {
-                    "gym": placeId.toString(),
-                    "sport_group": groupId.toString(),
-                    "days": days
-                  }).then((value) {
-                    Get.back();
-                    Provider.of<ScheduleState>(context, listen: false)
-                        .setSchedule(placeId, groupId);
-                  });
-                } else {
-                  createDio().put('/schedule/', data: {
-                    "gym": schedule.gym.toString(),
-                    "sport_group": schedule.group.toString(),
-                    "days": days
-                  }).then((value) {
-                    Get.back();
-                    Provider.of<ScheduleState>(context, listen: false)
-                        .setSchedule(schedule.gym, schedule.group);
-                  });
+                if (formKey.currentState!.validate()) {
+                  Map days = {
+                    "monday": [monday1.text, monday2.text],
+                    "tuesday": [tuesday1.text, tuesday2.text],
+                    "wednesday": [wednesday1.text, wednesday2.text],
+                    "thursday": [thursday1.text, thursday2.text],
+                    "friday": [friday1.text, friday2.text],
+                    "saturday": [saturday1.text, saturday2.text],
+                    "sunday": [sunday1.text, sunday2.text],
+                  };
+                  if (!days.values
+                      .every((element) => element.isEmpty)) if (createMode !=
+                          null &&
+                      createMode == true) {
+                    createDio().post('/schedule/', data: {
+                      "gym": placeId.toString(),
+                      "sport_group": groupId.toString(),
+                      "days": days
+                    }).then((value) {
+                      Get.back();
+                      Provider.of<ScheduleState>(context, listen: false)
+                          .setSchedule(placeId, groupId);
+                    });
+                  } else {
+                    createDio().put('/schedule/', data: {
+                      "gym": schedule.gym.toString(),
+                      "sport_group": schedule.group.toString(),
+                      "days": days
+                    }).then((value) {
+                      Get.back();
+                      Provider.of<ScheduleState>(context, listen: false)
+                          .setSchedule(schedule.gym, schedule.group);
+                    });
+                  }
                 }
               },
             )),
@@ -143,6 +147,7 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
               height: 16,
             ),
             Schedule(schedule,
+                formKey: formKey,
                 editMode: true,
                 monday1: monday1,
                 monday2: monday2,

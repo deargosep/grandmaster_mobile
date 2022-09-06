@@ -89,10 +89,12 @@ class Schedule extends StatelessWidget {
       this.saturday1,
       this.saturday2,
       this.sunday1,
-      this.sunday2})
+      this.sunday2,
+      this.formKey})
       : super(key: key);
   final ScheduleType schedule;
   final bool editMode;
+  final GlobalKey<FormState>? formKey;
   TextEditingController? monday1 = TextEditingController();
   TextEditingController? monday2 = TextEditingController();
   TextEditingController? tuesday1 = TextEditingController();
@@ -189,66 +191,127 @@ class Schedule extends StatelessWidget {
                     child: TimePill(e)))
                 .toList()),
         Container(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: daysOfWeek
-              .map((e) => editMode
-                  ? Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        children: schedule.days[getDayReverse(e)]!.isNotEmpty
-                            ? [
-                                TimePill(
-                                  schedule.days[getDayReverse(e)]![0]!,
-                                  editMode: true,
-                                  controller:
-                                      getController(getDayReverse(e), 0),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                TimePill(schedule.days[getDayReverse(e)]![1]!,
+            child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: daysOfWeek
+                .map((e) => editMode
+                    ? Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          children: schedule.days[getDayReverse(e)]!.isNotEmpty
+                              ? [
+                                  TimePill(
+                                    schedule.days[getDayReverse(e)]![0]!,
+                                    editMode: true,
+                                    controller:
+                                        getController(getDayReverse(e), 0),
+                                    validator: (str) {
+                                      if (str!.isEmpty &&
+                                          getController(getDayReverse(e), 1)!
+                                              .text
+                                              .isNotEmpty)
+                                        return 'Введите это поле';
+                                      else if (str.isEmpty &&
+                                          getController(getDayReverse(e), 1)!
+                                              .text
+                                              .isEmpty)
+                                        return null;
+                                      else
+                                        return null;
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  TimePill(
+                                    schedule.days[getDayReverse(e)]![1]!,
                                     controller:
                                         getController(getDayReverse(e), 1),
-                                    editMode: true),
-                              ]
-                            : [
-                                TimePill(
-                                  '',
-                                  editMode: true,
-                                  controller:
-                                      getController(getDayReverse(e), 0),
-                                ),
+                                    editMode: true,
+                                    validator: (str) {
+                                      if (str!.isEmpty &&
+                                          getController(getDayReverse(e), 0)!
+                                              .text
+                                              .isNotEmpty)
+                                        return 'Введите это поле';
+                                      else if (str.isEmpty &&
+                                          getController(getDayReverse(e), 0)!
+                                              .text
+                                              .isEmpty)
+                                        return null;
+                                      else
+                                        return null;
+                                    },
+                                  ),
+                                ]
+                              : [
+                                  TimePill(
+                                    '',
+                                    editMode: true,
+                                    controller:
+                                        getController(getDayReverse(e), 0),
+                                    validator: (str) {
+                                      if (str!.isEmpty &&
+                                          getController(getDayReverse(e), 1)!
+                                              .text
+                                              .isNotEmpty)
+                                        return 'Введите это поле';
+                                      else if (str.isEmpty &&
+                                          getController(getDayReverse(e), 1)!
+                                              .text
+                                              .isEmpty)
+                                        return null;
+                                      else
+                                        return null;
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  TimePill(
+                                    '',
+                                    editMode: true,
+                                    controller:
+                                        getController(getDayReverse(e), 1),
+                                    validator: (str) {
+                                      if (str!.isEmpty &&
+                                          getController(getDayReverse(e), 0)!
+                                              .text
+                                              .isNotEmpty)
+                                        return 'Введите это поле';
+                                      else if (str.isEmpty &&
+                                          getController(getDayReverse(e), 0)!
+                                              .text
+                                              .isEmpty)
+                                        return null;
+                                      else
+                                        return null;
+                                    },
+                                  )
+                                ],
+                        ),
+                      )
+                    : schedule.days[getDayReverse(e)]!.isNotEmpty
+                        ? Container(
+                            margin: EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              children: [
+                                TimePill(schedule.days[getDayReverse(e)]![0]!),
                                 SizedBox(
                                   width: 16,
                                 ),
-                                TimePill(
-                                  '',
-                                  editMode: true,
-                                  controller:
-                                      getController(getDayReverse(e), 1),
-                                )
+                                TimePill(schedule.days[getDayReverse(e)]![1]!),
                               ],
-                      ),
-                    )
-                  : schedule.days[getDayReverse(e)]!.isNotEmpty
-                      ? Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            children: [
-                              TimePill(schedule.days[getDayReverse(e)]![0]!),
-                              SizedBox(
-                                width: 16,
-                              ),
-                              TimePill(schedule.days[getDayReverse(e)]![1]!),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          height: 37,
-                          margin: EdgeInsets.only(bottom: 16),
-                        ))
-              .toList(),
+                            ),
+                          )
+                        : Container(
+                            height: 37,
+                            margin: EdgeInsets.only(bottom: 16),
+                          ))
+                .toList(),
+          ),
         ))
       ],
     );
@@ -256,11 +319,13 @@ class Schedule extends StatelessWidget {
 }
 
 class TimePill extends StatelessWidget {
-  const TimePill(this.text, {Key? key, this.editMode = false, this.controller})
+  const TimePill(this.text,
+      {Key? key, this.editMode = false, this.controller, this.validator})
       : super(key: key);
   final String text;
   final bool editMode;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
     if (editMode)
@@ -286,11 +351,12 @@ class TimePill extends StatelessWidget {
           height: 37,
           width: 82,
           controller: controller,
-          validator: (text) => null,
+          validator: validator ?? (text) => null,
           defaultText: text,
           keyboardType: TextInputType.number,
           centerText: true,
           maxLength: 5,
+          errorStyle: TextStyle(height: 0.01, fontSize: 0),
           textAlign: TextAlign.center,
           textStyle: TextStyle(
               fontSize: 14,
