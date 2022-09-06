@@ -58,9 +58,9 @@ class _GroupScreenState extends State<GroupScreen> {
         noHorPadding: true,
         appBar: AppHeader(
           text: item.name,
-          icon: 'plus',
+          icon: 'settings',
           iconOnTap: () {
-            Get.toNamed('/group/manage', arguments: item);
+            Get.toNamed('/groups/add', arguments: item);
           },
         ),
         body: list.isNotEmpty
@@ -102,7 +102,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                         .then((value) {
                                       User user = UserState()
                                           .convertMapToUser(value.data);
-                                      Get.toNamed('/someone_profile',
+                                      Get.toNamed('/other_profile',
                                           arguments: user);
                                     });
                                   },

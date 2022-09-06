@@ -150,18 +150,21 @@ class BrandCard extends StatelessWidget {
 }
 
 class LoadingImage extends StatelessWidget {
-  const LoadingImage(this.url, {Key? key, this.height, this.width})
+  const LoadingImage(this.url,
+      {Key? key, this.height, this.width, this.borderRadius})
       : super(key: key);
   final String url;
   final double? width;
   final double? height;
+  final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
     return Image.network(url, fit: BoxFit.cover, height: height, width: width,
         loadingBuilder: (context, child, loading) {
       if (loading == null)
         return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(15)), child: child);
+            borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(15)),
+            child: child);
       return Container(
         height: height,
         width: width,

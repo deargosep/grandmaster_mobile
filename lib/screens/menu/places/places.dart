@@ -132,19 +132,15 @@ class PlaceCard extends StatelessWidget {
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      item.name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ],
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
               ),
             ),
 
@@ -182,20 +178,20 @@ class PlaceCard extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(
+              height: 8,
+            ),
             // description
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-              child: Text(
-                item.description,
-                maxLines: 2,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w500, color: color),
-              ),
+            Text(
+              item.description,
+              maxLines: 2,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+              style: TextStyle(
+                  fontSize: 12, fontWeight: FontWeight.w500, color: color),
             ),
             SizedBox(
-              height: 24,
+              height: 16,
             ),
             item.trainers.isNotEmpty
                 ? Row(

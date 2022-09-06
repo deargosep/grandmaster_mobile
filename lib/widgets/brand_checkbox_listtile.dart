@@ -9,12 +9,14 @@ class BrandCheckboxListTile extends StatelessWidget {
       {Key? key,
       required this.value,
       required this.title,
+      this.rawTitle,
       required this.onChanged,
       this.onTap,
       this.use_title = false})
       : super(key: key);
   final value;
   final String title;
+  final String? rawTitle;
   final onChanged;
   final bool use_title;
   final VoidCallback? onTap;
@@ -34,13 +36,6 @@ class BrandCheckboxListTile extends StatelessWidget {
               if (use_title) {
                 onChanged(title, !value);
               } else {
-                if (title.contains('_')) {
-                  var id = title.split('_')[0];
-                  createDio().get('/users/${id}/').then((value) {
-                    User user = UserState().convertMapToUser(value.data);
-                    Get.toNamed('/someone_profile', arguments: user);
-                  });
-                }
                 onChanged(!value);
               }
             },
@@ -50,7 +45,16 @@ class BrandCheckboxListTile extends StatelessWidget {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: onTap,
+              onTap: () {
+                if (onTap != null) onTap!();
+                if (rawTitle != null) if (rawTitle!.contains('_')) {
+                  var id = rawTitle!.split('_')[0];
+                  createDio().get('/users/${id}/').then((value) {
+                    User user = UserState().convertMapToUser(value.data);
+                    Get.toNamed('/other_profile', arguments: user);
+                  });
+                }
+              },
               child: Text(
                 title,
                 maxLines: 1,

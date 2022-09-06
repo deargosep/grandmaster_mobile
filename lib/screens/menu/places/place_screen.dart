@@ -36,6 +36,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
               child: item.cover != null
                   ? LoadingImage(
                       item.cover!,
+                      height: 220,
+                      borderRadius: BorderRadius.zero,
                     )
                   : null,
             ),
@@ -109,14 +111,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(
-                                item.address,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondaryContainer),
+                              Expanded(
+                                child: Text(
+                                  item.address,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryContainer),
+                                ),
                               )
                             ],
                           ),

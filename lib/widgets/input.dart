@@ -32,7 +32,8 @@ class Input extends StatelessWidget {
       this.textCapitalization = TextCapitalization.sentences,
       this.enabled = true,
       this.errorStyle,
-      this.labelWidget})
+      this.labelWidget,
+      this.centerError = false})
       : super(key: key);
 
   final String? label;
@@ -60,6 +61,7 @@ class Input extends StatelessWidget {
   final bool enabled;
   final Widget? labelWidget;
   final TextStyle? errorStyle;
+  final bool centerError;
 
   @override
   Widget build(BuildContext context) {
@@ -139,17 +141,34 @@ class Input extends StatelessWidget {
                 color: Colors.red, width: 1.3, style: BorderStyle.solid),
           ),
           errorStyle: errorStyle,
-          border: OutlineInputBorder(
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: borderRadius ?? BorderRadius.circular(10),
+            borderSide: BorderSide(
+                color: Colors.red, width: 1.3, style: BorderStyle.solid),
+          ),
+          focusedBorder: OutlineInputBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(10),
             borderSide:
-                validator != null && validator!(controller?.text) != null
+                validator != null && validator!(controller!.text) != null
                     ? BorderSide(
-                        width: 2, style: BorderStyle.solid, color: Colors.red)
-                    : BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      ),
+                        color: Colors.red, width: 1.3, style: BorderStyle.solid)
+                    : BorderSide.none,
           ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(10),
+              borderSide:
+                  validator != null && validator!(controller!.text) != null
+                      ? BorderSide(
+                          color: Colors.red,
+                          width: 1.3,
+                          style: BorderStyle.solid)
+                      : BorderSide.none),
+          border: OutlineInputBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(10),
+              borderSide:
+                  validator != null && validator!(controller!.text) != null
+                      ? BorderSide()
+                      : BorderSide.none),
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.never,
         ),
@@ -269,12 +288,12 @@ class _InputPhoneState extends State<InputPhone> {
       maxLength: "(###) ###-##-##".length,
       keyboardType: TextInputType.phone,
       // onChanged: widget.onChanged,
-      // validator: (text) {
-      //   if (widget.controller?.text.length != "+# (###) ###-##-##".length)
-      //     return 'Введите номер телефона';
-      //   else
-      //     return null;
-      // },
+      validator: (text) {
+        if (widget.controller?.text.length != "(###) ###-##-##".length)
+          return 'Введите номер телефона';
+        else
+          return null;
+      },
       // autovalidateMode: AutovalidateMode.onUserInteraction,
       style: TextStyle(
           color: Color(

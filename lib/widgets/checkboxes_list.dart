@@ -24,6 +24,7 @@ class CheckboxesList extends StatelessWidget {
             children: [
               BrandCheckboxListTile(
                 title: checkboxes!.keys.elementAt(index).split('_')[1],
+                rawTitle: checkboxes!.keys.elementAt(index),
                 value: checkboxes?.values.elementAt(index),
                 onChanged: (val) {
                   var localCheckboxes = {...checkboxes!};

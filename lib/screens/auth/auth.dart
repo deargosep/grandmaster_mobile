@@ -32,7 +32,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: numbers["trainer"]);
+      TextEditingController(text: numbers["parent"]);
   bool isLoaded = false;
 
   @override
@@ -40,19 +40,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
     super.initState();
     setState(() {
       isLoaded = false;
-    });
-    phoneNumber.addListener(() {
-      String myText = phoneNumber.text;
-      if (myText.length > 2) {
-        print('${myText[1]} test');
-        if (myText[1] == '8') {
-          myText.replaceAll('8', '7');
-          phoneNumber.text = '${myText}';
-          phoneNumber.selection = TextSelection.fromPosition(
-              TextPosition(offset: phoneNumber.text.length));
-          print(myText);
-        }
-      }
     });
     SharedPreferences.getInstance().then((sp) {
       if (sp.getString('access') != null) {
@@ -104,11 +91,14 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             SizedBox(
               height: 32,
             ),
-            InputPhone(
-              label: 'Номер телефона',
-              controller: phoneNumber,
-              // onChanged: onChanged,
-              // onChanged: onChanged,
+            Form(
+              key: _formKey,
+              child: InputPhone(
+                label: 'Номер телефона',
+                controller: phoneNumber,
+                // onChanged: onChanged,
+                // onChanged: onChanged,
+              ),
             ),
             Spacer(),
             BrandButton(
@@ -118,7 +108,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                 //     ? !_formKey.currentState!.validate()
                 //     : true,
                 onPressed: () {
-                  if (phoneNumber.text.length == "(###) ###-##-##".length) {
+                  if (_formKey.currentState!.validate()) {
                     SharedPreferences.getInstance()
                         .then((value) => value.clear());
                     var number = '+7 ${phoneNumber.text}'
