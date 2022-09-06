@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -95,6 +96,16 @@ class _GroupScreenState extends State<GroupScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: Option(
+                                  onTap: () {
+                                    createDio()
+                                        .get('/users/${list[index].id}/')
+                                        .then((value) {
+                                      User user = UserState()
+                                          .convertMapToUser(value.data);
+                                      Get.toNamed('/someone_profile',
+                                          arguments: user);
+                                    });
+                                  },
                                   text: list[index].fullName,
                                   noArrow: true,
                                 ),
