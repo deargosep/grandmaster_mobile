@@ -23,7 +23,7 @@ class CheckboxesList extends StatelessWidget {
           return Column(
             children: [
               BrandCheckboxListTile(
-                title: checkboxes?.keys.elementAt(index).split('_')[1],
+                title: checkboxes!.keys.elementAt(index).split('_')[1],
                 value: checkboxes?.values.elementAt(index),
                 onChanged: (val) {
                   var localCheckboxes = {...checkboxes!};

@@ -71,12 +71,6 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
     }
 
     bool editMode = group != null;
-    void onTap(id) {
-      createDio().get('/users/${id}/').then((value) {
-        User user = UserState().convertMapToUser(value.data);
-        Get.toNamed('/other_profile', arguments: user);
-      });
-    }
 
     return CustomScaffold(
       // scrollable: true,
@@ -210,7 +204,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
               ? CheckboxesList(
                   changeCheckbox: changeCheckboxesState,
                   checkboxes: checkboxes,
-                  onTap: onTap)
+                )
               : Center(
                   child: CircularProgressIndicator(),
                 )

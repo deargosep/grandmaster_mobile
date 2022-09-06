@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_checkbox.dart';
 
 class BrandCheckboxListTile extends StatelessWidget {
@@ -11,7 +14,7 @@ class BrandCheckboxListTile extends StatelessWidget {
       this.use_title = false})
       : super(key: key);
   final value;
-  final title;
+  final String title;
   final onChanged;
   final bool use_title;
   final VoidCallback? onTap;
@@ -31,6 +34,13 @@ class BrandCheckboxListTile extends StatelessWidget {
               if (use_title) {
                 onChanged(title, !value);
               } else {
+                if (title.contains('_')) {
+                  var id = title.split('_')[0];
+                  createDio().get('/users/${id}/').then((value) {
+                    User user = UserState().convertMapToUser(value.data);
+                    Get.toNamed('/someone_profile', arguments: user);
+                  });
+                }
                 onChanged(!value);
               }
             },
