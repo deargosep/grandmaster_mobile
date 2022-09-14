@@ -109,8 +109,8 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
                     "saturday": [saturday1.text, saturday2.text],
                     "sunday": [sunday1.text, sunday2.text],
                   };
-                  if (!days.values
-                      .every((element) => element.isEmpty)) if (createMode !=
+                  if (!days.values.every((element) =>
+                      element.every((e) => e == ''))) if (createMode !=
                           null &&
                       createMode == true) {
                     createDio().post('/schedule/', data: {

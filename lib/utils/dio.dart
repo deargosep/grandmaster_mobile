@@ -36,48 +36,50 @@ Dio createDio(
       handler.reject(DioError(requestOptions: options, error: 'Add /'));
     return handler.next(options);
   }, onError: (error, handler) {
-    if (showSnackbar) {
-      if (error.response?.statusCode != 500) {
-        if (error.response?.data != null) {
-          print(
-              'dio error: ${error.error}, WHY?: ${error.response?.data ?? error.message}');
-          showErrorSnackbar(error.response?.data != ''
-              ? error.response!.data["details"]
-              : error.message);
+    try {
+      if (showSnackbar) {
+        if (error.response?.statusCode != 500) {
+          if (error.response?.data != null) {
+            print(
+                'dio error: ${error.error}, WHY?: ${error.response?.data ?? error.message}');
+            showErrorSnackbar(error.response?.data != ''
+                ? error.response!.data["details"]
+                : error.message);
+          } else {
+            print('dio error: ${error.error}, WHY?: ${error.message}');
+            showErrorSnackbar(error.message);
+          }
         } else {
-          print('dio error: ${error.error}, WHY?: ${error.message}');
-          showErrorSnackbar(error.message);
+          print('dio error: 500');
+          showErrorSnackbar('Ошибка сервера. Попробуйте позднее');
         }
-      } else {
-        print('dio error: 500');
-        showErrorSnackbar('Ошибка сервера. Попробуйте позднее');
       }
-    }
-    if (errHandler != null) errHandler(error, handler);
-    SharedPreferences.getInstance().then((sp) {
-      if (error.response?.data.runtimeType.toString() != 'String') {
-        if (error.response?.data.containsKey("code")) {
-          if (error.response?.data["code"] == 'token_not_valid') {
-            createDio()
-                .post('/auth/token/refresh/',
-                    data: {"refresh": sp.getString('refresh')},
-                    options: Options(headers: {"Authorization": null}))
-                .then((value) {
-              sp.setString('access', value.data["access"]);
-              sp.setString('refresh', value.data["refresh"]).then((value) {
-                createDio().get('/users/self/').then((value) {
-                  Get.offAllNamed('/bar', arguments: 1);
+      if (errHandler != null) errHandler(error, handler);
+      SharedPreferences.getInstance().then((sp) {
+        if (error.response?.data.runtimeType.toString() != 'String') {
+          if (error.response?.data.containsKey("code")) {
+            if (error.response?.data["code"] == 'token_not_valid') {
+              createDio()
+                  .post('/auth/token/refresh/',
+                      data: {"refresh": sp.getString('refresh')},
+                      options: Options(headers: {"Authorization": null}))
+                  .then((value) {
+                sp.setString('access', value.data["access"]);
+                sp.setString('refresh', value.data["refresh"]).then((value) {
+                  createDio().get('/users/self/').then((value) {
+                    Get.offAllNamed('/bar', arguments: 1);
+                  });
                 });
               });
-            });
+            }
+          }
+          if (error.response?.data["code"] == 'user_inactive') {
+            sp.clear();
+            Get.offAllNamed('/');
           }
         }
-        if (error.response?.data["code"] == 'user_inactive') {
-          sp.clear();
-          Get.offAllNamed('/');
-        }
-      }
-    });
+      });
+    } catch (e) {}
   }));
   return dio;
 }
