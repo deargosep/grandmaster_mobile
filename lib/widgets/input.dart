@@ -33,6 +33,7 @@ class Input extends StatelessWidget {
       this.enabled = true,
       this.errorStyle,
       this.labelWidget,
+      this.autovalidateMode = AutovalidateMode.onUserInteraction,
       this.centerError = false})
       : super(key: key);
 
@@ -62,6 +63,7 @@ class Input extends StatelessWidget {
   final Widget? labelWidget;
   final TextStyle? errorStyle;
   final bool centerError;
+  final AutovalidateMode autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,7 @@ class Input extends StatelessWidget {
               else
                 return null;
             },
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: autovalidateMode,
         onTap: onTap,
         readOnly: onTap != null,
         inputFormatters: label != null
@@ -146,29 +148,12 @@ class Input extends StatelessWidget {
             borderSide: BorderSide(
                 color: Colors.red, width: 1.3, style: BorderStyle.solid),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: borderRadius ?? BorderRadius.circular(10),
-            borderSide:
-                validator != null && validator!(controller!.text) != null
-                    ? BorderSide(
-                        color: Colors.red, width: 1.3, style: BorderStyle.solid)
-                    : BorderSide.none,
-          ),
           enabledBorder: OutlineInputBorder(
               borderRadius: borderRadius ?? BorderRadius.circular(10),
-              borderSide:
-                  validator != null && validator!(controller!.text) != null
-                      ? BorderSide(
-                          color: Colors.red,
-                          width: 1.3,
-                          style: BorderStyle.solid)
-                      : BorderSide.none),
+              borderSide: BorderSide.none),
           border: OutlineInputBorder(
               borderRadius: borderRadius ?? BorderRadius.circular(10),
-              borderSide:
-                  validator != null && validator!(controller!.text) != null
-                      ? BorderSide()
-                      : BorderSide.none),
+              borderSide: BorderSide.none),
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.never,
         ),

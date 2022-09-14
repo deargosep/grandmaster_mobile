@@ -119,7 +119,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                   child: Text('Код'),
                 ),
                 validator: (text) {
-                  if (controller.text.length < 5)
+                  if (text!.length < 5)
                     return 'Введите код';
                   else
                     return null;

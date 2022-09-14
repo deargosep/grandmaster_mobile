@@ -162,7 +162,7 @@ class UserState extends ChangeNotifier {
     if (user.children.isNotEmpty && user.children.length < 2) {
       _childId = user.children.first.id;
     } else if (user.children.isNotEmpty && user.children.length > 1) {
-      _childId = null;
+      _childId = user.children.first.id;
     } else {
       _childId = null;
     }

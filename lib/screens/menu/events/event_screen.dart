@@ -58,11 +58,15 @@ class _EventScreenState extends State<EventScreen> {
               getRole() == 'guest' ||
               getRole() == 'specialist' ||
               (getRole() == 'sportsmen' && !item.open) ||
-              (getRole() == 'sportsmen' && item.ended)
+              (item.ended && !zapisan)
           ? null
           : BottomPanel(
               withShadow: false,
-              height: zapisan ? 148.0 : 85.0,
+              height: zapisan
+                  ? item.ended
+                      ? 82.0
+                      : 148.0
+                  : 85.0,
               child: Column(
                 children: [
                   zapisan
@@ -80,140 +84,150 @@ class _EventScreenState extends State<EventScreen> {
                               Theme.of(context).colorScheme.secondaryContainer)
                       : Container(),
                   zapisan
-                      ? SizedBox(
-                          height: 16,
-                        )
+                      ? !item.ended
+                          ? SizedBox(
+                              height: 16,
+                            )
+                          : Container()
                       : Container(),
-                  BrandButton(
-                    type: item.members.isNotEmpty ? 'primary' : 'info',
-                    onPressed: () {
-                      if (item.members.isNotEmpty) {
-                        // if not trainer or parent (multiple students)
-                        if (getRole() != 'trainer' && !hasChildren()) {
-                          if (zapisan) {
-                            if (!item.open) {
-                              // посмотреть список
-                              Get.toNamed('/events/list', arguments: {
-                                "item": item,
-                                "options": {"type": "view"}
-                              });
-                            }
-                            if (item.open) {
-                              // отменить запись
-                              createDio().put(
-                                '/events/members/',
-                                data: {"members": []},
-                                queryParameters: {"event": item.id},
-                              ).then((value) {
-                                Provider.of<EventsState>(context, listen: false)
-                                    .setEvents();
-                              });
-                            }
-                          }
-
-                          if (!zapisan) {
-                            // записаться
-                            // if (mounted)
-                            //   setState(() {
-                            //     zapisan = true;
-                            //   });
-                            createDio()
-                                .put('/events/members/', queryParameters: {
-                              "event": item.id
-                            }, data: {
-                              "members": [
-                                Provider.of<UserState>(context, listen: false)
-                                    .user
-                                    .id
-                              ]
-                            }).then((value) {
-                              Provider.of<EventsState>(context, listen: false)
-                                  .setEvents();
-                              Get.toNamed('/success',
-                                  arguments:
-                                      'Вы успешно записались на мероприятие');
-                            });
-                            // Get.toNamed('/success',
-                            //     arguments:
-                            //         'Вы успешно записались на мероприятие');
-                          }
-                        } else {
-                          if (getRole() == "trainer") {
-                            if (!zapisan) {
-                              // if (mounted)
-                              //   setState(() {
-                              //     zapisan = true;
-                              //   });
-                              // add
-                              Get.toNamed('/events/list', arguments: {
-                                "item": item,
-                                "options": {"type": "add"}
-                              });
-                            }
-                            if (zapisan) {
-                              // edit
-                              Get.toNamed('/events/list', arguments: {
-                                "item": item,
-                                "options": {"type": "edit"}
-                              });
-                            }
-                          }
-
-                          if (hasChildren()) {
-                            if (!hasMoreThanOneChild()) {
-                              Get.toNamed('/success',
-                                  arguments:
-                                      'Вы успешно записались на мероприятие');
-                            }
-                            if (hasMoreThanOneChild()) {
-                              if (!item.open) {
-                                Get.toNamed('/events/list', arguments: {
-                                  "item": item,
-                                  "options": {"type": "view"}
-                                });
-                              }
-                              if (item.open) {
+                  item.ended
+                      ? Container()
+                      : BrandButton(
+                          type: item.members.isNotEmpty ? 'primary' : 'info',
+                          onPressed: () {
+                            if (item.members.isNotEmpty) {
+                              // if not trainer or parent (multiple students)
+                              if (getRole() != 'trainer' && !hasChildren()) {
                                 if (zapisan) {
-                                  Get.toNamed('/events/list', arguments: {
-                                    "item": item,
-                                    "options": {"type": "view"}
+                                  if (!item.open) {
+                                    // посмотреть список
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "view"}
+                                    });
+                                  }
+                                  if (item.open) {
+                                    // отменить запись
+                                    createDio().put(
+                                      '/events/members/',
+                                      data: {"members": []},
+                                      queryParameters: {"event": item.id},
+                                    ).then((value) {
+                                      Provider.of<EventsState>(context,
+                                              listen: false)
+                                          .setEvents();
+                                    });
+                                  }
+                                }
+
+                                if (!zapisan) {
+                                  // записаться
+                                  // if (mounted)
+                                  //   setState(() {
+                                  //     zapisan = true;
+                                  //   });
+                                  createDio().put('/events/members/',
+                                      queryParameters: {
+                                        "event": item.id
+                                      },
+                                      data: {
+                                        "members": [
+                                          Provider.of<UserState>(context,
+                                                  listen: false)
+                                              .user
+                                              .id
+                                        ]
+                                      }).then((value) {
+                                    Provider.of<EventsState>(context,
+                                            listen: false)
+                                        .setEvents();
+                                    Get.toNamed('/success',
+                                        arguments:
+                                            'Вы успешно записались на мероприятие');
                                   });
-                                } else {
-                                  Get.toNamed('/events/list', arguments: {
-                                    "item": item,
-                                    "options": {"type": "choose"}
-                                  });
+                                  // Get.toNamed('/success',
+                                  //     arguments:
+                                  //         'Вы успешно записались на мероприятие');
+                                }
+                              } else {
+                                if (getRole() == "trainer") {
+                                  if (!zapisan) {
+                                    // if (mounted)
+                                    //   setState(() {
+                                    //     zapisan = true;
+                                    //   });
+                                    // add
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "add"}
+                                    });
+                                  }
+                                  if (zapisan) {
+                                    // edit
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "edit"}
+                                    });
+                                  }
+                                }
+
+                                if (hasChildren()) {
+                                  if (!hasMoreThanOneChild()) {
+                                    Get.toNamed('/success',
+                                        arguments:
+                                            'Вы успешно записались на мероприятие');
+                                  }
+                                  if (hasMoreThanOneChild()) {
+                                    if (!item.open) {
+                                      Get.toNamed('/events/list', arguments: {
+                                        "item": item,
+                                        "options": {"type": "view"}
+                                      });
+                                    }
+                                    if (item.open) {
+                                      if (zapisan) {
+                                        Get.toNamed('/events/list', arguments: {
+                                          "item": item,
+                                          "options": {"type": "view"}
+                                        });
+                                      } else {
+                                        Get.toNamed('/events/list', arguments: {
+                                          "item": item,
+                                          "options": {"type": "choose"}
+                                        });
+                                      }
+                                    }
+                                  }
                                 }
                               }
                             }
-                          }
-                        }
-                      }
-                    },
-                    text: !hasChildren() && getRole() != 'trainer'
-                        ? zapisan
-                            ? !item.open
-                                ? 'Посмотреть список'
-                                : 'Отменить запись'
-                            : item.members.isNotEmpty
-                                ? 'Записаться'
-                                : 'Нет пользователей для записи'
-                        : zapisan
-                            ? getRole() != 'trainer'
-                                ? 'Посмотреть список'
-                                : 'Редактировать список'
-                            : hasMoreThanOneChild()
-                                ? 'Записать спортсменов'
-                                : item.members.isNotEmpty
-                                    ? 'Записать спортсменов'
-                                    : 'Нет пользователей для записи',
-                    textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: item.members.isNotEmpty
-                            ? Colors.white
-                            : Theme.of(context).colorScheme.secondaryContainer),
-                  )
+                          },
+                          text: !hasChildren() && getRole() != 'trainer'
+                              ? zapisan
+                                  ? !item.open
+                                      ? 'Посмотреть список'
+                                      : 'Отменить запись'
+                                  : item.members.isNotEmpty
+                                      ? 'Записаться'
+                                      : 'Нет пользователей для записи'
+                              : zapisan
+                                  ? getRole() != 'trainer'
+                                      ? 'Посмотреть список'
+                                      : 'Редактировать список'
+                                  : hasMoreThanOneChild()
+                                      ? 'Записать спортсменов'
+                                      : item.members.isNotEmpty
+                                          ? 'Записать спортсменов'
+                                          : 'Нет пользователей для записи',
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: item.members.isNotEmpty
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer),
+                        )
                 ],
               )),
       body: Stack(

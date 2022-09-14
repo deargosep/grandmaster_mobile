@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
+import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 
 class ChooseChild extends StatelessWidget {
@@ -20,13 +21,22 @@ class ChooseChild extends StatelessWidget {
           SizedBox(
             height: 24,
           ),
-          Text(
-            'Выберите своего ребенка',
-            textAlign: TextAlign.center,
-            style: TextStyle(
+          Row(
+            children: [
+              SizedBox(width: 16,),
+              BrandIcon(
+                icon: 'back_arrow',
                 color: Theme.of(context).colorScheme.secondary,
-                fontSize: 24,
-                fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'Выберите своего ребенка',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           SizedBox(
             height: 32,
