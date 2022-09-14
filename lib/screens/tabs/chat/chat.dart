@@ -316,7 +316,9 @@ class Message extends StatelessWidget {
                           width: 250,
                           child: LoadingImage(item.photo!)),
                     )
-                  : Container(),
+                  : CircleAvatar(
+                      backgroundColor: Colors.black12,
+                    ),
               item.text != ''
                   ? Column(
                       children: [

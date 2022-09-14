@@ -212,7 +212,9 @@ class PlaceCard extends StatelessWidget {
                                             height: 30,
                                             width: 30,
                                           )
-                                        : Container()),
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.black12,
+                                          )),
                                 ...item.trainers.map((e) {
                                   var index = item.trainers.indexOf(e);
                                   if (index == 0) return Container();
@@ -231,7 +233,10 @@ class PlaceCard extends StatelessWidget {
                                                   height: 30,
                                                   width: 30,
                                                 )
-                                              : Container()));
+                                              : CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.black12,
+                                                )));
                                 }).toList()
                                 // Positioned(
                                 //   left: 40,

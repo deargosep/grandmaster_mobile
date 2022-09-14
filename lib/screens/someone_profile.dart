@@ -71,7 +71,9 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                     width: 136,
                                   ),
                                 )
-                              : Container()),
+                              : CircleAvatar(
+                                  backgroundColor: Colors.black12,
+                                )),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),

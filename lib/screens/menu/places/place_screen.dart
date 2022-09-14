@@ -229,7 +229,9 @@ class _TrainerCardState extends State<TrainerCard> {
                                   height: 46,
                                   width: 46,
                                 )
-                              : null,
+                              : CircleAvatar(
+                                  backgroundColor: Colors.black12,
+                                ),
                         ))),
                 SizedBox(
                   width: 16,

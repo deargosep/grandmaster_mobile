@@ -30,13 +30,17 @@ class _FolderScreenState extends State<FolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List chats = Provider.of<ChatsState>(context).chats;
-    List chatsWithoutFolders =
+    List<ChatType> chats = Provider.of<ChatsState>(context).chats;
+    List<ChatType> chatsWithoutFolders =
         Provider.of<ChatsState>(context).chatsWithoutFolders;
-    List chatsModerators = Provider.of<ChatsState>(context).moderatorsChats;
-    List chatsTrainers = Provider.of<ChatsState>(context).trainersChats;
-    List chatsStudents = Provider.of<ChatsState>(context).studentsChats;
-    List chatsSpecialists = Provider.of<ChatsState>(context).specialistsChat;
+    List<ChatType> chatsModerators =
+        Provider.of<ChatsState>(context).moderatorsChats;
+    List<ChatType> chatsTrainers =
+        Provider.of<ChatsState>(context).trainersChats;
+    List<ChatType> chatsStudents =
+        Provider.of<ChatsState>(context).studentsChats;
+    List<ChatType> chatsSpecialists =
+        Provider.of<ChatsState>(context).specialistsChat;
     if (folder == 'trainers') chatsWithoutFolders = chatsTrainers;
     if (folder == 'moderators') chatsWithoutFolders = chatsModerators;
     if (folder == 'students') chatsWithoutFolders = chatsStudents;
@@ -71,6 +75,7 @@ class _FolderScreenState extends State<FolderScreen> {
                               itemCount: chatsWithoutFolders.length,
                               itemBuilder: (context, index) {
                                 return Column(
+                                  key: Key(chatsWithoutFolders[index].name),
                                   children: [
                                     GestureDetector(
                                         behavior: HitTestBehavior.translucent,
