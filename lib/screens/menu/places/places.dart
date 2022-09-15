@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../../../state/places.dart';
 import '../../../state/user.dart';
-import '../../../utils/tablet.dart';
 import '../../../widgets/images/brand_icon.dart';
 
 class PlacesScreen extends StatefulWidget {
@@ -60,16 +59,16 @@ class _PlacesScreenState extends State<PlacesScreen> {
                 ? RefreshIndicator(
                     onRefresh: Provider.of<PlacesState>(context, listen: false)
                         .setPlaces,
-                    child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
-                            crossAxisSpacing: 0.0,
-                            mainAxisSpacing: 0.0,
-                            childAspectRatio: getDeviceType() == 'tablet'
-                                ? currentOrientation == Orientation.portrait
-                                    ? 0.89
-                                    : 1.4
-                                : 1.1),
+                    child: ListView.builder(
+                        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        //     crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+                        //     crossAxisSpacing: 0.0,
+                        //     mainAxisSpacing: 0.0,
+                        //     childAspectRatio: getDeviceType() == 'tablet'
+                        //         ? currentOrientation == Orientation.portrait
+                        //             ? 0.89
+                        //             : 1.4
+                        //         : 1.1),
                         itemCount: items.length,
                         itemBuilder: (context, index) => GestureDetector(
                               onTap: () {

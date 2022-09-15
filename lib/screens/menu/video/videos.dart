@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
-import '../../../utils/tablet.dart';
 
 class VideosScreen extends StatefulWidget {
   const VideosScreen({Key? key}) : super(key: key);
@@ -92,20 +91,20 @@ class _VideosScreenState extends State<VideosScreen> {
                         onRefresh:
                             Provider.of<VideosState>(context, listen: false)
                                 .setVideos,
-                        child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount:
-                                        getDeviceType() == 'tablet' ? 2 : 1,
-                                    crossAxisSpacing: 0.0,
-                                    mainAxisSpacing: 0.0,
-                                    childAspectRatio:
-                                        getDeviceType() == 'tablet'
-                                            ? currentOrientation ==
-                                                    Orientation.portrait
-                                                ? 1.3
-                                                : 2
-                                            : 1.5),
+                        child: ListView.builder(
+                            // gridDelegate:
+                            //     SliverGridDelegateWithFixedCrossAxisCount(
+                            //         crossAxisCount:
+                            //             getDeviceType() == 'tablet' ? 2 : 1,
+                            //         crossAxisSpacing: 0.0,
+                            //         mainAxisSpacing: 0.0,
+                            //         childAspectRatio:
+                            //             getDeviceType() == 'tablet'
+                            //                 ? currentOrientation ==
+                            //                         Orientation.portrait
+                            //                     ? 1.3
+                            //                     : 2
+                            //                 : 1.5),
                             // shrinkWrap: true,
                             // itemCount: videos.length,
                             itemCount: videos.length,

@@ -6,7 +6,6 @@ import 'package:get/get.dart' hide Response, FormData;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/dio.dart';
-import 'package:grandmaster/utils/tablet.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/news_card.dart';
@@ -70,7 +69,7 @@ class _ContentState extends State<Content> {
             ? RefreshIndicator(
                 onRefresh:
                     Provider.of<Articles>(context, listen: false).setNews,
-                child: GridView.builder(
+                child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: list.length,
                   itemBuilder: (context, index) {
@@ -93,15 +92,15 @@ class _ContentState extends State<Content> {
                       },
                     );
                   },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
-                      crossAxisSpacing: 0.0,
-                      mainAxisSpacing: 0.0,
-                      childAspectRatio: getDeviceType() == 'tablet'
-                          ? currentOrientation == Orientation.portrait
-                              ? 1
-                              : 1.5
-                          : 1.25),
+                  // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //     crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+                  //     crossAxisSpacing: 0.0,
+                  //     mainAxisSpacing: 0.0,
+                  //     childAspectRatio: getDeviceType() == 'tablet'
+                  //         ? currentOrientation == Orientation.portrait
+                  //             ? 1
+                  //             : 1.5
+                  //         : 1.25),
                 ),
               )
             : Center(

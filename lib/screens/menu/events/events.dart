@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import '/utils/custom_scaffold.dart';
 import '../../../../widgets/brand_card.dart';
-import '../../../utils/tablet.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({Key? key}) : super(key: key);
@@ -64,17 +63,17 @@ class _ContentState extends State<Content> {
 
     var list = Provider.of<EventsState>(context, listen: true).events;
     if (list.isNotEmpty) {
-      return GridView.builder(
+      return ListView.builder(
           itemCount: list.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
-              crossAxisSpacing: 0.0,
-              mainAxisSpacing: 0.0,
-              childAspectRatio: getDeviceType() == 'tablet'
-                  ? currentOrientation == Orientation.portrait
-                      ? 0.9
-                      : 1.3
-                  : 1.15),
+          // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //     crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+          //     crossAxisSpacing: 0.0,
+          //     mainAxisSpacing: 0.0,
+          //     childAspectRatio: getDeviceType() == 'tablet'
+          //         ? currentOrientation == Orientation.portrait
+          //             ? 0.9
+          //             : 1.3
+          //         : 1.15),
           itemBuilder: ((context, index) {
             return BrandCard(
               list[index],

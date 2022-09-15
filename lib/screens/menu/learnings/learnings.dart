@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
-import '../../../utils/tablet.dart';
 
 class LearningsScreen extends StatefulWidget {
   const LearningsScreen({Key? key}) : super(key: key);
@@ -60,19 +59,19 @@ class _LearningsScreenState extends State<LearningsScreen> {
                       onRefresh:
                           Provider.of<LearningsState>(context, listen: false)
                               .setLearnings,
-                      child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount:
-                                      getDeviceType() == 'tablet' ? 2 : 1,
-                                  crossAxisSpacing: 24.0,
-                                  mainAxisSpacing: 0.0,
-                                  childAspectRatio: getDeviceType() == 'tablet'
-                                      ? currentOrientation ==
-                                              Orientation.portrait
-                                          ? 2.8
-                                          : 4.4
-                                      : 3.4),
+                      child: ListView.builder(
+                          // gridDelegate:
+                          // SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount:
+                          //         getDeviceType() == 'tablet' ? 2 : 1,
+                          //     crossAxisSpacing: 24.0,
+                          //     mainAxisSpacing: 0.0,
+                          //     childAspectRatio: getDeviceType() == 'tablet'
+                          //         ? currentOrientation ==
+                          //                 Orientation.portrait
+                          //             ? 2.8
+                          //             : 4.4
+                          //         : 3.4),
                           itemCount: items.length,
                           itemBuilder: (context, index) => Container(
                                 margin: EdgeInsets.only(bottom: 16),
