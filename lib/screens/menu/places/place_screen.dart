@@ -6,6 +6,7 @@ import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 
 import '../schedule/schedule_table.dart';
 
@@ -229,8 +230,9 @@ class _TrainerCardState extends State<TrainerCard> {
                                   height: 46,
                                   width: 46,
                                 )
-                              : CircleAvatar(
-                                  backgroundColor: Colors.black12,
+                              : CircleLogo(
+                                  height: 46,
+                                  width: 46,
                                 ),
                         ))),
                 SizedBox(

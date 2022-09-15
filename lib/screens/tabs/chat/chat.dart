@@ -9,6 +9,7 @@ import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -316,8 +317,9 @@ class Message extends StatelessWidget {
                           width: 250,
                           child: LoadingImage(item.photo!)),
                     )
-                  : CircleAvatar(
-                      backgroundColor: Colors.black12,
+                  : CircleLogo(
+                      height: 200,
+                      width: 250,
                     ),
               item.text != ''
                   ? Column(
@@ -485,11 +487,7 @@ class _Header extends StatelessWidget {
             // ),
             ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(100 / 2)),
-                child: chat.photo != null
-                    ? Avatar(chat.photo!)
-                    : CircleAvatar(
-                        backgroundColor: Colors.black12,
-                      )),
+                child: chat.photo != null ? Avatar(chat.photo!) : CircleLogo()),
             SizedBox(
               width: 16,
             ),
@@ -505,9 +503,8 @@ class _Header extends StatelessWidget {
                 } else if (chat.type == 'dm') {
                   createDio()
                       .get(
-                          '/users/${chat.members.firstWhere((element) => element.id != Provider.of<UserState>(context, listen: false).user.id).id}/')
+                          '/users/${chat.members.firstWhere((element) => element.id != Provider.of<UserState>(context, listen: false).user.id && element.id != Provider.of<UserState>(context, listen: false).childId).id}/')
                       .then((value) {
-                    print([chat.members.map((e) => e.me)]);
                     User user = UserState().convertMapToUser(value.data);
                     Get.toNamed('/other_profile', arguments: user);
                   });

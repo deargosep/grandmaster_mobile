@@ -8,6 +8,7 @@ import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/choose_child.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:provider/provider.dart';
 
 class ChatsScreen extends StatefulWidget {
@@ -277,9 +278,7 @@ class ChatTile extends StatelessWidget {
                     child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                         child: data.photo == null
-                            ? CircleAvatar(
-                                backgroundColor: Colors.black12,
-                              )
+                            ? CircleLogo()
                             : Avatar(data.photo!)),
                   )
                 : Container(),
@@ -291,7 +290,9 @@ class ChatTile extends StatelessWidget {
               width: MediaQuery.of(context).size.width - 150,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: data.lastMessage == ''
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
                 children: [
                   Text(
                     data.name,
@@ -304,7 +305,7 @@ class ChatTile extends StatelessWidget {
                         fontSize: 16,
                         color: Color(0xFF4F3333)),
                   ),
-                  !folder
+                  !folder && data.lastMessage != ''
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

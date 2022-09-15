@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../utils/custom_scaffold.dart';
 import '../utils/dio.dart';
+import '../widgets/images/circle_logo.dart';
 import 'tabs/chat/chat.dart';
 
 class MembersScreen extends StatelessWidget {
@@ -82,9 +83,7 @@ class MembersScreen extends StatelessWidget {
                                             Radius.circular(100)),
                                         child: members[index].photo != null
                                             ? Avatar(members[index].photo!)
-                                            : CircleAvatar(
-                                                backgroundColor: Colors.black12,
-                                              )),
+                                            : CircleLogo()),
                                   ),
                                   SizedBox(
                                     width: 16,

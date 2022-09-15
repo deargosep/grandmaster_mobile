@@ -23,7 +23,9 @@ class ChooseChild extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(width: 16,),
+              SizedBox(
+                width: 16,
+              ),
               BrandIcon(
                 icon: 'back_arrow',
                 color: Theme.of(context).colorScheme.secondary,
@@ -51,7 +53,7 @@ class ChooseChild extends StatelessWidget {
                   return Column(
                     children: [
                       Option(
-                        noArrow: true,
+                        type: 'primary',
                         text: user.children[index].fullName,
                         onTap: () {
                           Provider.of<UserState>(context, listen: false)

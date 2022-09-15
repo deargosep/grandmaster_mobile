@@ -6,6 +6,7 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/places.dart';
@@ -212,8 +213,9 @@ class PlaceCard extends StatelessWidget {
                                             height: 30,
                                             width: 30,
                                           )
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.black12,
+                                        : CircleLogo(
+                                            height: 30,
+                                            width: 30,
                                           )),
                                 ...item.trainers.map((e) {
                                   var index = item.trainers.indexOf(e);
@@ -233,9 +235,9 @@ class PlaceCard extends StatelessWidget {
                                                   height: 30,
                                                   width: 30,
                                                 )
-                                              : CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.black12,
+                                              : CircleLogo(
+                                                  height: 30,
+                                                  width: 30,
                                                 )));
                                 }).toList()
                                 // Positioned(

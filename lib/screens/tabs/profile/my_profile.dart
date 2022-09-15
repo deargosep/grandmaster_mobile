@@ -5,6 +5,7 @@ import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -66,8 +67,9 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         height: 136,
                         width: 136,
                       )
-                    : CircleAvatar(
-                        backgroundColor: Colors.black12,
+                    : CircleLogo(
+                        height: 136,
+                        width: 136,
                       )),
             SizedBox(
               height: 16,
@@ -110,8 +112,9 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                   height: 136,
                                   width: 136,
                                 )
-                              : CircleAvatar(
-                                  backgroundColor: Colors.black12,
+                              : CircleLogo(
+                                  height: 136,
+                                  width: 136,
                                 ),
                         )),
                     SizedBox(

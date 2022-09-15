@@ -5,6 +5,7 @@ import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/user.dart';
@@ -89,8 +90,9 @@ class _ChildProfileScreenState extends State<ChildProfileScreen>
                                       height: 136,
                                       width: 136,
                                     )
-                                  : CircleAvatar(
-                                      backgroundColor: Colors.black12,
+                                  : CircleLogo(
+                                      height: 136,
+                                      width: 136,
                                     ),
                             )),
                         SizedBox(

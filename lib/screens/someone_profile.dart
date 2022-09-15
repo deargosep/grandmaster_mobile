@@ -5,6 +5,7 @@ import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:grandmaster/widgets/tabbar_switch.dart';
 import 'package:grandmaster/widgets/top_tab.dart';
 import 'package:provider/provider.dart';
@@ -57,23 +58,16 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                       left: 0,
                       right: 0,
                       top: 50,
-                      child: Container(
-                          height: 136,
-                          width: 136,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100))),
-                          child: user.photo != null
-                              ? CircleAvatar(
-                                  child: Avatar(
-                                    user.photo!,
-                                    height: 136,
-                                    width: 136,
-                                  ),
-                                )
-                              : CircleAvatar(
-                                  backgroundColor: Colors.black12,
-                                )),
+                      child: user.photo != null
+                          ? Avatar(
+                              user.photo!,
+                              height: 136,
+                              width: 136,
+                            )
+                          : CircleLogo(
+                              height: 136,
+                              width: 136,
+                            ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
