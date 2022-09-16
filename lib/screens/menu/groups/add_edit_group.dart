@@ -37,7 +37,8 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
     name.text = group?.name ?? '';
     minAge.text = group?.minAge.toString() ?? '';
     maxAge.text = group?.maxAge.toString() ?? '';
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<GroupsState>(context, listen: false).setGroups();
       Provider.of<GroupsState>(context, listen: false)
           .setSportsmens()
           .then((value) {

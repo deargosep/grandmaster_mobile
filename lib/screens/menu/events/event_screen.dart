@@ -88,7 +88,17 @@ class _EventScreenState extends State<EventScreen> {
                           ? SizedBox(
                               height: 16,
                             )
-                          : Container()
+                          : BrandButton(
+                              type: 'primary',
+                              text: 'Посмотреть список',
+                              onPressed: () {
+                                // посмотреть список
+                                Get.toNamed('/events/list', arguments: {
+                                  "item": item,
+                                  "options": {"type": "view"}
+                                });
+                              },
+                            )
                       : Container(),
                   item.ended
                       ? Container()

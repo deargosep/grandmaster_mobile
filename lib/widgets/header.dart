@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -119,26 +117,22 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets myPadding = EdgeInsets.fromLTRB(20, 20, 20, 0);
+    EdgeInsets myPadding = EdgeInsets.fromLTRB(withBack ? 10 : 20, 10, 20, 0);
 
-    if (!kIsWeb) {
-      myPadding =
-          EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 + 20 : 32, 20, 0);
-    }
-    return Column(
-      children: [
-        Padding(
-          padding: padding != null
-              ? padding
-              : withPadding
-                  ? myPadding
-                  : EdgeInsets.all(0),
-          child: Row(
-            children: [
-              !withBack
-                  ? Container()
-                  : Row(children: [
-                      BrandIcon(
+    // if (!kIsWeb) {
+    //   myPadding = EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 : 32, 20, 0);
+    // }
+    return Padding(
+      padding: myPadding,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          children: [
+            Row(
+              children: [
+                !withBack
+                    ? Container()
+                    : BrandIcon(
                         icon: 'back_arrow',
                         onTap: onTap,
                         height: 17,
@@ -146,11 +140,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         color: textColor ??
                             Theme.of(context).colorScheme.secondary,
                       ),
-                    ]),
-              Container(
-                width:
-                    icon != '' ? MediaQuery.of(context).size.width - 120 : MediaQuery.of(context).size.width - 80,
-                child: Text(
+                Text(
                   text ?? '',
                   overflow: TextOverflow.fade,
                   softWrap: false,
@@ -160,23 +150,20 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                       color:
                           textColor ?? Theme.of(context).colorScheme.secondary),
                 ),
-              ),
-              Spacer(),
-              icon != ''
-                  ? BrandIcon(
-                      icon: icon,
-                      onTap: iconOnTap,
-                      color: Theme.of(context).colorScheme.secondary,
-                      height: 18,
-                      width: 30,
-                    )
-                  : Container()
-            ],
-          ),
+              ],
+            ),
+            icon != ''
+                ? BrandIcon(
+                    icon: icon,
+                    onTap: iconOnTap,
+                    color: Theme.of(context).colorScheme.secondary,
+                    height: 18,
+                    width: 30,
+                  )
+                : Container()
+          ],
         ),
-        Spacer(),
-        bottomChild ?? Container()
-      ],
+      ),
     );
   }
 }

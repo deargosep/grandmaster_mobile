@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
@@ -88,7 +89,7 @@ void main() {
   // }
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = new MyHttpOverrides();
-  initializeDateFormatting('ru_RU', null);
+  // initializeDateFormatting('ru_RU', null);
   Intl.defaultLocale = 'ru_RU';
   runApp(MyApp());
 }
@@ -278,7 +279,18 @@ class _MyAppState extends State<MyApp> {
       ],
       child: GetMaterialApp(
         title: 'Grandmaster',
-
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', 'US'),
+          const Locale('ka', 'GE'),
+          const Locale('ru', 'RU'),
+        ],
+        locale: Locale('ru'),
         builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
             child: child!),

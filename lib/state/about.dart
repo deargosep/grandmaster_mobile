@@ -15,15 +15,21 @@ class AboutState extends ChangeNotifier {
     var completer = new Completer();
     createDio().get('/club_content/').then((value) {
       List<AboutType> newList = [
-        ...value.data.where((el) => !el["hidden"]).map((e) {
-          // DateTime newDate = DateTime.parse(e["created_at"]);
-          return AboutType(
-              id: e["id"],
-              name: e["name"],
-              description: e["description"],
-              order: e["order"],
-              cover: e["cover"]);
-        }).toList()
+        ...value.data
+            .where((el) => !el["hidden"])
+            .map((e) {
+              // DateTime newDate = DateTime.parse(e["created_at"]);
+              return AboutType(
+                  id: e["id"],
+                  name: e["name"],
+                  description: e["description"],
+                  order: e["order"],
+                  cover: e["cover"]);
+            })
+            .toList()
+            .sort((a, b) {
+              return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+            })
       ];
       _about = newList;
       notifyListeners();

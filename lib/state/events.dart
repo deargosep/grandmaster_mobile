@@ -23,6 +23,15 @@ class EventsState extends ChangeNotifier {
             .map((e) {
           log(e.toString());
           DateTime deadlineDate = DateTime.parse(e["deadline_date"]);
+          List<MinimalUser> members = [
+            ...e["members"]
+                .map((e) => MinimalUser(
+                    fullName: e["full_name"], id: e["id"], marked: e["marked"]))
+                .toList()
+          ];
+          members.sort((a, b) {
+            return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+          });
           return EventType(
               id: e["id"],
               name: e["name"],
@@ -36,14 +45,7 @@ class EventsState extends ChangeNotifier {
               order: e["order"],
               timeDateDeadline: DateTime.parse(e["deadline_date"]),
               isAfter: DateTime.now().isAfter(deadlineDate),
-              members: <MinimalUser>[
-                ...e["members"]
-                    .map((e) => MinimalUser(
-                        fullName: e["full_name"],
-                        id: e["id"],
-                        marked: e["marked"]))
-                    .toList()
-              ]);
+              members: members);
         }).toList()
       ];
       _events = newList;

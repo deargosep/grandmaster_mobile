@@ -22,6 +22,9 @@ class GroupsState extends ChangeNotifier {
           .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
           .toList()
     ];
+    data.sort((a, b) {
+      return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+    });
     _isLoaded = true;
     _sportsmens = data;
     notifyListeners();
@@ -31,23 +34,26 @@ class GroupsState extends ChangeNotifier {
   List<GroupType> get groups => _groups;
   List<MinimalUser> get sportsmens => _sportsmens;
 
-  Future<void> setGroups({List<GroupType>? data}) async {
+  Future<void> setGroups() async {
     _isLoaded = false;
     var completer = new Completer();
     createDio().get('/sport_groups/').then((value) {
       List<GroupType> newList = [
-        ...value.data.where((e) => e["name"] != "Путешественники").map((e) {
+        ...value.data.map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
+          List<MinimalUser> members = [
+            ...e["members"]
+                .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
+                .toList()
+          ];
+          members.sort((a, b) {
+            return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+          });
           return GroupType(
               id: e["id"],
               name: e["name"],
               trainer: e["trainer"],
-              members: [
-                ...e["members"]
-                    .map((e) =>
-                        MinimalUser(fullName: e["full_name"], id: e["id"]))
-                    .toList()
-              ],
+              members: members,
               maxAge: e["max_age"],
               minAge: e["min_age"]);
         }).toList()

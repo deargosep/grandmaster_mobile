@@ -41,6 +41,9 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
       createDio().get('/sport_groups/${arguments["groupId"]}/').then((value) {
         var users = value.data["members"]
             .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]));
+        users.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
         List<MinimalUser> attending = [
           ...Provider.of<VisitLogState>(context, listen: false)
               .visitLog
@@ -48,6 +51,9 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
               .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
               .toList()
         ];
+        attending.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
         // print(groupUsers);
         setState(() {
           checkboxes = {

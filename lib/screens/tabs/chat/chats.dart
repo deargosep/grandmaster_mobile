@@ -6,7 +6,6 @@ import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
-import 'package:grandmaster/widgets/choose_child.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +23,14 @@ class _ChatsScreenState extends State<ChatsScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (Provider.of<UserState>(context, listen: false).user.children.length >
-          1) {
-        await showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return ChooseChild();
-            });
-      }
+      // if (Provider.of<UserState>(context, listen: false).user.children.length >
+      //     1) {
+      //   await showModalBottomSheet(
+      //       context: context,
+      //       builder: (context) {
+      //         return ChooseChild();
+      //       });
+      // }
       Provider.of<ChatsState>(context, listen: false).setChats(
           childId: Provider.of<UserState>(context, listen: false).childId);
       if (mounted)

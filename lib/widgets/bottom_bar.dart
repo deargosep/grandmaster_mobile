@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/widgets/choose_child.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,8 +53,22 @@ class BottomBar extends StatelessWidget {
                 onTap:
                     Provider.of<UserState>(context, listen: false).user.role !=
                             'guest'
-                        ? () {
-                            onTap(2);
+                        ? () async {
+                            if (Provider.of<UserState>(context, listen: false)
+                                    .user
+                                    .children
+                                    .length >
+                                1) {
+                              await showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return ChooseChild();
+                                  }).then((value) {
+                                onTap(2);
+                              });
+                            } else {
+                              onTap(2);
+                            }
                           }
                         : null,
                 icon: 'chat',

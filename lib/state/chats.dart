@@ -64,6 +64,18 @@ class ChatsState extends ChangeNotifier {
         ...value.data.map((e) {
           log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
+          List<MinimalUser> members = [
+            ...e["members"]
+                .map((es) => MinimalUser(
+                    fullName: es["full_name"],
+                    id: es["id"],
+                    photo: es["photo"],
+                    role: UserState().getRole(es["contact_type"])))
+                .toList()
+          ];
+          members.sort((a, b) {
+            return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+          });
           return ChatType(
               id: e["id"],
               name: e["display_name"] ?? e["name"],
@@ -94,15 +106,7 @@ class ChatsState extends ChangeNotifier {
                   ? DateFormat('H:mm')
                       .format(DateTime.parse(e["last_message"]["created_at"]))
                   : '',
-              members: [
-                ...e["members"]
-                    .map((es) => MinimalUser(
-                        fullName: es["full_name"],
-                        id: es["id"],
-                        photo: es["photo"],
-                        role: UserState().getRole(es["contact_type"])))
-                    .toList()
-              ]);
+              members: members);
         }).toList()
       ];
       _chats = newList;

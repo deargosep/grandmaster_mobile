@@ -10,7 +10,7 @@ class CircleLogo extends StatelessWidget {
       height: height,
       width: width,
       child: CircleAvatar(
-          // backgroundColor: Colors.black12,
+          backgroundColor: Colors.black12,
           child: Image.asset('assets/images/icon_ios.jpeg')
           // AssetImage('assets/images/icon_ios.jpeg'),
           ),

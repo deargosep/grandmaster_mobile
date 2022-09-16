@@ -39,6 +39,9 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
                   role: UserState().getRole(e["contact_type"])))
               .toList()
         ];
+        members.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
         setState(() {
           checkboxes = {
             for (var v in members) '${v.id}_${v.fullName}': false,

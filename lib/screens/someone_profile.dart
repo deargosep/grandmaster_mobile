@@ -58,16 +58,23 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                       left: 0,
                       right: 0,
                       top: 50,
-                      child: user.photo != null
-                          ? Avatar(
-                              user.photo!,
-                              height: 136,
-                              width: 136,
-                            )
-                          : CircleLogo(
-                              height: 136,
-                              width: 136,
-                            ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                        ),
+                        height: 136,
+                        width: 136,
+                        child: user.photo != null
+                            ? Avatar(
+                                user.photo!,
+                                height: 136,
+                                width: 136,
+                              )
+                            : CircleLogo(
+                                height: 136,
+                                width: 136,
+                              ),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -80,6 +87,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                           ),
                           Text(
                             user.fullName,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                                 fontWeight: FontWeight.bold,

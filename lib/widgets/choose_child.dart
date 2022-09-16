@@ -56,6 +56,7 @@ class ChooseChild extends StatelessWidget {
                         type: 'primary',
                         text: user.children[index].fullName,
                         onTap: () {
+                          print(user.children[index].id);
                           Provider.of<UserState>(context, listen: false)
                               .setChildId(user.children[index].id);
                           Get.back();
