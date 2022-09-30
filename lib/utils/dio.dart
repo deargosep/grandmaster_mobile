@@ -79,7 +79,9 @@ Dio createDio(
           }
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }));
   return dio;
 }

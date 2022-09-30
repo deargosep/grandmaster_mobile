@@ -70,7 +70,6 @@ class _ContentState extends State<Content> {
                 onRefresh:
                     Provider.of<Articles>(context, listen: false).setNews,
                 child: ListView.builder(
-                  shrinkWrap: true,
                   itemCount: list.length,
                   itemBuilder: (context, index) {
                     var item = list[index];
