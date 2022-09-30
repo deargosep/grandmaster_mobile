@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/state/visit_log.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/checkboxes_list.dart';
 import 'package:grandmaster/widgets/header.dart';
-
-import '../../../state/user.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MarkJournalScreen extends StatefulWidget {
   const MarkJournalScreen({Key? key}) : super(key: key);
@@ -17,6 +20,7 @@ class MarkJournalScreen extends StatefulWidget {
 
 class _MarkJournalScreenState extends State<MarkJournalScreen> {
   Map<String, bool>? checkboxes;
+  var arguments = Get.arguments;
 
   @override
   void initState() {
@@ -24,17 +28,48 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
     setState(() {
       checkboxes = {};
     });
+    Provider.of<VisitLogState>(context, listen: false)
+        .setVisitLog(arguments["placeId"], arguments["groupId"]);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // List<User> users = Provider.of<UserState>(context, listen: false).list;
-      List<User> groupUsers = Get.arguments.members;
-      setState(() {
-        checkboxes = {for (var v in groupUsers) v.fullName: false};
+      // var members = [];
+      // createDio()
+      //     .get('/visit_log/?gym=${placeId}&sport_group=${groupId}')
+      //     .then((value) {
+      //   print(value);
+      // });
+      // Provider.of<VisitLogState>(context).setVisitLog(placeId, groupId)
+      createDio().get('/sport_groups/${arguments["groupId"]}/').then((value) {
+        var users = value.data["members"]
+            .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]));
+        users.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
+        List<MinimalUser> attending = [
+          ...Provider.of<VisitLogState>(context, listen: false)
+              .visitLog
+              .attending
+              .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
+              .toList()
+        ];
+        attending.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
+        // print(groupUsers);
+        setState(() {
+          checkboxes = {
+            for (var v in users)
+              '${v.id}_${v.fullName}':
+                  attending.firstWhereOrNull((element) => element.id == v.id) !=
+                      null
+          };
+        });
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    VisitLogType visitLog = Provider.of<VisitLogState>(context).visitLog;
     // List<GroupType> groups = Provider.of<GroupsState>(context).groups;
     // List<OptionType> list = groups
     //     .map((e) => OptionType(e.name, '/schedule/table', arguments: e))
@@ -47,6 +82,7 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
 
     return CustomScaffold(
         noTopPadding: true,
+        noPadding: false,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
@@ -54,21 +90,34 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
           withShadow: false,
           child: BrandButton(
             text: 'Сохранить',
+            onPressed: () {
+              createDio().post(
+                  '/visit_log/?gym=${visitLog.gym}&sport_group=${visitLog.group}',
+                  data: {
+                    "attending": checkboxes?.entries
+                        .where((element) => element.value)
+                        .map((e) => e.key.split('_')[0])
+                        .toList()
+                  }).then((value) {
+                Get.back();
+                Get.back();
+              });
+            },
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 16,
             ),
             Row(
               children: [
-                Pill('22.06.2022'),
+                Pill(DateFormat('dd.MM.y').format(visitLog.datetime)),
                 SizedBox(
                   width: 16,
                 ),
-                Pill('10:30'),
+                Pill(visitLog.start_time),
               ],
             ),
             SizedBox(
@@ -99,19 +148,19 @@ class Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       decoration: BoxDecoration(
           color: Theme.of(context).inputDecorationTheme.fillColor,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       height: 37,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.secondary,
-              fontWeight: FontWeight.w500,
-              fontSize: 14),
-        ),
+      width: 94,
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+            fontWeight: FontWeight.w500,
+            fontSize: 14),
       ),
     );
   }

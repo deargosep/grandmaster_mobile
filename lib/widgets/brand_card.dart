@@ -6,6 +6,7 @@ import 'package:grandmaster/screens/menu/learnings/learnings.dart';
 import 'package:grandmaster/screens/menu/video/videos.dart';
 import 'package:grandmaster/utils/dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../screens/menu/places/places.dart';
 import '../state/user.dart';
@@ -65,7 +66,7 @@ class BrandCard extends StatelessWidget {
         case 'news':
           return '/add_edit_article';
         case 'events':
-          return '/add_edit_event';
+          return '/events/add';
         //  TODO
         case 'learning':
           return "/learnings/add";
@@ -136,18 +137,47 @@ class BrandCard extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            border: type == 'learning'
+            border: type == 'learning' || type == 'videos'
                 ? null
                 : Border(
                     bottom: BorderSide(color: Color(0xFFF3F3F3), width: 2))),
         child: Padding(
-            padding: withPadding
-                ? const EdgeInsets.all(20)
-                : type == 'learning'
-                    ? EdgeInsets.only(right: 20)
-                    : EdgeInsets.zero,
+            padding: withPadding ? const EdgeInsets.all(20) : EdgeInsets.zero,
             child: getCard()),
       ),
     );
+  }
+}
+
+class LoadingImage extends StatelessWidget {
+  const LoadingImage(this.url,
+      {Key? key, this.height, this.width, this.borderRadius})
+      : super(key: key);
+  final String url;
+  final double? width;
+  final double? height;
+  final BorderRadius? borderRadius;
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(url, fit: BoxFit.cover, height: height, width: width,
+        loadingBuilder: (context, child, loading) {
+      if (loading == null)
+        return ClipRRect(
+            borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(15)),
+            child: child);
+      return Container(
+        height: height,
+        width: width,
+        child: Skeleton(
+            isLoading: true,
+            skeleton: SkeletonLine(
+              style: SkeletonLineStyle(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  height: height ?? 132,
+                  width: width ?? double.infinity),
+            ),
+            child: child),
+      );
+    });
   }
 }

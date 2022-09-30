@@ -27,69 +27,91 @@ class MenuScreen extends StatelessWidget {
       if (user.children.isNotEmpty || user.role == 'sportsmen') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
+          OptionType('Залы', links["places"]!),
+          OptionType('Видео', links["videos"]!),
+          OptionType('Учебные материалы', links["learning"]!),
+          OptionType('QR коды', links["qr"]!),
+          OptionType('Оплата', links["payment"]!),
+          OptionType('О клубе', links["about"]!)
+        ];
+      }
+      if (user.role == 'specialist') {
+        return <OptionType>[
+          OptionType('Мероприятия', links["events"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Учебные материалы', links["learning"]!),
           OptionType('Залы', links["places"]!),
-          OptionType('Оплата', links["payment"]!),
-          OptionType('QR коды', links["qr"]!),
+          // OptionType('Оплата', links["payment"]!),
+          // OptionType('QR коды', links["qr"]!),
           OptionType('О клубе', links["about"]!)
         ];
       }
       if (user.role == 'trainer') {
         return <OptionType>[
-          OptionType('Мероприятия', links["events"]!),
-          OptionType('Учебные файлы', links["learning"]!),
           OptionType('Журнал посещений', links["visits"]!),
+          OptionType('Мероприятия', links["events"]!),
+          OptionType('Группы спортсменов', links["groups"]!),
           OptionType('Расписание', links["schedule"]!),
+          OptionType('Учебные материалы', links["learning"]!),
           OptionType('Залы', links["places"]!),
+          OptionType('QR коды', links["qr"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Оплата', links["payment"]!),
-          OptionType('QR коды', links["qr"]!),
-          OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }
-      if (user.role == 'student') {
-        return <OptionType>[
-          OptionType('Мероприятия', links["events"]!),
-          OptionType('Расписание', links["schedule"]!),
-          OptionType('Видео', links["videos"]!),
-          OptionType('Залы', links["places"]!),
-          OptionType('QR коды', links["qr"]!),
-          OptionType('О клубе', links["about"]!)
-        ];
-      }
+      // if (user.parents.isNotEmpty) {
+      //   return <OptionType>[
+      //     OptionType('Мероприятия', links["events"]!),
+      //     // OptionType('Расписание', links["schedule"]!),
+      //     OptionType('Видео', links["videos"]!),
+      //     OptionType('Залы', links["places"]!),
+      //     OptionType('QR коды', links["qr"]!),
+      //     OptionType('О клубе', links["about"]!)
+      //   ];
+      // }
       if (user.role == 'moderator') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
-          OptionType('Учебные файлы', links["learning"]!),
-          OptionType('Журнал посещений', links["visits"]!),
-          OptionType('Расписание', links["schedule"]!),
+          OptionType('Учебные материалы', links["learning"]!),
+          // OptionType('Журнал посещений', links["visits"]!),
+          // OptionType('Расписание', links["schedule"]!),
           OptionType('Залы', links["places"]!),
           OptionType('Видео', links["videos"]!),
-          OptionType('QR коды', links["qr"]!),
-          OptionType('Группы спортсменов', links["groups"]!),
+          // OptionType('QR коды', links["qr"]!),
+          // OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }
       if (user.role == 'guest') {
         return <OptionType>[
-          OptionType('Залы', links["places"]!),
+          // OptionType('Мероприятия', links["events"]!),
           OptionType('О клубе', links["about"]!),
+          OptionType('Залы', links["places"]!),
+          OptionType('Видео', links["videos"]!),
         ];
       }
-      return <OptionType>[];
+      return <OptionType>[
+        OptionType('Мероприятия', links["events"]!),
+        OptionType('Залы', links["places"]!),
+        OptionType('Видео', links["videos"]!),
+        OptionType('Учебные материалы', links["learning"]!),
+        OptionType('QR коды', links["qr"]!),
+        OptionType('Оплата', links["payment"]!),
+        OptionType('О клубе', links["about"]!)
+      ];
     }
 
     return CustomScaffold(
-      scrollable: true,
+      // scrollable: true,
+      noPadding: false,
       appBar: AppHeader(
         text: 'Меню пользователя',
         withBack: false,
       ),
       padding: EdgeInsets.only(left: 20, right: 20, top: 16),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [ListOfOptions(list: getList())],
       ),
     );

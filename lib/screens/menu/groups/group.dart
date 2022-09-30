@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -47,48 +48,70 @@ class _GroupScreenState extends State<GroupScreen> {
       });
     }
 
+    var list = context
+        .watch<GroupsState>()
+        .groups
+        .firstWhere((element) => item.id == element.id)
+        .members;
+
     return CustomScaffold(
-        scrollable: true,
         noHorPadding: true,
         appBar: AppHeader(
           text: item.name,
-          icon: 'plus',
+          icon: 'settings',
           iconOnTap: () {
-            Get.toNamed('/group/manage', arguments: item);
+            Get.toNamed('/groups/add', arguments: item);
           },
         ),
-        body: Column(
-            children: context
-                .watch<GroupsState>()
-                .groups
-                .firstWhere((element) => item.id == element.id)
-                .members
-                .map((e) => Container(
-                      margin: EdgeInsets.only(bottom: 16),
-                      child: Slidable(
-                          key: UniqueKey(),
-                          endActionPane: ActionPane(
-                              extentRatio: 0.1,
-                              motion: ScrollMotion(),
-                              children: [
-                                BrandIcon(
-                                  icon: 'decline',
-                                  color: Colors.black,
-                                  height: 18,
-                                  width: 18,
+        body: list.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh:
+                    Provider.of<GroupsState>(context, listen: false).setGroups,
+                child: ListView.builder(
+                    itemCount: context
+                        .watch<GroupsState>()
+                        .groups
+                        .firstWhere((element) => item.id == element.id)
+                        .members
+                        .length,
+                    itemBuilder: (context, index) => Container(
+                          margin: EdgeInsets.only(bottom: 16),
+                          child: Slidable(
+                              key: UniqueKey(),
+                              endActionPane: ActionPane(
+                                  extentRatio: 0.1,
+                                  motion: ScrollMotion(),
+                                  children: [
+                                    BrandIcon(
+                                      icon: 'decline',
+                                      color: Colors.black,
+                                      height: 18,
+                                      width: 18,
+                                      onTap: () {
+                                        removeMember(list[index].id);
+                                      },
+                                    ),
+                                  ]),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Option(
                                   onTap: () {
-                                    removeMember(e.id);
+                                    createDio()
+                                        .get('/users/${list[index].id}/')
+                                        .then((value) {
+                                      User user = UserState()
+                                          .convertMapToUser(value.data);
+                                      Get.toNamed('/other_profile',
+                                          arguments: user);
+                                    });
                                   },
+                                  text: list[index].fullName,
+                                  noArrow: true,
                                 ),
-                              ]),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Option(
-                              text: e.full_name,
-                              noArrow: true,
-                            ),
-                          )),
-                    ))
-                .toList()));
+                              )),
+                        )),
+              )
+            : Text('Нет спортсменов'));
   }
 }

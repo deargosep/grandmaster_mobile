@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:dio/src/response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide Response, FormData;
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
     var user = Provider.of<UserState>(context);
     return CustomScaffold(
       noPadding: true,
-      scrollable: true,
+      // scrollable: true,
       appBar: AppHeader(
         text: 'Новости',
         withBack: false,
@@ -34,11 +35,7 @@ class HomeScreen extends StatelessWidget {
           Get.toNamed('/add_edit_article');
         },
       ),
-      body: Column(
-        children: [
-          Content(),
-        ],
-      ),
+      body: Content(),
     );
   }
 }
@@ -63,35 +60,60 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     var list = Provider.of<Articles>(context, listen: true).news;
-    // var user = Provider.of<UserState>(context);
-    if (list.isNotEmpty) {
-      return Column(
-          children: list.map((item) {
-        return BrandCard(
-          item,
-          // TODO
-          () {
-            print(item.id);
-            createDio().patch('/news/${item.id}/', data: {"hidden": true}).then(
-                (value) =>
-                    Provider.of<Articles>(context, listen: false).setNews());
-          },
-          () {
-            createDio().delete('/news/${item.id}/').then((value) =>
-                Provider.of<Articles>(context, listen: false).setNews());
-          },
-        );
-      }).toList());
-      return ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: NewsCard(item: list[index]),
-            );
-          });
-    }
-    return Center(child: Text('Пока что событий нет'));
+
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+
+    bool isLoaded = Provider.of<Articles>(context).isLoaded;
+    return isLoaded
+        ? list.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh:
+                    Provider.of<Articles>(context, listen: false).setNews,
+                child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    var item = list[index];
+                    return BrandCard(
+                      item,
+                      // TODO
+                      () {
+                        createDio()
+                            .patch('/news/${item.id}/',
+                                data: FormData.fromMap({"hidden": true}))
+                            .then((value) =>
+                                Provider.of<Articles>(context, listen: false)
+                                    .setNews());
+                      },
+                      () {
+                        createDio().delete('/news/${item.id}/').then((value) =>
+                            Provider.of<Articles>(context, listen: false)
+                                .setNews());
+                      },
+                    );
+                  },
+                  // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //     crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
+                  //     crossAxisSpacing: 0.0,
+                  //     mainAxisSpacing: 0.0,
+                  //     childAspectRatio: getDeviceType() == 'tablet'
+                  //         ? currentOrientation == Orientation.portrait
+                  //             ? 1
+                  //             : 1.5
+                  //         : 1.25),
+                ),
+              )
+            : Center(
+                child: Text('Нет новостей'),
+              )
+        : Center(child: CircularProgressIndicator());
+    return ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: NewsCard(item: list[index]),
+          );
+        });
   }
 }
 

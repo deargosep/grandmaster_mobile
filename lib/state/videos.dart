@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../utils/dio.dart';
@@ -7,27 +9,32 @@ class VideosState extends ChangeNotifier {
 
   List<Video> get videos => _videos;
 
-  void setVideos({List<Video>? data}) {
-    if (data != null)
-      _videos = data;
-    else {
-      createDio().get('/videos/').then((value) {
-        List<Video> newList = [
-          ...value.data.where((el) => !el["hidden"]).map((e) {
-            DateTime newDate = DateTime.parse(e["created_at"]);
-            return Video(
-                id: e["id"],
-                name: e["title"],
-                createdAt: newDate,
-                link: e["link"]);
-          }).toList()
-        ];
-        print(newList);
-        _videos = newList;
-        notifyListeners();
-      });
-    }
-    notifyListeners();
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
+
+  Future<void> setVideos({List<Video>? data}) async {
+    _isLoaded = false;
+    var completer = new Completer();
+    createDio().get('/videos/').then((value) {
+      List<Video> newList = [
+        ...value.data.where((el) => !el["hidden"]).map((e) {
+          DateTime newDate = DateTime.parse(e["created_at"]);
+          return Video(
+              id: e["id"],
+              name: e["title"],
+              createdAt: newDate,
+              link: e["link"],
+              order: e["order"]);
+        }).toList()
+      ];
+      _videos = newList;
+      completer.complete();
+      notifyListeners();
+    }).whenComplete(() {
+      _isLoaded = true;
+    });
+    ;
+    return completer.future;
   }
 
   /// Removes all items from the cart.
@@ -42,9 +49,11 @@ class Video {
   final name;
   final DateTime createdAt;
   final String link;
+  final order;
   Video(
       {required this.id,
       required this.name,
       required this.createdAt,
-      required this.link});
+      required this.link,
+      this.order});
 }

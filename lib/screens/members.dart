@@ -1,22 +1,41 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/chats.dart';
+import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:provider/provider.dart';
+
+import '../utils/custom_scaffold.dart';
+import '../utils/dio.dart';
+import '../widgets/images/circle_logo.dart';
+import 'tabs/chat/chat.dart';
 
 class MembersScreen extends StatelessWidget {
   MembersScreen({Key? key}) : super(key: key);
-  final item = Get.arguments;
+  bool isOwner = Get.arguments["isOwner"];
+  var id = Get.arguments["id"];
+  Map item = Get.arguments;
   @override
   Widget build(BuildContext context) {
-    if (item == null) return Scaffold();
-    return Scaffold(
+    List<MinimalUser> members = Provider.of<ChatsState>(context)
+        .chats
+        .firstWhere((element) => element.id == id)
+        .members;
+    if (item == null)
+      return CustomScaffold(
+        body: Container(),
+      );
+    return CustomScaffold(
         body: Padding(
       padding: EdgeInsets.fromLTRB(
           0, 38 + MediaQuery.of(context).viewInsets.top, 0, 0),
       child: Column(
         children: [
           Header(
-            text: 'Список участников чата',
+            text: 'Список участников',
           ),
           SizedBox(
             height: 32,
@@ -28,12 +47,23 @@ class MembersScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: ListView.builder(
-                itemCount: item["members"].length ?? 0,
+                itemCount: members.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
-                      Get.toNamed('/other_profile',
-                          arguments: item["members"][index]["username"]);
+                      if (members[index].id !=
+                          Provider.of<UserState>(context, listen: false)
+                              .user
+                              .id) {
+                        createDio()
+                            .get('/users/${members[index].id}/')
+                            .then((value) {
+                          log(value.data.toString());
+                          User user = UserState().convertMapToUser(value.data);
+                          Get.toNamed('/other_profile', arguments: user);
+                        });
+                      }
                     },
                     child: Column(
                       children: [
@@ -51,31 +81,51 @@ class MembersScreen extends StatelessWidget {
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(100)),
-                                        child: CircleAvatar()),
+                                        child: members[index].photo != null
+                                            ? Avatar(members[index].photo!)
+                                            : CircleLogo()),
                                   ),
                                   SizedBox(
                                     width: 16,
                                   ),
-                                  Text(
-                                    item["members"][index]["username"],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondaryContainer),
+                                  Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      members[index].fullName,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondaryContainer),
+                                    ),
                                   ),
                                 ],
                               ),
                               Builder(builder: (context) {
-                                if (item["isOwner"] != null && !item["isOwner"])
-                                  return Container();
+                                if (!isOwner) return Container();
+                                if (members[index].id ==
+                                    Provider.of<UserState>(context,
+                                            listen: false)
+                                        .user
+                                        .id) return Container();
                                 return Row(
                                   children: [
                                     BrandIcon(
                                       height: 16,
                                       width: 16,
                                       icon: 'decline',
+                                      onTap: () {
+                                        createDio()
+                                            .put(
+                                                '/chats/remove/?chat=${id}&member=${members[index].id}')
+                                            .then((value) {
+                                          Provider.of<ChatsState>(context,
+                                                  listen: false)
+                                              .setChats();
+                                        });
+                                      },
                                       color: Color(0xFF4F3333),
                                     )
                                   ],

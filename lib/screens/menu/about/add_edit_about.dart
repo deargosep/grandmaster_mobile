@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/about.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
@@ -24,6 +25,7 @@ class AddEditAboutScreen extends StatefulWidget {
 class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
   final ImagePicker _picker = ImagePicker();
   File? cover;
+  XFile? xCover;
   AboutType? item = Get.arguments;
   TextEditingController name =
       TextEditingController(text: Get.arguments?.name ?? '');
@@ -45,43 +47,35 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
         child: BrandButton(
           text: 'Далее',
           onPressed: () async {
-            Map data = {
-              // "name": name.text,
-              // "description": description.text,
-              // "number": order.text,
+            Map<String, dynamic> data = {
+              "name": name.text,
+              "description": description.text,
+              "order": order.text,
               "hidden": false
             };
+            FormData formData = FormData.fromMap(data);
             if (cover != null) {
-              // final Uint8List? compressedCover = await testCompressFile(cover!);
-              // if (compressedCover != null) {
-              data["cover"] = base64Encode(cover!.readAsBytesSync());
-              // }
+              formData = !kIsWeb
+                  ? await getFormFromFile(cover!, 'cover', data)
+                  : await getFormFromXFile(xCover!, 'cover', data);
             }
             if (item != null) {
-              if (name.text != item!.name) {
-                data.addAll({"name": name.text});
-              }
-              if (description.text != item!.description) {
-                data.addAll({"description": description.text});
-              }
-              if (order.text.toString() != item!.order.toString()) {
-                data.addAll({"number": order.text});
-              }
               createDio()
-                  .patch('/club_content/${item!.id}/', data: data)
+                  .patch('/club_content/${item?.id}/',
+                      data: formData,
+                      options: Options(contentType: 'multipart/form-data'))
                   .then((value) {
-                Provider.of<AboutState>(context, listen: false).setAbout();
                 Get.back();
+                Provider.of<AboutState>(context, listen: false).setAbout();
               });
             } else {
-              data.addAll({
-                "name": name.text,
-                "description": description.text,
-                "number": order.text,
-              });
-              createDio().post('/club_content/', data: data).then((value) {
-                Provider.of<AboutState>(context, listen: false).setAbout();
+              createDio()
+                  .post('/club_content/',
+                      data: formData,
+                      options: Options(contentType: 'multipart/form-data'))
+                  .then((value) {
                 Get.back();
+                Provider.of<AboutState>(context, listen: false).setAbout();
               });
             }
           },
@@ -146,10 +140,11 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
                 });
               },
               onTap: () async {
-                final XFile? image =
-                    await _picker.pickImage(source: ImageSource.gallery);
+                final XFile? image = await _picker.pickImage(
+                    source: ImageSource.gallery, imageQuality: 60);
                 setState(() {
                   cover = File(image!.path);
+                  xCover = image;
                 });
               },
               child: Container(
@@ -158,14 +153,16 @@ class _AddEditAboutScreenState extends State<AddEditAboutScreen> {
                 decoration: BoxDecoration(
                     color: Color(0xFFFBF7F7),
                     borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: item?.cover != null
-                    ? Image.network(item?.cover)
-                    : cover != null
+                child: cover != null
+                    ? !kIsWeb
                         ? Image.file(
                             cover!,
                             height: 132,
                             width: double.maxFinite,
                           )
+                        : Image.network(xCover!.path)
+                    : item?.cover != null
+                        ? Image.network(item?.cover)
                         : Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 133, vertical: 28),

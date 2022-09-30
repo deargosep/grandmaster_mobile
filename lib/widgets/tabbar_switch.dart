@@ -48,13 +48,15 @@ class _TabsSwitchState extends State<TabsSwitch> with TickerProviderStateMixin {
           isScrollable: false,
           indicator: BoxDecoration(
               color: Theme.of(context).primaryColor,
-              borderRadius: widget.controller?.index == 0
-                  ? BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10))
-                  : BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomRight: Radius.circular(10))),
+              borderRadius: BorderRadius.all(Radius.circular(10))
+              // borderRadius: widget.controller?.index == 0
+              // ? BorderRadius.only(
+              //     topLeft: Radius.circular(10),
+              //     bottomLeft: Radius.circular(10))
+              // : BorderRadius.only(
+              //     topRight: Radius.circular(10),
+              //     bottomRight: Radius.circular(10))
+              ),
           splashBorderRadius: BorderRadius.all(Radius.circular(10)),
           unselectedLabelColor:
               Theme.of(context).colorScheme.secondaryContainer,

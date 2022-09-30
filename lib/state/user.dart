@@ -1,24 +1,18 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:intl/intl.dart';
 
 class UserState extends ChangeNotifier {
   User _user = User(
-    id: "12222",
-    role: "trainer",
-    phoneNumber: '+79515251625',
-    fullName: 'Глухарев Глухарь Глухарьевич',
-    birthday: DateTime(2000, 6, 1),
-    gender: 'Мужчина',
-    age: 24,
-    country: "Россия",
-    city: "Москва",
-    registration_date: '03.06.2022',
+    role: 'guest',
     passport: Passport(),
   );
 
-  // List<User> _users = [];
+  int? _childId = null;
 
   // List<Dot> _filteredDots = [];
 
@@ -51,31 +45,50 @@ class UserState extends ChangeNotifier {
 
   String getRole(String contact_type) {
     switch (contact_type) {
+      case 'PARENT':
+        return 'sportsmen';
       case 'CLIENT':
         return 'sportsmen';
       case 'PARTNER':
         return 'trainer';
       case 'MODERATOR':
         return 'moderator';
+      case '1':
+        return 'specialist';
       default:
         return 'guest';
     }
   }
 
+  Future<User> getUser(id) async {
+    var response = await createDio().get('/users/${id}/');
+    return convertMapToUser(response.data[0]);
+  }
+
   User convertMapToUser(Map data) {
+    print(data);
     return User(
         id: data["id"],
+        isMyStudent: data["is_my_student"],
         parents: data["parents"],
-        children: data["children"],
+        chatId: data["dm"],
+        children: <MinimalUser>[
+          ...data["children"]
+              .map((e) => MinimalUser(
+                    fullName: e["full_name"],
+                    id: e["id"],
+                  ))
+              .toList()
+        ],
         documentsUrl: data["documents"],
         photo: data["photo"],
         admitted: data["admitted"],
         firstName: data["first_name"],
         middleName: data["middle_name"],
         lastName: data["last_name"],
-        fullName:
-            "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
-        age: calculateAge(DateTime.parse(data["birth_date"])),
+        fullName: data["full_name"] ??
+            '${data["first_name"]} ${data["middle_name"] ?? ''}${data["middle_name"] != null ? ' ' : ''}${data["last_name"]}',
+        // age: calculateAge(DateTime.parse(data["birth_date"])),
         birthday: data["birth_date"] != null
             ? DateTime.parse(data["birth_date"])
             : null,
@@ -84,10 +97,10 @@ class UserState extends ChangeNotifier {
         gender: data["gender"],
         city: data["city"],
         passport: Passport(
-          fio:
-              "${data["first_name"]} ${data["middle_name"] ?? ''} ${data["last_name"]}",
+          fio: data["full_name"] ??
+              '${data["first_name"]} ${data["middle_name"] ?? ''}${data["middle_name"] != null ? ' ' : ''}${data["last_name"]}',
           birthday: data["birth_date"] != null
-              ? DateFormat("d.MM.y").format(DateTime.parse(data["birth_date"]))
+              ? DateFormat("dd.MM.y").format(DateTime.parse(data["birth_date"]))
               : null,
           phoneNumber: data["phone_number"],
           sport_school: data["sport_school"],
@@ -97,22 +110,22 @@ class UserState extends ChangeNotifier {
           sport_qualification: data["sport_qualification"],
           address: data["address"],
           med_spravka_date: data["med_certificate_date"] != null
-              ? DateFormat("d.MM.y")
+              ? DateFormat("dd.MM.y")
                   .format(DateTime.parse(data["med_certificate_date"]))
               : null,
           strah_date: data["insurance_policy_date"] != null
-              ? DateFormat("d.MM.y")
+              ? DateFormat("dd.MM.y")
                   .format(DateTime.parse(data["insurance_policy_date"]))
               : null,
           father_birthday: data["father_birth_date"] != null
-              ? DateFormat("d.MM.y")
+              ? DateFormat("dd.MM.y")
                   .format(DateTime.parse(data["father_birth_date"]))
               : null,
           father_fio: data["father_full_name"],
           father_email: data["father_email"],
           father_phoneNumber: data["father_phone_number"],
           mother_birthday: data["mother_birth_date"] != null
-              ? DateFormat("d.MM.y")
+              ? DateFormat("dd.MM.y")
                   .format(DateTime.parse(data["mother_birth_date"]))
               : null,
           mother_fio: data["mother_full_name"],
@@ -127,10 +140,35 @@ class UserState extends ChangeNotifier {
         ));
   }
 
-  void setUser(data) {
+  void setUserCustom(User user) {
+    _user = user;
+    if (user.children.isNotEmpty && user.children.length < 2) {
+      _childId = user.children.first.id;
+    } else if (user.children.isNotEmpty && user.children.length > 1) {
+      _childId = null;
+    } else {
+      _childId = null;
+    }
+  }
+
+  void setChildId(id) {
+    _childId = id;
+  }
+
+  Future<void> setUser(data) async {
+    var completer = new Completer();
     log(data.toString());
     User user = convertMapToUser(data);
+    if (user.children.isNotEmpty && user.children.length < 2) {
+      _childId = user.children.first.id;
+    } else if (user.children.isNotEmpty && user.children.length > 1) {
+      _childId = user.children.first.id;
+    } else {
+      _childId = null;
+    }
     _user = user;
+    completer.complete();
+    return completer.future;
   }
 
   /// Removes all items from the cart.
@@ -140,6 +178,7 @@ class UserState extends ChangeNotifier {
   }
 
   User get user => _user;
+  get childId => _childId;
   // List<User> get list => _users;
 }
 
@@ -230,36 +269,40 @@ class User {
   // final role = Role;
   final DateTime? birthday;
   final role;
-  final age;
+  // final age;
+  final bool isMyStudent;
   final country;
   final city;
   final firstName;
   final lastName;
   final middleName;
   final registration_date;
-  final List children;
+  final List<MinimalUser> children;
   final List parents;
   Passport passport;
   final String? photo;
   final bool admitted;
+  final chatId;
 
   User(
       {this.id,
+      this.chatId,
       this.documentsUrl,
-      required this.fullName,
+      this.fullName,
       this.firstName,
       this.lastName,
       this.middleName,
       this.phoneNumber,
+      this.isMyStudent = false,
       children,
       parents,
       this.role,
       // this.role = 'guest',
       this.gender,
       this.birthday,
-      required this.age,
-      required this.country,
-      required this.city,
+      // this.age,
+      this.country,
+      this.city,
       this.registration_date,
       required this.passport,
       this.admitted = false,
@@ -269,7 +312,17 @@ class User {
 }
 
 class MinimalUser {
-  final full_name;
+  final String fullName;
   final id;
-  MinimalUser({required this.full_name, required this.id});
+  final bool? marked;
+  final String? role;
+  final String? photo;
+  final bool me;
+  MinimalUser(
+      {required this.fullName,
+      required this.id,
+      this.marked,
+      this.role,
+      this.me = false,
+      this.photo});
 }

@@ -30,14 +30,15 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      List sportsmens = await Provider.of<GroupsState>(context, listen: false)
-          .setSportsmens();
+      List<MinimalUser> sportsmens =
+          await Provider.of<GroupsState>(context, listen: false)
+              .setSportsmens();
       GroupType group = Get.arguments;
       setState(() {
         checkboxes = {
           for (var v in sportsmens)
-            '${v["id"]}_${v["full_name"]}': group.members
-                        .firstWhereOrNull((element) => element.id == v["id"]) !=
+            '${v.id}_${v.fullName}': group.members
+                        .firstWhereOrNull((element) => element.id == v.id) !=
                     null
                 ? true
                 : false,
@@ -57,6 +58,8 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
       });
     }
 
+    List<MinimalUser> sportsmens =
+        Provider.of<GroupsState>(context, listen: false).sportsmens;
     GroupType item = Get.arguments;
     // List<User> users = Provider.of<UserState>(context).list;
     return CustomScaffold(
@@ -75,9 +78,8 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
                 .where((element) => element.value)
                 .map((e) => int.parse(e.key.split('_')[0]))
                 .toList();
-            createDio()
-                .patch('/sport_groups/${item.id}/fetch_members/', data: checked)
-                .then(
+            createDio().patch('/sport_groups/${item.id}/',
+                data: {"members": checked}).then(
               (value) {
                 Provider.of<GroupsState>(context, listen: false).setGroups();
                 Get.back();
@@ -86,7 +88,7 @@ class _GroupManageScreenState extends State<GroupManageScreen> {
           },
         )),
         body: isLoading
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : ListView(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

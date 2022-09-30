@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -5,34 +7,35 @@ import '../utils/dio.dart';
 
 class Articles extends ChangeNotifier {
   List<ArticleType> _news = [];
-
   List<ArticleType> get news => _news;
+  bool _isLoaded = false;
+  bool get isLoaded => _isLoaded;
 
-  void setNews({List<ArticleType>? data}) {
-    if (data != null)
-      _news = data;
-    else {
-      createDio().get('/news/').then((value) {
-        List<ArticleType> newList = [
-          ...value.data["results"].where((el) => !el["hidden"]).map((e) {
-            DateTime newDate = DateTime.parse(e["created_at"]);
-            return ArticleType(
-                id: e["id"],
-                name: e["title"],
-                dateTime: newDate,
-                description: e["description"],
-                views: e["viewed_times"],
-                cover: e["cover"],
-                photos: e["images"],
-                order: e["order"]);
-          }).toList()
-        ];
-        print(newList);
-        _news = newList;
-        notifyListeners();
-      });
-    }
-    notifyListeners();
+  Future<void> setNews() async {
+    _isLoaded = false;
+    var completer = new Completer();
+    createDio().get('/news/').then((value) {
+      List<ArticleType> newList = [
+        ...value.data.where((el) => !el["hidden"]).map((e) {
+          DateTime newDate = DateTime.parse(e["created_at"]);
+          return ArticleType(
+              id: e["id"],
+              name: e["title"],
+              dateTime: newDate,
+              description: e["description"],
+              views: e["viewed_times"],
+              cover: e["cover"],
+              photos: e["images"],
+              order: e["order"]);
+        }).toList()
+      ];
+      _news = newList;
+      notifyListeners();
+      completer.complete();
+    }).whenComplete(() {
+      _isLoaded = true;
+    });
+    return completer.future;
   }
 
   ArticleType? getNews(id) {

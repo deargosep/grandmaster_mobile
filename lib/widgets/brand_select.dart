@@ -80,8 +80,7 @@ class _BrandSelectState extends State<BrandSelect>
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(100000)),
                 border: Border.all(
-                    color: Theme.of(context).colorScheme.secondary,
-                    width: 1.5)),
+                    color: Theme.of(context).colorScheme.secondary, width: 1.5)),
             child: Builder(builder: (context) {
               if (widget.checked == true) {
                 if (pressing) {

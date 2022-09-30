@@ -8,50 +8,72 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/list_of_options.dart';
 import 'package:provider/provider.dart';
 
-class PlacesJournalScreen extends StatelessWidget {
+class PlacesJournalScreen extends StatefulWidget {
   const PlacesJournalScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PlacesJournalScreen> createState() => _PlacesJournalScreenState();
+}
+
+class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<PlacesState>(context, listen: false)
+          .setPlaces(url: '/gyms/trainers/');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
-        .map((e) => OptionType(e.name, '/journal/groups', arguments: e))
+        .map((e) => OptionType(e.name, '/journal/groups', arguments: e.id))
         .toList();
     return CustomScaffold(
         noTopPadding: true,
-        bottomNavigationBar: BottomPanel(
-          withShadow: false,
-          child: BrandButton(
-            text: 'Сформировать отчет',
-            onPressed: () {
-              Get.toNamed('/journal/log');
-            },
-          ),
-        ),
+        noPadding: false,
+        bottomNavigationBar: places.isNotEmpty
+            ? BottomPanel(
+                withShadow: false,
+                child: BrandButton(
+                  text: 'Сформировать отчет',
+                  onPressed: () {
+                    Get.toNamed('/journal/log');
+                  },
+                ),
+              )
+            : null,
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              'Выберите зал',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
-          ],
-        ));
+        body: list.isNotEmpty
+            ? ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    list.isNotEmpty ? 'Выберите зал' : '',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 32,
+                  ),
+                  ListOfOptions(
+                    list: list,
+                    noArrow: true,
+                  )
+                ],
+              )
+            : Center(
+                child: Text('Нет залов'),
+              ));
   }
 }

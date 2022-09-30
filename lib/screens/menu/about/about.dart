@@ -10,12 +10,29 @@ import 'package:provider/provider.dart';
 
 import '../../../utils/custom_scaffold.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
   const AboutScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<AboutState>(context, listen: false).setAbout();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     var user = Provider.of<UserState>(context);
+    bool isLoaded = Provider.of<AboutState>(context).isLoaded;
+    List list = Provider.of<AboutState>(context).about;
     return CustomScaffold(
       noPadding: true,
       bottomNavigationBar: BottomBarWrap(currentTab: 0),
@@ -26,16 +43,17 @@ class AboutScreen extends StatelessWidget {
           Get.toNamed('/about/add');
         },
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(children: [
-              // List
-              Content()
-            ]),
-          ),
-        ],
-      ),
+      body: isLoaded
+          ? list.isNotEmpty
+              ? RefreshIndicator(
+                  onRefresh:
+                      Provider.of<AboutState>(context, listen: false).setAbout,
+                  child: Content(),
+                )
+              : Text('Нет контента')
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }
@@ -61,35 +79,32 @@ class _ContentState extends State<Content> {
   Widget build(BuildContext context) {
     var list = Provider.of<AboutState>(context, listen: true).about;
     var user = Provider.of<UserState>(context);
-    if (list.isNotEmpty) {
-      return Column(
-          children: list.map((item) {
-        return BrandCard(
-          item,
-          // TODO
-          () {
-            createDio().patch('/club_content/${item.id}/', data: {
-              "hidden": true
-            }).then((value) =>
-                Provider.of<AboutState>(context, listen: false).setAbout());
-          },
-          () {
-            createDio().delete('/club_content/${item.id}/').then((value) =>
-                Provider.of<AboutState>(context, listen: false).setAbout());
-          },
-          type: 'about',
-        );
-      }).toList());
-      // return ListView.builder(
-      //     itemCount: list.length,
-      //     itemBuilder: (context, index) {
-      //       return Padding(
-      //         padding: const EdgeInsets.all(20),
-      //         child: AboutCard(item: list[index]),
-      //       );
-      //     });
-    }
-    return Center(child: Text('Пока что событий нет'));
+    return ListView(
+        children: list.map((item) {
+      return BrandCard(
+        item,
+        // TODO
+        () {
+          createDio().patch('/club_content/${item.id}/', data: {
+            "hidden": true
+          }).then((value) =>
+              Provider.of<AboutState>(context, listen: false).setAbout());
+        },
+        () {
+          createDio().delete('/club_content/${item.id}/').then((value) =>
+              Provider.of<AboutState>(context, listen: false).setAbout());
+        },
+        type: 'about',
+      );
+    }).toList());
+    // return ListView.builder(
+    //     itemCount: list.length,
+    //     itemBuilder: (context, index) {
+    //       return Padding(
+    //         padding: const EdgeInsets.all(20),
+    //         child: AboutCard(item: list[index]),
+    //       );
+    //     });
   }
 }
 
@@ -99,7 +114,7 @@ class AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 244,
+      height: 290,
       width: 335,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -109,15 +124,16 @@ class AboutCard extends StatelessWidget {
         children: [
           // Image cover
           Container(
-            height: 132,
+            height: 200,
+            width: double.infinity,
             child: item.cover != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    child: Image.network(
-                      item.cover,
-                      fit: BoxFit.cover,
-                    ))
-                : Container(),
+                ? LoadingImage(
+                    item.cover,
+                    height: 200,
+                  )
+                : Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
           ), // TODO: should be an Image (backend)
           // meta info
           Padding(
@@ -126,6 +142,7 @@ class AboutCard extends StatelessWidget {
               children: [
                 Text(
                   item.name,
+                  maxLines: 3,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -135,18 +152,19 @@ class AboutCard extends StatelessWidget {
             ),
           ),
           // description
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-            child: Text(
-              item.description,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFFAC9595)),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
+          //   child: Text(
+          //     item.description,
+          //     maxLines: 3,
+          //     overflow: TextOverflow.fade,
+          //     softWrap: false,
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         fontWeight: FontWeight.w500,
+          //         color: Color(0xFFAC9595)),
+          //   ),
+          // ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'images/brand_icon.dart';
@@ -41,25 +42,22 @@ class Header extends StatelessWidget {
                 !withBack
                     ? Container()
                     : Row(children: [
-                        Container(
+                        BrandIcon(
                           height: 17,
                           width: 10,
-                          child: BrandIcon(
-                            icon: 'back_arrow',
-                            onTap: onTap,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 26,
+                          icon: 'back_arrow',
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ]),
                 Container(
-                  width:
-                      icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
+                  width: icon != ''
+                      ? 250
+                      : MediaQuery.of(context).size.width - 120,
                   child: Text(
                     text ?? '',
-                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -101,7 +99,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       this.iconOnTap,
       this.padding,
       this.bottomChild,
-      this.onTap})
+      this.onTap,
+      this.textColor})
       : super(key: key);
   final text;
   bool withPadding;
@@ -111,71 +110,61 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget? bottomChild;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;
+  final Color? textColor;
 
   @override
-  final Size preferredSize = Size(64, 64); // default is 56.0
+  final Size preferredSize = Size(56, 66); // default is 56.0
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: padding != null
-              ? padding
-              : withPadding
-                  ? EdgeInsets.fromLTRB(
-                      20, 40 + MediaQuery.of(context).viewInsets.top, 20, 0)
-                  : EdgeInsets.all(0),
-          child: Row(
-            children: [
-              !withBack
-                  ? Container()
-                  : Row(children: [
-                      Container(
+    EdgeInsets myPadding = EdgeInsets.fromLTRB(withBack ? 10 : 20, 10, 20, 0);
+
+    // if (!kIsWeb) {
+    //   myPadding = EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 : 32, 20, 0);
+    // }
+    return Padding(
+      padding: myPadding,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          children: [
+            Row(
+              children: [
+                !withBack
+                    ? Container()
+                    : BrandIcon(
+                        icon: 'back_arrow',
+                        onTap: onTap,
                         height: 17,
                         width: 10,
-                        child: BrandIcon(
-                          icon: 'back_arrow',
-                          onTap: onTap,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                        color: textColor ??
+                            Theme.of(context).colorScheme.secondary,
                       ),
-                      SizedBox(
-                        width: 26,
-                      ),
-                    ]),
-              Container(
-                width:
-                    icon != '' ? 250 : MediaQuery.of(context).size.width - 76,
-                child: Text(
+                Text(
                   text ?? '',
-                  overflow: TextOverflow.ellipsis,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
-                      color: Theme.of(context).colorScheme.secondary),
+                      color:
+                          textColor ?? Theme.of(context).colorScheme.secondary),
                 ),
-              ),
-              Spacer(),
-              icon != ''
-                  ? Container(
-                      height: 18,
-                      width: 18,
-                      child: BrandIcon(
-                        icon: icon,
-                        onTap: iconOnTap,
-                        color: Theme.of(context).colorScheme.secondary,
-                        height: 18,
-                        width: 18,
-                      ),
-                    )
-                  : Container()
-            ],
-          ),
+              ],
+            ),
+            Spacer(),
+            icon != ''
+                ? BrandIcon(
+                    icon: icon,
+                    onTap: iconOnTap,
+                    color: Theme.of(context).colorScheme.secondary,
+                    height: 18,
+                    width: 30,
+                  )
+                : Container()
+          ],
         ),
-        Spacer(),
-        bottomChild ?? Container()
-      ],
+      ),
     );
   }
 }

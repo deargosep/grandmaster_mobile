@@ -44,13 +44,15 @@ class BrandIcon extends StatelessWidget {
           width: width,
         ),
       );
-    if (icon == 'back_arrow')
-      return InkWell(
-        onTap: () {
+    if (icon == 'back_arrow') {
+      return IconButton(
+        constraints: BoxConstraints(maxWidth: 40),
+        padding: EdgeInsets.only(right: 10, top: 10, bottom: 10),
+        onPressed: () {
           if (onTap != null) onTap();
           Get.back();
         },
-        child: SvgPicture.asset(
+        icon: SvgPicture.asset(
           'assets/icons/${icon}.svg',
           fit: fit ?? BoxFit.contain,
           color: color ?? Theme.of(context).primaryColor,
@@ -58,14 +60,45 @@ class BrandIcon extends StatelessWidget {
           width: width,
         ),
       );
-    return InkWell(
-      onTap: onTap,
-      child: SvgPicture.asset(
-        'assets/icons/${icon}.svg',
-        color: color ?? Theme.of(context).primaryColor,
-        height: height,
-        width: width,
-      ),
-    );
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          if (onTap != null) onTap();
+          Get.back();
+        },
+        child: Container(
+          width: 30,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              fit: fit ?? BoxFit.contain,
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
+          ),
+        ),
+      );
+    }
+    return onTap != null
+        ? GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              onTap();
+            },
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
+          )
+        : SvgPicture.asset(
+            'assets/icons/${icon}.svg',
+            color: color ?? Theme.of(context).primaryColor,
+            height: height,
+            width: width,
+          );
   }
 }

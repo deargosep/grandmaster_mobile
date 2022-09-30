@@ -19,7 +19,7 @@ class FailScreen extends StatelessWidget {
             children: [
               BrandIcon(
                 icon: 'x',
-                color: Color(0xFF76FF60),
+                color: Color(0xFFFF3737),
                 height: 75,
                 width: 75,
               ),

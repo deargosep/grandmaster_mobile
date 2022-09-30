@@ -1,5 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:grandmaster/state/places.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
@@ -19,6 +20,7 @@ class SelectTrainersScreen extends StatefulWidget {
 
 class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
   Map<String, bool>? checkboxes;
+  var id = Get.arguments["id"];
 
   @override
   void initState() {
@@ -27,28 +29,38 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
       checkboxes = {};
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<Trainer> trainers =
-          Provider.of<PlacesState>(context, listen: false).trainers;
-      print(trainers);
-      setState(() {
-        // TODO
-        // checkboxes = {
-        //   for (var v in trainers)
-        //     '${v["id"]}_${v["full_name"]}': group.members
-        //         .firstWhereOrNull((element) => element.id == v["id"]) !=
-        //         null
-        //         ? true
-        //         : false,
-        // };
-        checkboxes = {for (var v in trainers) v.fio: false};
+      Provider.of<PlacesState>(context, listen: false)
+          .setTrainers()
+          .then((value) {
+        List<Trainer> trainers =
+            Provider.of<PlacesState>(context, listen: false).trainers;
+        List<PlaceType> places =
+            Provider.of<PlacesState>(context, listen: false).places;
+        setState(() {
+          if (editMode) {
+            checkboxes = {
+              for (var v in trainers)
+                '${v.id}_${v.fio}': places
+                            .firstWhere((element) => element.id == id)
+                            .trainers
+                            .firstWhereOrNull(
+                                (element) => element.id == v.id) !=
+                        null
+                    ? true
+                    : false,
+            };
+          } else {
+            checkboxes = {for (var v in trainers) '${v.id}_${v.fio}': false};
+          }
+        });
       });
     });
   }
 
   bool editMode = Get.arguments["editMode"];
+  FormData formData = Get.arguments["formData"];
   @override
   Widget build(BuildContext context) {
-    var dataPast = Get.arguments;
     void changeCheckboxesState(newState) {
       setState(() {
         checkboxes = newState;
@@ -58,19 +70,48 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
     return CustomScaffold(
         scrollable: true,
         noTopPadding: true,
+        noPadding: false,
         bottomNavigationBar: BottomPanel(
           child: BrandButton(
             text: editMode ? 'Сохранить' : 'Опубликовать',
             onPressed: () {
-              var data = {
-                "title": dataPast["name"],
-                "description": dataPast["description"],
-                "address": dataPast["address"],
-                "cover": dataPast["cover"]
-              };
-              createDio()
-                  .post('/gyms/', data: data)
-                  .then((value) => Get.offAllNamed('/places'));
+              FormData newFormData = formData;
+              if (editMode) {
+                newFormData.fields.add(MapEntry(
+                    'trainers',
+                    checkboxes!.entries
+                        .where((element) => element.value)
+                        .toList()
+                        .map((e) => e.key.split('_')[0])
+                        .toList()
+                        .toString()));
+                createDio()
+                    .patch('/gyms/${id}/',
+                        data: formData,
+                        options: Options(contentType: 'multipart/form-data'))
+                    .then((value) {
+                  Provider.of<PlacesState>(context, listen: false).setPlaces();
+
+                  Get.offAllNamed('/places');
+                });
+              } else {
+                newFormData.fields.add(MapEntry(
+                    'trainers',
+                    checkboxes!.entries
+                        .where((element) => element.value)
+                        .toList()
+                        .map((e) => e.key.split('_')[0])
+                        .toList()
+                        .toString()));
+                createDio()
+                    .post('/gyms/',
+                        data: formData,
+                        options: Options(contentType: 'multipart/form-data'))
+                    .then((value) {
+                  Provider.of<PlacesState>(context, listen: false).setPlaces();
+                  Get.offAndToNamed('/places');
+                });
+              }
             },
           ),
           withShadow: false,
@@ -79,6 +120,7 @@ class _SelectTrainersScreenState extends State<SelectTrainersScreen> {
           text: '${editMode ? 'Редактирование' : 'Создание'} зала',
         ),
         body: ListView(
+          shrinkWrap: true,
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(

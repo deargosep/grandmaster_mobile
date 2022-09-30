@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/news.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ArticleScreen extends StatefulWidget {
   ArticleScreen({Key? key}) : super(key: key);
@@ -15,6 +18,16 @@ class ArticleScreen extends StatefulWidget {
 
 class _ArticleScreenState extends State<ArticleScreen> {
   final ArticleType item = Get.arguments;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      createDio().get('/news/${item.id}/').then((value) {
+        Provider.of<Articles>(context, listen: false).setNews();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +45,10 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     item.cover != null ? null : Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: item.cover != null
-                ? Image.network(
+                ? LoadingImage(
                     item.cover,
-                    fit: BoxFit.cover,
                   )
-                : null,
+                : Container(color: Theme.of(context).colorScheme.secondary),
           ),
           Container(
             margin: EdgeInsets.only(top: 200),
@@ -48,11 +60,13 @@ class _ArticleScreenState extends State<ArticleScreen> {
                   color: Colors.white,
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 20, right: 20, top: 32),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
@@ -71,7 +85,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              DateFormat('d MMMM y, H:m').format(item.dateTime),
+                              DateFormat('dd MMMM y, HH:mm')
+                                  .format(item.dateTime),
                               style: TextStyle(
                                   fontSize: 12,
                                   color:
@@ -82,28 +97,36 @@ class _ArticleScreenState extends State<ArticleScreen> {
                             height: 16,
                           ),
                           // Description
-                          Text(
-                            item.description,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          SizedBox(
-                            height: 32,
-                          ),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Фотографии',
+                              item.description,
                               textAlign: TextAlign.start,
                               style: TextStyle(
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 16,
                                   color:
                                       Theme.of(context).colorScheme.secondary),
                             ),
                           ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          item.photos.isNotEmpty
+                              ? Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Фотографии',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                )
+                              : Container(),
                           SizedBox(
                             height: 16,
                           ),
@@ -120,19 +143,26 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           itemCount: item.photos.length,
                           itemBuilder: (context, index) {
                             final photo = item.photos[index];
-                            return Container(
-                                margin: EdgeInsets.only(
-                                    right: 16, left: index == 0 ? 16 : 0),
-                                height: 110,
-                                width: 150,
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                  child: Image.network(
-                                    photo["image"],
-                                    fit: BoxFit.contain,
-                                  ),
-                                ));
+                            return GestureDetector(
+                              onTap: () {
+                                Get.toNamed('/article/photos', arguments: {
+                                  "images": item.photos,
+                                  "id": photo["id"]
+                                });
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(
+                                      right: 16, left: index == 0 ? 16 : 0),
+                                  height: 110,
+                                  width: 150,
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                    child: LoadingImage(
+                                      photo["image"],
+                                    ),
+                                  )),
+                            );
                           },
                         ),
                       ),

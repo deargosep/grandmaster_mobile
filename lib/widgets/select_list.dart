@@ -33,7 +33,7 @@ class SelectList extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      e,
+                      e.contains('_') ? e.split('_')[1] : e,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Theme.of(context).colorScheme.secondary,

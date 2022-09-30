@@ -35,56 +35,80 @@ class _LearningsScreenState extends State<LearningsScreen> {
       return user.role == 'moderator';
     }
 
-    List<LearningType> items = Provider.of<LearningsState>(context).learnings;
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
 
+    List<LearningType> items = Provider.of<LearningsState>(context).learnings;
+    bool isLoaded = Provider.of<LearningsState>(context).isLoaded;
     return CustomScaffold(
         noPadding: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Учебные материалы',
-          icon: isModer() ? 'plus' : null,
+          icon: isModer() ? 'plus' : '',
           iconOnTap: isModer()
               ? () {
                   Get.toNamed('/learnings/add');
                 }
               : null,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 24,
-              ),
-              ...items.map((e) => Container(
-                    margin: EdgeInsets.only(bottom: 16),
-                    child: GestureDetector(
-                      onTap: () {
-                        Uri url = Uri.parse(e.link);
-                        launchUrl(url);
-                      },
-                      child: BrandCard(
-                        e,
-                        withPadding: false,
-                        type: 'learning',
-                        () {
-                          createDio().patch('/instructions/${e.id}/',
-                              data: {"hidden": true});
-                          Provider.of<LearningsState>(context).setLearnings();
-                        },
-                        () {
-                          createDio().delete('/instructions/${e.id}/');
-                          Provider.of<LearningsState>(context).setLearnings();
-                        },
-                      ),
+        body: isLoaded
+            ? items.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: RefreshIndicator(
+                      onRefresh:
+                          Provider.of<LearningsState>(context, listen: false)
+                              .setLearnings,
+                      child: ListView.builder(
+                          // gridDelegate:
+                          // SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount:
+                          //         getDeviceType() == 'tablet' ? 2 : 1,
+                          //     crossAxisSpacing: 24.0,
+                          //     mainAxisSpacing: 0.0,
+                          //     childAspectRatio: getDeviceType() == 'tablet'
+                          //         ? currentOrientation ==
+                          //                 Orientation.portrait
+                          //             ? 2.8
+                          //             : 4.4
+                          //         : 3.4),
+                          itemCount: items.length,
+                          itemBuilder: (context, index) => Container(
+                                margin: EdgeInsets.only(bottom: 16),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Uri url = Uri.parse(items[index].link);
+                                    launchUrl(url,
+                                        mode: LaunchMode.externalApplication);
+                                  },
+                                  child: BrandCard(
+                                    items[index],
+                                    withPadding: false,
+                                    type: 'learning',
+                                    () {
+                                      createDio().patch(
+                                          '/instructions/${items[index].id}/',
+                                          data: {"hidden": true});
+                                      Provider.of<LearningsState>(context)
+                                          .setLearnings();
+                                    },
+                                    () {
+                                      createDio().delete(
+                                          '/instructions/${items[index].id}/');
+                                      Provider.of<LearningsState>(context)
+                                          .setLearnings();
+                                    },
+                                  ),
+                                ),
+                              )),
                     ),
-                  )),
-              SizedBox(
-                height: 16,
-              )
-            ],
-          ),
-        ));
+                  )
+                : Center(
+                    child: Text('Нет учебных материалов'),
+                  )
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 
@@ -95,7 +119,7 @@ class LearningCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 72,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         color: Theme.of(context).inputDecorationTheme.fillColor,

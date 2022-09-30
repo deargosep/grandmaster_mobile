@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/events.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
@@ -23,14 +24,25 @@ class EventCard extends StatelessWidget {
           color: Colors.white,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image cover
+
             Container(
-              height: 132,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-            ), // TODO: should be an Image (backend)
+                height: 132,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child: item.cover != null
+                    ? LoadingImage(
+                        item.cover!,
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                      )),
             // meta info
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
@@ -55,7 +67,8 @@ class EventCard extends StatelessWidget {
               child: Text(
                 item.description,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.fade,
+                softWrap: false,
                 style: TextStyle(
                     fontSize: 12, fontWeight: FontWeight.w500, color: color),
               ),
@@ -83,7 +96,7 @@ class EventCard extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      "${DateFormat('d.MM.y').format(item.timeDateStart)} в ${DateFormat('Hm').format(item.timeDateStart)} - ${DateFormat('d.MM.y').format(item.timeDateEnd)}",
+                      "${DateFormat('dd.MM.y').format(item.timeDateStart)} в ${DateFormat('HH:mm').format(item.timeDateStart)} - ${DateFormat('dd.MM.y').format(item.timeDateEnd)}",
                       style: TextStyle(fontSize: 12, color: color),
                     )
                   ],
@@ -95,7 +108,7 @@ class EventCard extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: BrandPill(item.closed),
+              child: BrandPill(!item.open),
             )
           ],
         ),

@@ -27,6 +27,7 @@ class _AddEditLearningScreenState extends State<AddEditLearningScreen> {
   TextEditingController order =
       TextEditingController(text: Get.arguments?.order.toString() ?? '');
   LearningType? item = Get.arguments;
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -37,39 +38,42 @@ class _AddEditLearningScreenState extends State<AddEditLearningScreen> {
         child: BrandButton(
           text: item != null ? 'Сохранить' : 'Опубликовать',
           onPressed: () {
-            Map data = {
-              "title": name.text,
-              "description": description.text,
-              "link": link.text,
-              "order": order.text
-            };
-            if (item != null) {
-              if (item?.name == name.text) data.remove('title');
-              if (item?.description == description.text)
-                data.remove('description');
-              if (item?.link == link.text) data.remove('link');
-              if (item?.order == order.text) data.remove('order');
-              createDio()
-                  .patch(
-                '/instructions/${item?.id}/',
-                data: data,
-              )
-                  .then((value) {
-                Provider.of<LearningsState>(context, listen: false)
-                    .setLearnings();
-                Get.back();
-              });
-            } else {
-              createDio()
-                  .post(
-                '/instructions/',
-                data: data,
-              )
-                  .then((value) {
-                Provider.of<LearningsState>(context, listen: false)
-                    .setLearnings();
-                Get.back();
-              });
+            if (_formKey.currentState != null) if (_formKey.currentState!
+                .validate()) {
+              Map data = {
+                "title": name.text,
+                "description": description.text,
+                "link": link.text,
+                "order": order.text
+              };
+              if (item != null) {
+                if (item?.name == name.text) data.remove('title');
+                if (item?.description == description.text)
+                  data.remove('description');
+                if (item?.link == link.text) data.remove('link');
+                if (item?.order == order.text) data.remove('order');
+                createDio()
+                    .patch(
+                  '/instructions/${item?.id}/',
+                  data: data,
+                )
+                    .then((value) {
+                  Provider.of<LearningsState>(context, listen: false)
+                      .setLearnings();
+                  Get.back();
+                });
+              } else {
+                createDio()
+                    .post(
+                  '/instructions/',
+                  data: data,
+                )
+                    .then((value) {
+                  Provider.of<LearningsState>(context, listen: false)
+                      .setLearnings();
+                  Get.back();
+                });
+              }
             }
           },
         ),
@@ -79,78 +83,81 @@ class _AddEditLearningScreenState extends State<AddEditLearningScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 24,
-            ),
-            Text(
-              'Введите название',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Название',
-              controller: name,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Введите описание',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Описание',
-              controller: description,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Введите ссылку на документ',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Ссылка',
-              controller: link,
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              'Введите порядковый номер',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.secondary),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Input(
-              label: 'Номер (1, 2, 3 и т.п.)',
-              controller: order,
-            )
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 24,
+              ),
+              Text(
+                'Введите название',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Название',
+                controller: name,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Введите описание',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Описание',
+                controller: description,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Введите ссылку на документ',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Ссылка',
+                controller: link,
+              ),
+              SizedBox(
+                height: 32,
+              ),
+              Text(
+                'Введите порядковый номер',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Input(
+                label: 'Номер (1, 2, 3 и т.п.)',
+                controller: order,
+              )
+            ],
+          ),
         ),
       ),
     );

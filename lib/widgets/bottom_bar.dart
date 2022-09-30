@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:grandmaster/state/user.dart';
+import 'package:grandmaster/widgets/choose_child.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomBar extends StatelessWidget {
   BottomBar({Key? key, required this.onTap, required this.currentIndex})
@@ -24,11 +29,12 @@ class BottomBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
+            BottomBarItem(
                 onTap: () {
                   onTap(0);
                 },
-                child: BottomBarItem(icon: 'menu', active: currentIndex == 0)),
+                icon: 'menu',
+                active: currentIndex == 0),
             Container(
               height: 52,
               width: 1,
@@ -36,22 +42,66 @@ class BottomBar extends StatelessWidget {
                   border: Border(
                       right: BorderSide(color: Color(0xFF9FA6BA), width: 1))),
             ),
-            GestureDetector(
-                onTap: () {
-                  onTap(1);
+            BottomBarItem(
+              onTap: () {
+                onTap(1);
+              },
+              icon: 'home',
+              active: currentIndex == 1,
+            ),
+            BottomBarItem(
+                onTap:
+                    Provider.of<UserState>(context, listen: false).user.role !=
+                            'guest'
+                        ? () async {
+                            if (Provider.of<UserState>(context, listen: false)
+                                    .user
+                                    .children
+                                    .length >
+                                1) {
+                              await showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return ChooseChild();
+                                  }).then((value) {
+                                onTap(2);
+                              });
+                            } else {
+                              onTap(2);
+                            }
+                          }
+                        : null,
+                icon: 'chat',
+                active: currentIndex == 2,
+                disabled:
+                    Provider.of<UserState>(context, listen: false).user.role ==
+                        'guest'),
+            InkWell(
+                onLongPress: () {
+                  SharedPreferences.getInstance().then((value) =>
+                      value.clear().then((value) => Get.offAllNamed('/')));
                 },
-                child: BottomBarItem(icon: 'home', active: currentIndex == 1)),
-            GestureDetector(
-                onTap: () {
-                  onTap(2);
-                },
-                child: BottomBarItem(icon: 'chat', active: currentIndex == 2)),
-            GestureDetector(
-                onTap: () {
-                  onTap(3);
-                },
-                child:
-                    BottomBarItem(icon: 'profile', active: currentIndex == 3)),
+                child: BottomBarItem(
+                  onTap: Provider.of<UserState>(context, listen: false)
+                              .user
+                              .role !=
+                          'guest'
+                      ? () {
+                          onTap(3);
+                        }
+                      : () {
+                          SharedPreferences.getInstance().then((value) => value
+                              .clear()
+                              .then((value) => Get.offAllNamed('/')));
+                        },
+                  icon: Provider.of<UserState>(context, listen: false)
+                              .user
+                              .role ==
+                          'guest'
+                      ? 'logout'
+                      : 'profile',
+                  active: currentIndex == 3,
+                )),
           ],
         ),
       ),
@@ -60,25 +110,31 @@ class BottomBar extends StatelessWidget {
 }
 
 class BottomBarItem extends StatelessWidget {
-  BottomBarItem({Key? key, required this.icon, required this.active})
+  BottomBarItem(
+      {Key? key,
+      required this.icon,
+      required this.active,
+      this.disabled = false,
+      this.onTap})
       : super(key: key);
-  String icon;
-  bool active;
+  final String icon;
+  final bool active;
+  final bool disabled;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BrandIcon(
-            icon: icon,
-            color: active ? Theme.of(context).primaryColor : Color(0xFF9FA6BA),
-            width: 26,
-            height: 26,
-          ),
-        ],
+      child: BrandIcon(
+        icon: icon,
+        onTap: onTap,
+        color: active
+            ? Theme.of(context).primaryColor
+            : disabled
+                ? Color(0xFF9FA6BA).withOpacity(0.7)
+                : Color(0xFF9FA6BA),
+        width: 26,
+        height: 26,
       ),
     );
   }

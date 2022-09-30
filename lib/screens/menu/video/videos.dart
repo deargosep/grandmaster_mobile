@@ -6,7 +6,6 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,63 +65,73 @@ class _VideosScreenState extends State<VideosScreen> {
       return user.role == 'moderator';
     }
 
-    void getData() {
-      createDio().get('/videos/').then((value) {
-        List<Video> newList = [
-          ...value.data.map((e) {
-            DateTime newDate = DateTime.parse(e["created_at"]);
-            return Video(
-                id: e["id"],
-                name: e["title"],
-                createdAt: newDate,
-                link: e["link"]);
-          }).toList()
-        ];
-        print(newList);
-        Provider.of<VideosState>(context, listen: false)
-            .setVideos(data: newList);
-      });
-    }
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
 
     List videos = context.watch<VideosState>().videos;
-    // var videos = Provider.of<VideosState>(context, listen: true).videos;
+    bool isLoaded = Provider.of<VideosState>(context, listen: true).isLoaded;
     return CustomScaffold(
         noPadding: true,
         bottomNavigationBar: BottomBarWrap(currentTab: 0),
         appBar: AppHeader(
           text: 'Видео',
-          icon: isModer() ? 'plus' : null,
+          icon: isModer() ? 'plus' : '',
           iconOnTap: isModer()
               ? () {
                   Get.toNamed('/videos/add');
                 }
               : null,
         ),
-        body: Padding(
-            padding: const EdgeInsets.only(top: 24),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ListView.builder(
-                  // shrinkWrap: true,
-                  // itemCount: videos.length,
-                  itemCount: videos.length,
-                  itemBuilder: (context, index) {
-                    return BrandCard(videos[index],
-                        type: 'videos',
-                        withPadding: false,
-                        key: Key(videos[index].id.toString()), () {
-                      createDio().patch('/videos/${videos[index].id}/',
-                          data: {"hidden": true});
-                    }, () {
-                      createDio()
-                          .delete('/videos/${videos[index].id}/')
-                          .then((value) {
-                        Provider.of<VideosState>(context, listen: false)
-                            .setVideos();
-                      });
-                    });
-                  }),
-            )));
+        body: isLoaded
+            ? videos.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: RefreshIndicator(
+                        onRefresh:
+                            Provider.of<VideosState>(context, listen: false)
+                                .setVideos,
+                        child: ListView.builder(
+                            // gridDelegate:
+                            //     SliverGridDelegateWithFixedCrossAxisCount(
+                            //         crossAxisCount:
+                            //             getDeviceType() == 'tablet' ? 2 : 1,
+                            //         crossAxisSpacing: 0.0,
+                            //         mainAxisSpacing: 0.0,
+                            //         childAspectRatio:
+                            //             getDeviceType() == 'tablet'
+                            //                 ? currentOrientation ==
+                            //                         Orientation.portrait
+                            //                     ? 1.3
+                            //                     : 2
+                            //                 : 1.5),
+                            // shrinkWrap: true,
+                            // itemCount: videos.length,
+                            itemCount: videos.length,
+                            itemBuilder: (context, index) {
+                              return BrandCard(videos[index],
+                                  type: 'videos',
+                                  withPadding: false,
+                                  key: Key(videos[index].id.toString()), () {
+                                createDio().patch(
+                                    '/videos/${videos[index].id}/',
+                                    data: {"hidden": true});
+                              }, () {
+                                createDio()
+                                    .delete('/videos/${videos[index].id}/')
+                                    .then((value) {
+                                  Provider.of<VideosState>(context,
+                                          listen: false)
+                                      .setVideos();
+                                });
+                              });
+                            }),
+                      ),
+                    ))
+                : Text('Нет видео')
+            : Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
 
@@ -133,31 +142,26 @@ class VideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final url = Uri.parse(item.link);
-        launchUrl(url);
+        if (item.link.contains('youtube')) {
+          Get.toNamed('/videos/watch', arguments: item.link);
+        } else {
+          final url = Uri.parse(item.link);
+          launchUrl(url, mode: LaunchMode.externalApplication);
+        }
       },
       child: Container(
         height: 219,
-        color: Colors.white,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
+            Container(
                 height: 132,
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 35),
                 decoration: BoxDecoration(
-                    color: Color(0xFFE7E7E7),
                     borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: BrandIcon(
-                  height: 61,
-                  width: 61,
-                  icon: 'play',
-                  color: Color(0xFFA8A8A8),
-                ),
-              ),
-            ),
+                child: LoadingImage(
+                  'https://app.grandmaster.center/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}',
+                )),
             SizedBox(
               height: 16,
             ),
@@ -167,6 +171,9 @@ class VideoCard extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   item.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,

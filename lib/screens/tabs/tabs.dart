@@ -1,13 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chats.dart';
 import 'package:grandmaster/screens/tabs/home/home.dart';
 import 'package:grandmaster/screens/tabs/menu/menu.dart';
 import 'package:grandmaster/screens/tabs/profile/profile.dart';
 import 'package:grandmaster/widgets/bottom_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../state/user.dart';
+import '../../utils/custom_scaffold.dart';
+import '../../utils/dio.dart';
+import 'menu/menu.dart';
 
 class BarScreen extends StatefulWidget {
   const BarScreen({Key? key}) : super(key: key);
@@ -29,18 +33,42 @@ class _BarScreenState extends State<BarScreen> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
+    if (index == 3) {
+      createDio().get('/users/self/').then((value) {
+        if (isValidContactType(value.data["CONTACT_TYPE"])) {
+          Provider.of<UserState>(context, listen: false).setUser(value.data);
+          setState(() {
+            _selectedIndex = index;
+          });
+        }
+      });
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      SharedPreferences.getInstance().then((value) {
+        var access = value.getString('access');
+        User user = Provider.of<UserState>(context, listen: false).user;
+        print(access);
+        if (access != null && user.role == 'guest') {
+          Get.offAllNamed('/');
+        }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarIconBrightness: Platform.operatingSystem == 'ios'
-            ? Brightness.dark
-            : Brightness.light));
-    return Scaffold(
+    return CustomScaffold(
+        noPadding: true,
         // backgroundColor: Color(0xFFEAEAEA),
         body: Center(
           child: _tabs.elementAt(_selectedIndex),

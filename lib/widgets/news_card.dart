@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/news.dart';
+import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 
@@ -15,11 +16,12 @@ class NewsCard extends StatelessWidget {
       },
       child: Container(
         height: 244,
-        width: 335,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image cover
             Container(
@@ -33,15 +35,13 @@ class NewsCard extends StatelessWidget {
               child: item.cover != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                      child: Image.network(
-                        item.cover,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : null,
+                      child: LoadingImage(item.cover))
+                  : Center(
+                      child: Text('Нет картинки'),
+                    ),
             ),
             // meta info
-            Padding(
+            Container(
               padding: const EdgeInsets.fromLTRB(0, 16, 16, 0),
               child: Column(
                 children: [
@@ -49,6 +49,10 @@ class NewsCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       item.name,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -59,16 +63,20 @@ class NewsCard extends StatelessWidget {
               ),
             ),
             // description
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 16, 0),
-              child: Text(
-                item.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFAC9595)),
+            Expanded(
+              flex: 0,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Text(
+                  item.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFFAC9595)),
+                ),
               ),
             ),
             SizedBox(
@@ -105,13 +113,16 @@ class NewsCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Container(
-                      height: 12,
-                      width: 12,
-                      child: BrandIcon(
-                        icon: 'view',
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
                         height: 12,
                         width: 12,
+                        child: BrandIcon(
+                          icon: 'view',
+                          height: 8,
+                          width: 12,
+                        ),
                       ),
                     ),
                     SizedBox(
