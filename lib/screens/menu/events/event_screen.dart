@@ -57,7 +57,7 @@ class _EventScreenState extends State<EventScreen> {
       bottomNavigationBar: getRole() == 'moderator' ||
               getRole() == 'guest' ||
               getRole() == 'specialist' ||
-              (getRole() == 'sportsmen' && !item.open) ||
+              (getRole() == 'sportsmen' && !item.open && !zapisan) ||
               (item.ended && !zapisan)
           ? null
           : BottomPanel(
@@ -72,7 +72,12 @@ class _EventScreenState extends State<EventScreen> {
                   zapisan
                       ? BrandButton(
                           type: 'info',
-                          text: 'Вы уже записаны на мероприятие',
+                          text: Provider.of<UserState>(context, listen: false)
+                                      .user
+                                      .role ==
+                                  'trainer'
+                              ? 'Ваши спорстмены записаны'
+                              : 'Вы уже записаны на мероприятие',
                           textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
@@ -405,7 +410,7 @@ class _EventScreenState extends State<EventScreen> {
                         Row(
                           children: [
                             Text(
-                              'Запись будет закрыта',
+                              'Окончание регистрации',
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context)

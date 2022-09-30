@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -53,11 +54,16 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
         )
             .then((value) {
           if (value.statusCode == 200) {
-            Provider.of<UserState>(context, listen: false).setUser(value.data);
-            Get.offAllNamed('/bar', arguments: 1);
+            FlutterNativeSplash.remove();
+            if (isValidContactType(value.data["CONTACT_TYPE"])) {
+              Provider.of<UserState>(context, listen: false)
+                  .setUser(value.data);
+              Get.offAllNamed('/bar', arguments: 1);
+            }
           }
         });
       } else {
+        FlutterNativeSplash.remove();
         setState(() {
           isLoaded = true;
         });
@@ -69,12 +75,12 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isLoaded)
-      return CustomScaffold(
-          noPadding: false,
-          body: Center(
-            child: Logo(),
-          ));
+    // if (!isLoaded)
+    //   return CustomScaffold(
+    //       noPadding: false,
+    //       body: Center(
+    //         child: Logo(),
+    //       ));
     return CustomScaffold(
         noPadding: false,
         body: Column(

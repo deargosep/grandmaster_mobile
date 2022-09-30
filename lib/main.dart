@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/auth/auth.dart';
@@ -74,7 +76,6 @@ import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/state/videos.dart';
 import 'package:grandmaster/state/visit_log.dart';
 import 'package:grandmaster/utils/dio.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
@@ -87,7 +88,8 @@ void main() {
   // if (kIsWeb) {
   //   setPathUrlStrategy();
   // }
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   HttpOverrides.global = new MyHttpOverrides();
   // initializeDateFormatting('ru_RU', null);
   Intl.defaultLocale = 'ru_RU';
@@ -99,6 +101,15 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
+}
+
+class NoThumbScrollBehavior extends ScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+      };
 }
 
 class _MyAppState extends State<MyApp> {
@@ -319,6 +330,7 @@ class _MyAppState extends State<MyApp> {
         //   }
         // },
         // routerDelegate: AppRouterDelegate(),
+        scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
         debugShowCheckedModeBanner: false,
         transitionDuration: Duration.zero,
         defaultTransition: Transition.noTransition,

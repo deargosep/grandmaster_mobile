@@ -4,7 +4,7 @@ import 'package:grandmaster/widgets/images/brand_icon.dart';
 class BrandButton extends StatefulWidget {
   final String text;
   final type;
-  final disabled;
+  bool disabled;
   final onPressed;
   final double? width;
   final textAlign;

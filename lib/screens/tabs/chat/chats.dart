@@ -286,7 +286,7 @@ class ChatTile extends StatelessWidget {
             ),
             Container(
               height: !folder ? 60 : null,
-              width: MediaQuery.of(context).size.width - 150,
+              width: MediaQuery.of(context).size.width - 160,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: data.lastMessage == ''

@@ -27,11 +27,11 @@ class MenuScreen extends StatelessWidget {
       if (user.children.isNotEmpty || user.role == 'sportsmen') {
         return <OptionType>[
           OptionType('Мероприятия', links["events"]!),
+          OptionType('Залы', links["places"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Учебные материалы', links["learning"]!),
-          OptionType('Залы', links["places"]!),
-          OptionType('Оплата', links["payment"]!),
           OptionType('QR коды', links["qr"]!),
+          OptionType('Оплата', links["payment"]!),
           OptionType('О клубе', links["about"]!)
         ];
       }
@@ -48,15 +48,15 @@ class MenuScreen extends StatelessWidget {
       }
       if (user.role == 'trainer') {
         return <OptionType>[
-          OptionType('Мероприятия', links["events"]!),
-          OptionType('Учебные материалы', links["learning"]!),
           OptionType('Журнал посещений', links["visits"]!),
+          OptionType('Мероприятия', links["events"]!),
+          OptionType('Группы спортсменов', links["groups"]!),
           OptionType('Расписание', links["schedule"]!),
+          OptionType('Учебные материалы', links["learning"]!),
           OptionType('Залы', links["places"]!),
+          OptionType('QR коды', links["qr"]!),
           OptionType('Видео', links["videos"]!),
           OptionType('Оплата', links["payment"]!),
-          OptionType('QR коды', links["qr"]!),
-          OptionType('Группы спортсменов', links["groups"]!),
           OptionType('О клубе', links["about"]!),
         ];
       }
@@ -86,18 +86,18 @@ class MenuScreen extends StatelessWidget {
       if (user.role == 'guest') {
         return <OptionType>[
           // OptionType('Мероприятия', links["events"]!),
-          OptionType('Видео', links["videos"]!),
-          OptionType('Залы', links["places"]!),
           OptionType('О клубе', links["about"]!),
+          OptionType('Залы', links["places"]!),
+          OptionType('Видео', links["videos"]!),
         ];
       }
       return <OptionType>[
         OptionType('Мероприятия', links["events"]!),
+        OptionType('Залы', links["places"]!),
         OptionType('Видео', links["videos"]!),
         OptionType('Учебные материалы', links["learning"]!),
-        OptionType('Залы', links["places"]!),
-        OptionType('Оплата', links["payment"]!),
         OptionType('QR коды', links["qr"]!),
+        OptionType('Оплата', links["payment"]!),
         OptionType('О клубе', links["about"]!)
       ];
     }

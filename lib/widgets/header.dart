@@ -152,6 +152,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
+            Spacer(),
             icon != ''
                 ? BrandIcon(
                     icon: icon,

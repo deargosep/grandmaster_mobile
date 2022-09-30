@@ -7,6 +7,21 @@ import 'package:get/get.dart' hide MultipartFile, FormData, Response;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+bool isValidContactType(contact_type) {
+  switch (contact_type) {
+    case '1':
+      return true;
+    case 'PARTNER':
+      return true;
+    case 'CLIENT':
+      return true;
+    default:
+      showErrorSnackbar(
+          'Произошла ошибка с учетной записью. Обратитесь в поддержку');
+      return false;
+  }
+}
+
 void showErrorSnackbar(String message) {
   Get.snackbar('Ошибка', '',
       messageText: Text(
@@ -67,7 +82,9 @@ Dio createDio(
                 sp.setString('access', value.data["access"]);
                 sp.setString('refresh', value.data["refresh"]).then((value) {
                   createDio().get('/users/self/').then((value) {
-                    Get.offAllNamed('/bar', arguments: 1);
+                    if (isValidContactType(value.data["CONTACT_TYPE"])) {
+                      Get.offAllNamed('/bar', arguments: 1);
+                    }
                   });
                 });
               });

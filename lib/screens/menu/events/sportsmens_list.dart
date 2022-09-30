@@ -339,7 +339,14 @@ class _ViewState extends State<_View> {
   Widget build(BuildContext context) {
     EventType item = Get.arguments["item"];
     List<OptionType> list = item.members
-        .map((e) => OptionType(e.fullName, '/other_profile',
+        .map((e) => OptionType(
+            e.fullName,
+            Provider.of<UserState>(context, listen: false)
+                    .user
+                    .children
+                    .isNotEmpty
+                ? '/child_profile'
+                : '/other_profile',
             arguments: User(
                 fullName: e.fullName, photo: e.photo, passport: Passport())))
         .toList();
@@ -348,6 +355,7 @@ class _ViewState extends State<_View> {
           text: 'Просмотр участников',
         ),
         noTopPadding: true,
+        noPadding: false,
         scrollable: true,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

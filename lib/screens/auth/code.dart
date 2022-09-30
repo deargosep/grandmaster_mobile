@@ -23,6 +23,7 @@ class InputCodeScreen extends StatefulWidget {
 }
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
+  bool error = false;
   TextEditingController controller = TextEditingController(text: '12345');
   void initState() {
     super.initState();
@@ -42,6 +43,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         bottomNavigationBar: BottomPanel(
           withShadow: false,
           child: BrandButton(
+            disabled: error,
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               await prefs.clear();
@@ -56,9 +58,12 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                   log(value.data.toString());
                   var data = value.data;
                   log(data.toString());
-                  Provider.of<UserState>(context, listen: false).setUser(data);
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  Get.offAllNamed('/bar', arguments: 1);
+                  if (isValidContactType(value.data["CONTACT_TYPE"])) {
+                    Provider.of<UserState>(context, listen: false)
+                        .setUser(data);
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    Get.offAllNamed('/bar', arguments: 1);
+                  }
                 });
               });
             },
@@ -116,11 +121,26 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 labelWidget: Center(
                   child: Text('Код'),
                 ),
+                errorStyle: TextStyle(height: 0.01, color: Colors.transparent),
+                onChanged: (text) {
+                  if (text.length < 5) {
+                    if (mounted)
+                      setState(() {
+                        error = true;
+                      });
+                  } else {
+                    if (mounted)
+                      setState(() {
+                        error = false;
+                      });
+                  }
+                },
                 validator: (text) {
-                  if (text!.length < 5)
+                  if (text!.length < 5) {
                     return 'Введите код';
-                  else
+                  } else {
                     return null;
+                  }
                 },
                 maxLength: 5,
               ),
