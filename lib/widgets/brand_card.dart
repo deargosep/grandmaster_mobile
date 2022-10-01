@@ -150,9 +150,13 @@ class BrandCard extends StatelessWidget {
 }
 
 class LoadingImage extends StatelessWidget {
-  const LoadingImage(this.url,
-      {Key? key, this.height, this.width, this.borderRadius})
-      : super(key: key);
+  const LoadingImage(
+    this.url, {
+    Key? key,
+    this.height,
+    this.width,
+    this.borderRadius,
+  }) : super(key: key);
   final String url;
   final double? width;
   final double? height;

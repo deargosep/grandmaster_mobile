@@ -84,11 +84,22 @@ import 'theme/theme.dart';
 
 bool _initialUriIsHandled = false;
 
+class CustomImageCache extends WidgetsFlutterBinding {
+  @override
+  ImageCache createImageCache() {
+    ImageCache imageCache = super.createImageCache();
+    // Set your image cache size
+    imageCache.maximumSizeBytes = 1024 * 1024 * 100; // 100 MB
+    return imageCache;
+  }
+}
+
 void main() {
   // if (kIsWeb) {
   //   setPathUrlStrategy();
   // }
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // CustomImageCache();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   HttpOverrides.global = new MyHttpOverrides();
   // initializeDateFormatting('ru_RU', null);

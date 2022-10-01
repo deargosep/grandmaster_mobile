@@ -18,6 +18,7 @@ class DocumentScreen extends StatefulWidget {
 
 class _DocumentScreenState extends State<DocumentScreen> {
   Map arguments = Get.arguments;
+  Map<String, dynamic> documents = Map.from(Get.arguments["documents"]);
   User user = Get.arguments["user"];
   int currentIndex = 0;
   CarouselController controller = CarouselController();
@@ -139,62 +140,56 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 )));
           });
     }
-    return FutureBuilder<Response>(
-        future: createDio().get(user.documentsUrl!),
-        builder: (context, snapshot) {
-          return CustomScaffold(
-              noHorPadding: true,
-              noPadding: false,
-              appBar: AppHeader(
-                text: optionList[currentIndex]["title"],
-              ),
-              body: Center(
-                  child: CarouselSlider(
-                carouselController: controller,
-                options: CarouselOptions(
-                  onPageChanged: (ind, CarouselPageChangedReason reason) {
-                    setState(() {
-                      currentIndex = ind;
-                    });
+    return CustomScaffold(
+        noHorPadding: true,
+        noPadding: false,
+        appBar: AppHeader(
+          text: optionList[currentIndex]["title"],
+        ),
+        body: Center(
+            child: CarouselSlider(
+          carouselController: controller,
+          options: CarouselOptions(
+            onPageChanged: (ind, CarouselPageChangedReason reason) {
+              setState(() {
+                currentIndex = ind;
+              });
+            },
+            initialPage: arguments["index"],
+            viewportFraction: 1,
+            height: 335.0,
+            enableInfiniteScroll: false,
+          ),
+          items: optionList.map((i) {
+            return Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  onTap: () {
+                    if (documents[i["code"]] != null)
+                      Get.toNamed('/my_profile/documents/document/watch',
+                          arguments: documents[i["code"]]);
                   },
-                  initialPage: arguments["index"],
-                  viewportFraction: 1,
-                  height: 335.0,
-                  enableInfiniteScroll: false,
-                ),
-                items: optionList.map((i) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () {
-                          if (snapshot.data?.data[i["code"]] != null)
-                            Get.toNamed('/my_profile/documents/document/watch',
-                                arguments: snapshot.data?.data[i["code"]]);
-                        },
-                        child: Container(
-                          height: 335,
-                          width: 335,
-                          decoration: BoxDecoration(
-                              color: Color(0xFFEFEFEF),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: snapshot.data?.data[i["code"]] != null
-                              ? LoadingImage(
-                                  snapshot.data?.data[i["code"]],
-                                  height: 335,
-                                  width: 335,
-                                )
-                              : Center(
-                                  child: Text(
-                                  "Нет документа",
-                                  style: TextStyle(fontWeight: FontWeight.w500),
-                                )),
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              )));
-        });
+                  child: Container(
+                      height: 335,
+                      width: 335,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFEFEFEF),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: documents[i["code"]] != null
+                          ? LoadingImage(
+                              documents[i["code"]]!,
+                              height: 335,
+                              width: 335,
+                            )
+                          : Center(
+                              child: Text(
+                              "Нет документа",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ))),
+                );
+              },
+            );
+          }).toList(),
+        )));
   }
 }

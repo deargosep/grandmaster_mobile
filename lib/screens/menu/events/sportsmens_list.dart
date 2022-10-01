@@ -353,23 +353,17 @@ class _ViewState extends State<_View> {
             mark: e.marked))
         .toList();
     return CustomScaffold(
+        noVerPadding: true,
         appBar: AppHeader(
           text: 'Просмотр участников',
         ),
         noTopPadding: true,
         noPadding: false,
-        scrollable: true,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 8,
-            ),
-            ListOfOptions(
-              list: list,
-              noArrow: true,
-            )
-          ],
-        ));
+        body: ListView(children: [
+          ListOfOptions(
+            list: list,
+            noArrow: true,
+          ),
+        ]));
   }
 }

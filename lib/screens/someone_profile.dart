@@ -34,9 +34,10 @@ class _SomeoneProfileState extends State<SomeoneProfile>
 
   final green = Color(0xFF44E467);
   final red = Color(0xFFE44444);
+  bool isLoaded = true;
+  User user = Get.arguments;
   @override
   Widget build(BuildContext context) {
-    User user = Get.arguments;
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
@@ -44,26 +45,28 @@ class _SomeoneProfileState extends State<SomeoneProfile>
           headerSliverBuilder: (context, value) {
             return [
               SliverToBoxAdapter(
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 20,
-                      top: 50,
-                      child: BrandIcon(
-                        icon: 'back_arrow',
-                        color: Theme.of(context).colorScheme.secondary,
+                  child: Column(
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
                       ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 50,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: BrandIcon(
+                          icon: 'back_arrow',
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        height: 136,
-                        width: 136,
+                      ),
+                      Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
                         child: user.photo != null
                             ? Avatar(
                                 user.photo!,
@@ -75,147 +78,169 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                 width: 136,
                               ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 200,
-                          ),
-                          Text(
-                            user.fullName,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          ),
-                          user.isMyStudent &&
-                                  Provider.of<UserState>(context, listen: false)
-                                          .user
-                                          .role ==
-                                      'trainer'
-                              ? Column(
-                                  children: [
-                                    user.passport.sport_qualification != null &&
-                                            (user.passport
-                                                        .sport_qualification !=
-                                                    '' &&
-                                                user.passport
-                                                        .sport_qualification !=
-                                                    'Нет квалификации')
-                                        ? Container(
-                                            width: 300,
-                                            child: Text(
-                                              'Спортивная квалификация: ${user.passport.sport_qualification}',
-                                              maxLines: 2,
+                      Spacer(flex: 2)
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text(
+                          user.fullName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                        user.isMyStudent &&
+                                Provider.of<UserState>(context, listen: false)
+                                        .user
+                                        .role ==
+                                    'trainer'
+                            ? Column(
+                                children: [
+                                  user.passport.sport_qualification != null &&
+                                          (user.passport.sport_qualification !=
+                                                  '' &&
+                                              user.passport
+                                                      .sport_qualification !=
+                                                  'Нет квалификации')
+                                      ? Container(
+                                          width: 300,
+                                          child: Text(
+                                            'Спортивная квалификация: ${user.passport.sport_qualification}',
+                                            maxLines: 2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryContainer,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  user.passport.tech_qualification != null &&
+                                          (user.passport.tech_qualification !=
+                                                  '' &&
+                                              user.passport
+                                                      .tech_qualification !=
+                                                  'Нет квалификации')
+                                      ? Container(
+                                          width: 300,
+                                          child: Text(
+                                            'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                                            maxLines: 2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryContainer,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: 24,
+                                  ),
+                                  user.role != 'trainer'
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                height: 18,
+                                                width: 18,
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      !user.admitted
+                                                          ? red
+                                                          : green,
+                                                )),
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            Text(
+                                              !user.admitted
+                                                  ? 'Не допущен'
+                                                  : 'Допущен',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: Theme.of(context)
                                                       .colorScheme
                                                       .secondaryContainer,
-                                                  fontSize: 14),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500),
                                             ),
-                                          )
-                                        : Container(),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    user.passport.tech_qualification != null &&
-                                            (user.passport.tech_qualification !=
-                                                    '' &&
-                                                user.passport
-                                                        .tech_qualification !=
-                                                    'Нет квалификации')
-                                        ? Container(
-                                            width: 300,
-                                            child: Text(
-                                              'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
-                                              maxLines: 2,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondaryContainer,
-                                                  fontSize: 14),
-                                            ),
-                                          )
-                                        : Container(),
-                                    SizedBox(
-                                      height: 24,
-                                    ),
-                                    user.role != 'trainer'
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                  height: 18,
-                                                  width: 18,
-                                                  child: CircleAvatar(
-                                                    backgroundColor:
-                                                        !user.admitted
-                                                            ? red
-                                                            : green,
-                                                  )),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Text(
-                                                !user.admitted
-                                                    ? 'Не допущен'
-                                                    : 'Допущен',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondaryContainer,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ],
-                                          )
-                                        : Container(),
-                                  ],
-                                )
-                              : Container(),
-                          SizedBox(
-                            height: 33,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              createDio()
-                                  .get('/chats/${user.chatId}/')
-                                  .then((value) {
-                                print(value.data);
-                                Provider.of<ChatsState>(context, listen: false)
-                                    .setChats(
-                                        childId: Provider.of<UserState>(context,
-                                                listen: false)
-                                            .childId)
-                                    .then((value) {
-                                  Get.toNamed('/chat',
-                                      arguments: Provider.of<ChatsState>(
-                                              context,
-                                              listen: false)
-                                          .chats
-                                          .firstWhere((element) =>
-                                              element.id == user.chatId));
-                                });
-                              });
-                            },
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: Color(0xFFFBF7F7),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100))),
-                              child: Center(
-                                child: Text(
+                                          ],
+                                        )
+                                      : Container(),
+                                ],
+                              )
+                            : Container(),
+                        SizedBox(
+                          height: 33,
+                        ),
+                        GestureDetector(
+                          onTap: !isLoaded
+                              ? null
+                              : () {
+                                  setState(() {
+                                    isLoaded = false;
+                                  });
+                                  createDio()
+                                      .get('/chats/${user.chatId}/')
+                                      .then((value) {
+                                    print(value.data);
+                                    Provider.of<ChatsState>(context,
+                                            listen: false)
+                                        .setChats(
+                                            childId: Provider.of<UserState>(
+                                                    context,
+                                                    listen: false)
+                                                .childId)
+                                        .then((value) {
+                                      if (mounted)
+                                        setState(() {
+                                          isLoaded = true;
+                                        });
+                                      Get.toNamed('/chat',
+                                          arguments: Provider.of<ChatsState>(
+                                                  context,
+                                                  listen: false)
+                                              .chats
+                                              .firstWhere((element) =>
+                                                  element.id == user.chatId));
+                                    });
+                                  });
+                                },
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFFBF7F7),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                !isLoaded
+                                    ? Container(
+                                        height: 20,
+                                        width: 20,
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Container(),
+                                Text(
                                   'Написать сообщение',
                                   style: TextStyle(
                                       color: Theme.of(context)
@@ -224,33 +249,33 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 24,
-                          ),
-                          Provider.of<UserState>(context).user.role ==
-                                      'trainer' &&
-                                  user.isMyStudent
-                              ? TabsSwitch(
-                                  controller: controller,
-                                  children: [
-                                    TopTab(
-                                      text: 'Информация',
-                                    ),
-                                    TopTab(
-                                      text: 'Паспорт',
-                                    )
-                                  ],
-                                )
-                              : Container(),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 24,
+                        ),
+                        Provider.of<UserState>(context).user.role ==
+                                    'trainer' &&
+                                user.isMyStudent
+                            ? TabsSwitch(
+                                controller: controller,
+                                children: [
+                                  TopTab(
+                                    text: 'Информация',
+                                  ),
+                                  TopTab(
+                                    text: 'Паспорт',
+                                  )
+                                ],
+                              )
+                            : Container(),
+                      ],
                     ),
-                  ],
-                ),
-              )
+                  ),
+                ],
+              ))
             ];
           },
           body: Provider.of<UserState>(context).user.role == 'trainer' &&

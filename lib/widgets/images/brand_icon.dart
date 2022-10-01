@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:simple_shadow/simple_shadow.dart';
 
 class BrandIcon extends StatelessWidget {
   BrandIcon(
@@ -47,6 +48,7 @@ class BrandIcon extends StatelessWidget {
     if (icon == 'back_arrow') {
       return Material(
         color: Colors.transparent,
+        type: MaterialType.transparency,
         child: IconButton(
           constraints: BoxConstraints(maxWidth: 40),
           padding: EdgeInsets.only(right: 10, top: 10, bottom: 10),
@@ -54,12 +56,17 @@ class BrandIcon extends StatelessWidget {
             if (onTap != null) onTap();
             Get.back();
           },
-          icon: SvgPicture.asset(
-            'assets/icons/${icon}.svg',
-            fit: fit ?? BoxFit.contain,
-            color: color ?? Theme.of(context).primaryColor,
-            height: height,
-            width: width,
+          icon: SimpleShadow(
+            opacity: 0.3,
+            offset: Offset(0.5, 1),
+            color: Theme.of(context).colorScheme.secondary,
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              fit: fit ?? BoxFit.contain,
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
           ),
         ),
       );

@@ -63,6 +63,7 @@ dependencies:
   masked_text: ^1.0.2
   phone_number: ^1.0.0
   http: ^0.13.5
+  simple_shadow: ^0.3.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"

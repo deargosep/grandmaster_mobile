@@ -317,10 +317,7 @@ class Message extends StatelessWidget {
                           width: 250,
                           child: LoadingImage(item.photo!)),
                     )
-                  : CircleLogo(
-                      height: 200,
-                      width: 250,
-                    ),
+                  : Container(),
               item.text != ''
                   ? Column(
                       children: [

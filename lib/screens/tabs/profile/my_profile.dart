@@ -379,10 +379,12 @@ class PassportInfo extends StatelessWidget {
                   : Container(),
               _Item(
                 name: "Медицинская справка / Дата окончания",
+                ifNullRed: true,
                 value: passport.med_spravka_date,
               ),
               _Item(
                 name: "Страховой полис / Дата окончания",
+                ifNullRed: true,
                 value: passport.strah_date,
               ),
             ],
