@@ -58,7 +58,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                   log(value.data.toString());
                   var data = value.data;
                   log(data.toString());
-                  if (isValidContactType(value.data["CONTACT_TYPE"])) {
+                  if (isValidContactType(value.data["contact_type"])) {
                     Provider.of<UserState>(context, listen: false)
                         .setUser(data);
                     FocusManager.instance.primaryFocus?.unfocus();

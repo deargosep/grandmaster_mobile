@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 bool isValidContactType(contact_type) {
+  print(contact_type);
   switch (contact_type) {
     case '1':
       return true;
@@ -82,7 +83,7 @@ Dio createDio(
                 sp.setString('access', value.data["access"]);
                 sp.setString('refresh', value.data["refresh"]).then((value) {
                   createDio().get('/users/self/').then((value) {
-                    if (isValidContactType(value.data["CONTACT_TYPE"])) {
+                    if (isValidContactType(value.data["contact_type"])) {
                       Get.offAllNamed('/bar', arguments: 1);
                     }
                   });

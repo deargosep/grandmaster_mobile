@@ -121,7 +121,8 @@ class _AddState extends State<_Add> {
       // .members;
       setState(() {
         checkboxes = {
-          for (var v in sportsmens) '${v.id}_${v.fullName}': v.marked!,
+          for (var v in sportsmens)
+            '${v.id}_${v.fullName}_${v.isAdmitted}': v.marked!,
         };
         isLoaded = true;
       });
@@ -155,7 +156,6 @@ class _AddState extends State<_Add> {
               ).then((value) {
                 Provider.of<EventsState>(context, listen: false).setEvents();
                 Get.back();
-                Get.back();
               });
             },
           ),
@@ -188,7 +188,7 @@ class _AddState extends State<_Add> {
                 : CheckboxesList(
                     changeCheckbox: changeCheckbox,
                     checkboxes: checkboxes,
-                  ),
+                    admittedCheck: true),
           ],
         ));
   }
@@ -217,7 +217,8 @@ class _EditState extends State<_Edit> {
       //         .setSportsmens();
       setState(() {
         checkboxes = {
-          for (var v in members) '${v.id}_${v.fullName}': v.marked!
+          for (var v in members)
+            '${v.id}_${v.fullName}_${v.isAdmitted}': v.marked!
         };
       });
     });
@@ -274,9 +275,9 @@ class _EditState extends State<_Edit> {
               height: 32,
             ),
             CheckboxesList(
-              changeCheckbox: changeCheckbox,
-              checkboxes: checkboxes,
-            ),
+                changeCheckbox: changeCheckbox,
+                checkboxes: checkboxes,
+                admittedCheck: true),
           ],
         ));
   }
@@ -348,7 +349,8 @@ class _ViewState extends State<_View> {
                 ? '/child_profile'
                 : '/other_profile',
             arguments: User(
-                fullName: e.fullName, photo: e.photo, passport: Passport())))
+                fullName: e.fullName, photo: e.photo, passport: Passport()),
+            mark: e.marked))
         .toList();
     return CustomScaffold(
         appBar: AppHeader(

@@ -26,7 +26,10 @@ class EventsState extends ChangeNotifier {
           List<MinimalUser> members = [
             ...e["members"]
                 .map((e) => MinimalUser(
-                    fullName: e["full_name"], id: e["id"], marked: e["marked"]))
+                    fullName: e["full_name"],
+                    id: e["id"],
+                    marked: e["marked"],
+                    isAdmitted: e["is_admitted"]))
                 .toList()
           ];
           members.sort((a, b) {

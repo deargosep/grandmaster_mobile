@@ -8,11 +8,13 @@ class Option extends StatefulWidget {
       required this.text,
       this.onTap,
       this.type = 'secondary',
+      this.mark,
       this.noArrow = false})
       : super(key: key);
   final text;
   final onTap;
   final type;
+  final bool? mark;
   final bool noArrow;
 
   @override
@@ -77,6 +79,17 @@ class _OptionState extends State<Option> {
         ),
         child: Row(
           children: [
+            widget.mark != null
+                ? widget.mark!
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: BrandIcon(
+                          icon: 'check',
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      )
+                    : Container()
+                : Container(),
             widget.type == 'create'
                 ? BrandIcon(
                     icon: 'add',

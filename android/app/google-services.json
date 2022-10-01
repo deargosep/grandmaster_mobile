@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "797959552222",
+    "project_id": "grandmaster-6c88c",
+    "storage_bucket": "grandmaster-6c88c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797959552222:android:79f17ed62dac33a275564f",
+        "android_client_info": {
+          "package_name": "com.grandmaster.grandmaster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797959552222-c7iejqhor1glj5bo2d0053oaoeo6jvs7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ15F33Kwtn64ERIUJLgMJZ_2p2K5I-rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797959552222-c7iejqhor1glj5bo2d0053oaoeo6jvs7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

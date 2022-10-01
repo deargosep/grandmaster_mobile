@@ -35,7 +35,7 @@ class _BarScreenState extends State<BarScreen> {
   void _onItemTapped(int index) {
     if (index == 3) {
       createDio().get('/users/self/').then((value) {
-        if (isValidContactType(value.data["CONTACT_TYPE"])) {
+        if (isValidContactType(value.data["contact_type"])) {
           Provider.of<UserState>(context, listen: false).setUser(value.data);
           setState(() {
             _selectedIndex = index;

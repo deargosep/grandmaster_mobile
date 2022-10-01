@@ -63,6 +63,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     return CustomScaffold(
         noTopPadding: true,
         noPadding: false,
+        noBottomPadding: true,
         appBar: AppHeader(
           text: 'Документы',
         ),

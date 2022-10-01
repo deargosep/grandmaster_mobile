@@ -27,8 +27,8 @@ class PlacesState extends ChangeNotifier {
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return PlaceType(
               id: e["id"].toString(),
-              name: e["title"],
-              description: e["description"],
+              name: e["title"] ?? '',
+              description: e["description"] ?? '',
               cover: e["cover"],
               address: e["address"],
               trainers: <Trainer>[

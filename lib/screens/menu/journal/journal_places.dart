@@ -28,6 +28,7 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoaded = Provider.of<PlacesState>(context).isLoaded;
     List<PlaceType> places = Provider.of<PlacesState>(context).places;
     List<OptionType> list = places
         .map((e) => OptionType(e.name, '/journal/groups', arguments: e.id))
@@ -49,31 +50,35 @@ class _PlacesJournalScreenState extends State<PlacesJournalScreen> {
         appBar: AppHeader(
           text: 'Журнал посещений',
         ),
-        body: list.isNotEmpty
-            ? ListView(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    list.isNotEmpty ? 'Выберите зал' : '',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  ListOfOptions(
-                    list: list,
-                    noArrow: true,
+        body: isLoaded
+            ? list.isNotEmpty
+                ? ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        list.isNotEmpty ? 'Выберите зал' : '',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                      SizedBox(
+                        height: 32,
+                      ),
+                      ListOfOptions(
+                        list: list,
+                        noArrow: true,
+                      )
+                    ],
                   )
-                ],
-              )
+                : Center(
+                    child: Text('Нет залов'),
+                  )
             : Center(
-                child: Text('Нет залов'),
+                child: CircularProgressIndicator(),
               ));
   }
 }

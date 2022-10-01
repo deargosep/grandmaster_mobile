@@ -3,10 +3,15 @@ import 'package:grandmaster/widgets/brand_checkbox_listtile.dart';
 
 class CheckboxesList extends StatelessWidget {
   const CheckboxesList(
-      {Key? key, this.checkboxes, required this.changeCheckbox, this.onTap})
+      {Key? key,
+      this.checkboxes,
+      required this.changeCheckbox,
+      this.onTap,
+      this.admittedCheck = false})
       : super(key: key);
   final Map<String, bool>? checkboxes;
   final changeCheckbox;
+  final bool admittedCheck;
   final Function(dynamic)? onTap;
   @override
   Widget build(BuildContext context) {
@@ -23,6 +28,10 @@ class CheckboxesList extends StatelessWidget {
           return Column(
             children: [
               BrandCheckboxListTile(
+                admittedCheck: admittedCheck,
+                admitted: !admittedCheck
+                    ? true
+                    : checkboxes!.keys.elementAt(index).split('_')[2] == 'true',
                 title: checkboxes!.keys.elementAt(index).split('_')[1],
                 rawTitle: checkboxes!.keys.elementAt(index),
                 value: checkboxes?.values.elementAt(index),

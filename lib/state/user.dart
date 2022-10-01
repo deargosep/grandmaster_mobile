@@ -317,6 +317,7 @@ class MinimalUser {
   final bool? marked;
   final String? role;
   final String? photo;
+  final bool? isAdmitted;
   final bool me;
   MinimalUser(
       {required this.fullName,
@@ -324,5 +325,6 @@ class MinimalUser {
       this.marked,
       this.role,
       this.me = false,
+      this.isAdmitted,
       this.photo});
 }

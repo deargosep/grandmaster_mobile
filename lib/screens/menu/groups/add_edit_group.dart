@@ -47,7 +47,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
           setState(() {
             checkboxes = {
               for (var v in value)
-                '${v.id}_${v.fullName}':
+                '${v.id}_${v.fullName}_${v.isAdmitted}':
                     members.firstWhereOrNull((element) => element.id == v.id) !=
                         null
             };
@@ -55,7 +55,10 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
           });
         } else {
           setState(() {
-            checkboxes = {for (var v in value) '${v.id}_${v.fullName}': false};
+            checkboxes = {
+              for (var v in value)
+                '${v.id}_${v.fullName}_${v.isAdmitted}': false
+            };
             isLoaded = true;
           });
         }
@@ -205,6 +208,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
               ? CheckboxesList(
                   changeCheckbox: changeCheckboxesState,
                   checkboxes: checkboxes,
+                  admittedCheck: true,
                 )
               : Center(
                   child: CircularProgressIndicator(),

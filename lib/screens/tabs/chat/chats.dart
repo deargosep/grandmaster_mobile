@@ -46,7 +46,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
   @override
   Widget build(BuildContext context) {
     List chats = Provider.of<ChatsState>(context).chats;
-    List chatsWithoutFolders =
+    List<ChatType> chatsWithoutFolders =
         Provider.of<ChatsState>(context).chatsWithoutFolders;
     List chatsModerators = Provider.of<ChatsState>(context).moderatorsChats;
     List chatsTrainers = Provider.of<ChatsState>(context).trainersChats;

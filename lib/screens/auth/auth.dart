@@ -55,7 +55,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             .then((value) {
           if (value.statusCode == 200) {
             FlutterNativeSplash.remove();
-            if (isValidContactType(value.data["CONTACT_TYPE"])) {
+            if (isValidContactType(value.data["contact_type"])) {
               Provider.of<UserState>(context, listen: false)
                   .setUser(value.data);
               Get.offAllNamed('/bar', arguments: 1);

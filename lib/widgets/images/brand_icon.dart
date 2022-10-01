@@ -45,19 +45,22 @@ class BrandIcon extends StatelessWidget {
         ),
       );
     if (icon == 'back_arrow') {
-      return IconButton(
-        constraints: BoxConstraints(maxWidth: 40),
-        padding: EdgeInsets.only(right: 10, top: 10, bottom: 10),
-        onPressed: () {
-          if (onTap != null) onTap();
-          Get.back();
-        },
-        icon: SvgPicture.asset(
-          'assets/icons/${icon}.svg',
-          fit: fit ?? BoxFit.contain,
-          color: color ?? Theme.of(context).primaryColor,
-          height: height,
-          width: width,
+      return Material(
+        color: Colors.transparent,
+        child: IconButton(
+          constraints: BoxConstraints(maxWidth: 40),
+          padding: EdgeInsets.only(right: 10, top: 10, bottom: 10),
+          onPressed: () {
+            if (onTap != null) onTap();
+            Get.back();
+          },
+          icon: SvgPicture.asset(
+            'assets/icons/${icon}.svg',
+            fit: fit ?? BoxFit.contain,
+            color: color ?? Theme.of(context).primaryColor,
+            height: height,
+            width: width,
+          ),
         ),
       );
       return GestureDetector(
