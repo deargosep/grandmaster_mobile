@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: numbers["trainer"]);
+      TextEditingController(text: kDebugMode ? numbers["trainer"] : '');
   bool isLoaded = false;
 
   @override

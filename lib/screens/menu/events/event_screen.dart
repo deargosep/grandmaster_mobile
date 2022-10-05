@@ -78,7 +78,7 @@ class _EventScreenState extends State<EventScreen> {
                                       .user
                                       .role ==
                                   'trainer'
-                              ? 'Ваши спорстмены записаны'
+                              ? 'Ваши спортсмены записаны'
                               : 'Вы уже записаны на мероприятие',
                           textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
