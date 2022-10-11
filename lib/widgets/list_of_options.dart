@@ -20,6 +20,7 @@ class ListOfOptions extends StatelessWidget {
                     type: e.type,
                     noArrow: noArrow,
                     mark: e.mark,
+                    red: e.red,
                     onTap: () {
                       Get.toNamed(e.screen, arguments: e.arguments);
                     },
@@ -39,7 +40,8 @@ class OptionType {
   final String screen;
   final String? type;
   final bool? mark;
+  final bool red;
   final arguments;
   OptionType(this.name, this.screen,
-      {this.arguments, this.type = 'secondary', this.mark});
+      {this.arguments, this.type = 'secondary', this.mark, this.red = false});
 }

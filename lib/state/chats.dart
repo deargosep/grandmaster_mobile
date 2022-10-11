@@ -24,7 +24,6 @@ class ChatsState extends ChangeNotifier {
   MessageType getMessagefromJson(data) {
     _isLoaded = false;
     var decoded = jsonDecode(data);
-    print(decoded);
     return MessageType(
         fullName: decoded["message"]["author"]["full_name"],
         userId: decoded["message"]["author"]["id"],
@@ -59,7 +58,6 @@ class ChatsState extends ChangeNotifier {
     createDio()
         .get('/chats/${childId != null ? '?id=' : ''}${childId ?? ''}')
         .then((value) {
-      print(value.data);
       List<ChatType> newList = [
         ...value.data.map((e) {
           log(e.toString());

@@ -266,6 +266,7 @@ class PassportInfo extends StatelessWidget {
                 name: "ФИО",
                 value: passport.fio,
                 ifNullRed: user.role == 'trainer',
+                isTrainer: user.role == 'trainer',
               ),
               _Item(
                 name: "Дата рождения",
@@ -273,11 +274,13 @@ class PassportInfo extends StatelessWidget {
                 value: user.birthday != null
                     ? DateFormat('dd.MM.y').format(user.birthday!)
                     : '',
+                isTrainer: user.role == 'trainer',
               ),
               _Item(
                 name: "Телефон",
                 ifNullRed: user.role == 'trainer',
                 value: passport.phoneNumber,
+                isTrainer: user.role == 'trainer',
               ),
             ],
           ),
@@ -298,6 +301,7 @@ class PassportInfo extends StatelessWidget {
                 name: "Спортшкола, клуб",
                 ifNullRed: user.role != 'trainer',
                 value: passport.sport_school,
+                isTrainer: user.role == 'trainer',
               ),
               user.role != 'trainer'
                   ? _Item(
@@ -324,11 +328,13 @@ class PassportInfo extends StatelessWidget {
                 name: "Техническая квалификация",
                 ifNullRed: true,
                 value: passport.tech_qualification,
+                isTrainer: user.role == 'trainer',
               ),
               _Item(
                 name: "Спортивная квалификация",
                 ifNullRed: user.role != 'trainer',
                 value: passport.sport_qualification,
+                isTrainer: user.role == 'trainer',
               ),
               user.role != 'trainer'
                   ? _Item(
@@ -363,14 +369,15 @@ class PassportInfo extends StatelessWidget {
                 name: "Город",
                 ifNullRed: true,
                 value: passport.city,
+                isTrainer: user.role == 'trainer',
               ),
               _Item(
                 name: "Адрес (ул., дом, кв.)",
                 ifNullRed: true,
                 value: passport.address,
+                isTrainer: user.role == 'trainer',
               ),
-              Provider.of<UserState>(context, listen: false).user.role !=
-                      'trainer'
+              user.role != 'trainer'
                   ? _Item(
                       name: "Место учебы (город, школа)",
                       ifNullRed: true,
@@ -381,11 +388,13 @@ class PassportInfo extends StatelessWidget {
                 name: "Медицинская справка / Дата окончания",
                 ifNullRed: true,
                 value: passport.med_spravka_date,
+                isTrainer: user.role == 'trainer',
               ),
               _Item(
                 name: "Страховой полис / Дата окончания",
                 ifNullRed: true,
                 value: passport.strah_date,
+                isTrainer: user.role == 'trainer',
               ),
             ],
           ),
@@ -480,11 +489,17 @@ class PassportInfo extends StatelessWidget {
 }
 
 class _Item extends StatelessWidget {
-  _Item({Key? key, required this.name, this.value, this.ifNullRed = false})
+  _Item(
+      {Key? key,
+      required this.name,
+      this.value,
+      this.ifNullRed = false,
+      this.isTrainer = false})
       : super(key: key);
   final String name;
   final value;
   final bool ifNullRed;
+  final bool isTrainer;
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.secondaryContainer;
@@ -496,7 +511,9 @@ class _Item extends StatelessWidget {
           name,
           style: TextStyle(
               color: value == null && ifNullRed
-                  ? Theme.of(context).primaryColor
+                  ? isTrainer
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).primaryColor
                   : Theme.of(context).colorScheme.secondary),
         ),
         SizedBox(
@@ -512,7 +529,9 @@ class _Item extends StatelessWidget {
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
-                      color: Color(0xFF2674E9)),
+                      color: isTrainer
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).primaryColor),
                 ),
               )
             : Text(
@@ -521,7 +540,9 @@ class _Item extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                     color: value == null && ifNullRed
-                        ? Theme.of(context).primaryColor
+                        ? isTrainer
+                            ? Theme.of(context).colorScheme.secondary
+                            : Theme.of(context).primaryColor
                         : Theme.of(context).colorScheme.secondary),
               ),
         SizedBox(

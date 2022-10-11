@@ -23,7 +23,6 @@ class PlacesState extends ChangeNotifier {
     createDio().get(url ?? '/gyms/').then((value) {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
-          print(e);
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return PlaceType(
               id: e["id"].toString(),

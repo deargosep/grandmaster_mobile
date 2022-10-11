@@ -12,7 +12,6 @@ class Header extends StatelessWidget {
       this.icon = '',
       this.iconOnTap,
       this.padding,
-      this.bottomChild,
       this.onTap,
       this.textColor})
       : super(key: key);
@@ -21,7 +20,6 @@ class Header extends StatelessWidget {
   bool withBack;
   final padding;
   String? icon;
-  Widget? bottomChild;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;
   final Color? textColor;
@@ -33,9 +31,10 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     EdgeInsets myPadding = EdgeInsets.fromLTRB(withBack ? 10 : 20, 10, 20, 0);
 
-    // if (!kIsWeb) {
-    //   myPadding = EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 : 32, 20, 0);
-    // }
+    if (!kIsWeb) {
+      myPadding = EdgeInsets.fromLTRB(
+          withBack ? 10 : 20, MediaQuery.of(context).viewPadding.top, 20, 0);
+    }
     return Padding(
       padding: myPadding,
       child: Container(
@@ -89,7 +88,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       this.icon = '',
       this.iconOnTap,
       this.padding,
-      this.bottomChild,
       this.onTap,
       this.textColor})
       : super(key: key);
@@ -98,7 +96,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   bool withBack;
   final padding;
   String? icon;
-  Widget? bottomChild;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;
   final Color? textColor;
@@ -110,13 +107,15 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     EdgeInsets myPadding = EdgeInsets.fromLTRB(withBack ? 10 : 20, 10, 20, 0);
 
-    // if (!kIsWeb) {
-    //   myPadding = EdgeInsets.fromLTRB(20, Platform.isAndroid ? 17 : 32, 20, 0);
-    // }
+    if (!kIsWeb) {
+      myPadding = EdgeInsets.fromLTRB(
+          withBack ? 10 : 20, MediaQuery.of(context).viewPadding.top, 20, 0);
+    }
     return Padding(
       padding: myPadding,
       child: Container(
         width: MediaQuery.of(context).size.width,
+        height: 50,
         child: Row(
           children: [
             !withBack

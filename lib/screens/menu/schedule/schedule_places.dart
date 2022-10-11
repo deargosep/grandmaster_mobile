@@ -49,9 +49,6 @@ class _PlacesScheduleScreenState extends State<PlacesScheduleScreen> {
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     // mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 16,
-                      ),
                       Text(
                         list.isNotEmpty ? 'Выберите зал' : '',
                         style: TextStyle(

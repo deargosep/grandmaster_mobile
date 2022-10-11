@@ -30,7 +30,6 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       createDio().get('/chats/members/').then((value) {
-        print(value.data);
         List<MinimalUser> members = [
           ...value.data
               .map((e) => MinimalUser(

@@ -66,7 +66,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           List<MessageType> newMessages = [...messages];
           newMessages.insert(
               0, ChatsState().getMessagefromJson(event.toString()));
-          print(ChatsState().getMessagefromJson(event.toString()));
           setState(() {
             messages = newMessages;
           });
@@ -79,7 +78,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           .get(
               '/chats/messages/?chat=${chat.id}${Provider.of<UserState>(context, listen: false).user.children.isNotEmpty ? '&id=${Provider.of<UserState>(context, listen: false).childId}' : ''}')
           .then((value) {
-        print(value.data);
         List<MessageType> newMessages = [...messages];
         if (value.data.isNotEmpty) {
           newMessages.addAll([

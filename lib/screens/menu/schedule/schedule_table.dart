@@ -177,7 +177,6 @@ class Schedule extends StatelessWidget {
       }
     }
 
-    print(schedule.days);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,

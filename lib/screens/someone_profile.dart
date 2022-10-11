@@ -50,37 +50,40 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                   SizedBox(
                     height: 30,
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Padding(
+                  Stack(children: [
+                    Positioned(
+                      left: 20,
+                      top: 20,
+                      child: Padding(
                         padding: const EdgeInsets.only(bottom: 30),
                         child: BrandIcon(
                           icon: 'back_arrow',
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
-                      Spacer(),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
+                    ),
+                    Row(
+                      children: [
+                        Spacer(),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: user.photo != null
+                              ? Avatar(
+                                  user.photo!,
+                                  height: 136,
+                                  width: 136,
+                                )
+                              : CircleLogo(
+                                  height: 136,
+                                  width: 136,
+                                ),
                         ),
-                        child: user.photo != null
-                            ? Avatar(
-                                user.photo!,
-                                height: 136,
-                                width: 136,
-                              )
-                            : CircleLogo(
-                                height: 136,
-                                width: 136,
-                              ),
-                      ),
-                      Spacer(flex: 2)
-                    ],
-                  ),
+                        Spacer()
+                      ],
+                    ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -199,7 +202,6 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                   createDio()
                                       .get('/chats/${user.chatId}/')
                                       .then((value) {
-                                    print(value.data);
                                     Provider.of<ChatsState>(context,
                                             listen: false)
                                         .setChats(

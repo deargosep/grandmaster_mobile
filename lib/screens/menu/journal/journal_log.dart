@@ -68,9 +68,6 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
               //     .format(datetimeend)
               //     .replaceAll(' ', '');
               // '${dateEnd.text.replaceAll('.', '-')}T${timeEnd.text}';
-              print(groupId);
-              print(datetimestart);
-              print(datetimeend);
               createDio(errHandler: (err, handler) {
                 // print(err.requestOptions.path);
                 // print(err.requestOptions.queryParameters);

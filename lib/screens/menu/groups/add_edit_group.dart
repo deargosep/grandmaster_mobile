@@ -44,23 +44,25 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
           .then((value) {
         if (group != null) {
           List<MinimalUser> members = group!.members;
-          setState(() {
-            checkboxes = {
-              for (var v in value)
-                '${v.id}_${v.fullName}_${v.isAdmitted}':
-                    members.firstWhereOrNull((element) => element.id == v.id) !=
-                        null
-            };
-            isLoaded = true;
-          });
+          if (mounted)
+            setState(() {
+              checkboxes = {
+                for (var v in value)
+                  '${v.id}_${v.fullName}_${v.isAdmitted}': members
+                          .firstWhereOrNull((element) => element.id == v.id) !=
+                      null
+              };
+              isLoaded = true;
+            });
         } else {
-          setState(() {
-            checkboxes = {
-              for (var v in value)
-                '${v.id}_${v.fullName}_${v.isAdmitted}': false
-            };
-            isLoaded = true;
-          });
+          if (mounted)
+            setState(() {
+              checkboxes = {
+                for (var v in value)
+                  '${v.id}_${v.fullName}_${v.isAdmitted}': false
+              };
+              isLoaded = true;
+            });
         }
       });
     });
@@ -184,6 +186,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
                 label: 'От',
                 controller: minAge,
                 centerText: true,
+                textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
               ),
               Container(
@@ -197,6 +200,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
                 height: 50.0,
                 controller: maxAge,
                 centerText: true,
+                textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
               )
             ],

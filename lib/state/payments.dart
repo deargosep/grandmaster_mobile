@@ -22,6 +22,7 @@ class PaymentsState extends ChangeNotifier {
               service: e["bill"]["service"],
               amount: e["bill"]["amount"],
               paid: e["is_paid"],
+              user: e["user"]["full_name"],
               blocked: e["is_blocked"],
               activated_at: DateTime.parse(e["bill"]["activated_at"]),
               must_be_paid_at: DateTime.parse(e["bill"]["must_be_paid_at"]),
@@ -61,12 +62,14 @@ class PaymentType {
   final bool blocked;
   final bool periodic;
   final period;
+  final String user;
 
   PaymentType(
       {required this.id,
       required this.purpose,
       required this.service,
       required this.activated_at,
+      this.user = '',
       required this.must_be_paid_at,
       required this.amount,
       required this.periodic,

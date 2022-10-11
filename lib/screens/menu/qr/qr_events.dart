@@ -27,7 +27,6 @@ class _QREventsState extends State<QREvents> {
           .convert(base64Decode(imageEncoded))
           .replaceAll('mm', '')
           .replaceAll('<path ', '<path shape-rendering="geometricPrecision" ');
-      print(decoded);
       setState(() {
         image = decoded;
         isLoaded = true;
@@ -41,7 +40,6 @@ class _QREventsState extends State<QREvents> {
             .replaceAll('mm', '')
             .replaceAll(
                 '<path ', '<path shape-rendering="geometricPrecision" ');
-        print(decoded);
         setState(() {
           image = decoded;
           isLoaded = true;

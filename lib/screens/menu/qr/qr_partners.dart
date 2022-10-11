@@ -27,7 +27,6 @@ class _QRPartnersState extends State<QRPartners> {
           .convert(base64Decode(imageEncoded))
           .replaceAll('mm', '')
           .replaceAll('<path ', '<path shape-rendering="geometricPrecision" ');
-      print(decoded);
       setState(() {
         image = decoded;
         isLoaded = true;
@@ -41,7 +40,6 @@ class _QRPartnersState extends State<QRPartners> {
             .replaceAll('mm', '')
             .replaceAll(
                 '<path ', '<path shape-rendering="geometricPrecision" ');
-        print(decoded);
         setState(() {
           image = decoded;
           isLoaded = true;
@@ -58,10 +56,10 @@ class _QRPartnersState extends State<QRPartners> {
         ),
         body: isLoaded
             ? SvgPicture.string(
-          image,
-          height: 313,
-          width: 313,
-        )
+                image,
+                height: 313,
+                width: 313,
+              )
             : CircularProgressIndicator());
   }
 }

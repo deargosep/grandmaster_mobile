@@ -153,8 +153,6 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
                 data.addEntries(photos);
                 FormData newData = FormData.fromMap(data);
                 if (item != null) {
-                  print(newData.fields);
-                  print(newData.files);
                   createDio()
                       .patch('/news/${item!.id}/',
                           data: newData,

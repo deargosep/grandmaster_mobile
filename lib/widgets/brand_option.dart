@@ -9,13 +9,15 @@ class Option extends StatefulWidget {
       this.onTap,
       this.type = 'secondary',
       this.mark,
-      this.noArrow = false})
+      this.noArrow = false,
+      this.red = false})
       : super(key: key);
   final text;
   final onTap;
   final type;
   final bool? mark;
   final bool noArrow;
+  final bool red;
 
   @override
   State<Option> createState() => _OptionState();
@@ -110,7 +112,9 @@ class _OptionState extends State<Option> {
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 style: TextStyle(
-                    color: getColor('text'),
+                    color: widget.red
+                        ? Theme.of(context).primaryColor
+                        : getColor('text'),
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),

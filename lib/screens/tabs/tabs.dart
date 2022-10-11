@@ -57,7 +57,6 @@ class _BarScreenState extends State<BarScreen> {
       SharedPreferences.getInstance().then((value) {
         var access = value.getString('access');
         User user = Provider.of<UserState>(context, listen: false).user;
-        print(access);
         if (access != null && user.role == 'guest') {
           Get.offAllNamed('/');
         }

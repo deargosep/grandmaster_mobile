@@ -155,7 +155,7 @@ class _Payment extends StatelessWidget {
             children: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                height: isOverTime() ? 111 : 95,
+                height: isOverTime() ? 120 : 105,
                 decoration: BoxDecoration(
                     color: getColor(),
                     borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -172,6 +172,13 @@ class _Payment extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: getTextColor()),
+                        ),
+                        Text(
+                          item.user,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.secondary),
                         ),
                         isOverTime() && !item.paid
                             ? Container(

@@ -37,8 +37,6 @@ class CheckboxesList extends StatelessWidget {
                 value: checkboxes?.values.elementAt(index),
                 onChanged: (val) {
                   var localCheckboxes = {...checkboxes!};
-                  print(checkboxes?.keys.elementAt(index));
-                  print(checkboxes?.values.elementAt(index));
                   localCheckboxes.update(
                       checkboxes!.keys.elementAt(index), (value) => val);
                   changeCheckbox(localCheckboxes);
