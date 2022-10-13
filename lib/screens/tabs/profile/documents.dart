@@ -22,20 +22,38 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        isLoaded = false;
-      });
-      createDio().get(user.documentsUrl!).then((value) {
+      if (mounted)
         setState(() {
-          isLoaded = true;
-          documents = Map<String, dynamic>.from(value.data);
+          isLoaded = false;
         });
+      createDio().get(user.documentsUrl!).then((value) {
+        if (mounted)
+          setState(() {
+            isLoaded = true;
+            documents = Map<String, dynamic>.from(value.data);
+          });
+        print(documents);
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Map> documentsList = [
+      {
+        "title": 'Паспорт / Свидетельство о рождении',
+        "code": "passport_or_birth_certificate"
+      },
+      {"title": 'Полис ОМС', "code": "oms_policy"},
+      {"title": 'Справка из школы', "code": "school_ref"},
+      {"title": 'Страховой полис', "code": "insurance_policy"},
+      {"title": 'Диплом о технической квалификации', "code": "tech_qual_diplo"},
+      {"title": 'Медицинская справка', "code": "med_certificate"},
+      {"title": 'Загранпаспорт', "code": "foreign_passport"},
+      {"title": 'ИНН', "code": "inn"},
+      {"title": 'Диплом об образовании', "code": "diploma"},
+      {"title": 'СНИЛС', "code": "snils"},
+    ];
     if (!isLoaded)
       return CustomScaffold(
           body: Center(
@@ -47,17 +65,17 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           arguments: {"index": 0, "user": user, "documents": documents}),
       OptionType('Полис ОМС', destination,
           arguments: {"index": 1, "user": user, "documents": documents},
-          red: documents[1] == null),
+          red: documents[documentsList[1]["code"]] == null),
       OptionType('Справка из школы', destination,
           arguments: {"index": 2, "user": user, "documents": documents}),
       OptionType('Страховой полис', destination,
           arguments: {"index": 3, "user": user, "documents": documents},
-          red: documents[3] == null),
+          red: documents[documentsList[3]["code"]] == null),
       OptionType('Диплом о технической квалификации', destination,
           arguments: {"index": 4, "user": user, "documents": documents}),
       OptionType('Медицинская справка', destination,
           arguments: {"index": 5, "user": user, "documents": documents},
-          red: documents[5] == null),
+          red: documents[documentsList[5]["code"]] == null),
       OptionType('Загранпаспорт', destination,
           arguments: {"index": 6, "user": user, "documents": documents}),
       OptionType('ИНН', destination,

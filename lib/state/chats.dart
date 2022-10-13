@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,6 @@ class ChatsState extends ChangeNotifier {
         .then((value) {
       List<ChatType> newList = [
         ...value.data.map((e) {
-          log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
             ...e["members"]

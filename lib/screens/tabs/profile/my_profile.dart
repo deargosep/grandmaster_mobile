@@ -529,9 +529,11 @@ class _Item extends StatelessWidget {
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
-                      color: isTrainer
-                          ? Theme.of(context).colorScheme.secondary
-                          : Theme.of(context).primaryColor),
+                      color: value == null && ifNullRed
+                          ? isTrainer
+                              ? Theme.of(context).colorScheme.secondary
+                              : Theme.of(context).primaryColor
+                          : Theme.of(context).colorScheme.secondary),
                 ),
               )
             : Text(
