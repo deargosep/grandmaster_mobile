@@ -64,6 +64,8 @@ dependencies:
   phone_number: ^1.0.0
   http: ^0.13.5
   simple_shadow: ^0.3.0
+  firebase_core: ^1.24.0
+  firebase_messaging: ^13.1.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.10.0"

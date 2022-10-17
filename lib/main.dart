@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +82,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
 
+import 'firebase_options.dart';
 import 'theme/theme.dart';
 
 bool _initialUriIsHandled = false;
@@ -94,11 +97,23 @@ class CustomImageCache extends WidgetsFlutterBinding {
   }
 }
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
+void main() async {
   // if (kIsWeb) {
   //   setPathUrlStrategy();
   // }
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // CustomImageCache();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   HttpOverrides.global = new MyHttpOverrides();

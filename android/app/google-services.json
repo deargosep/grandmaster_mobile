@@ -29,6 +29,13 @@
             {
               "client_id": "797959552222-c7iejqhor1glj5bo2d0053oaoeo6jvs7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "797959552222-akohuhargljf6v2qechh03pf87bhqqrv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.grandmaster.grandmaster"
+              }
             }
           ]
         }
