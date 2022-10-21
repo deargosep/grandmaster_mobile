@@ -212,7 +212,6 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
               ? CheckboxesList(
                   changeCheckbox: changeCheckboxesState,
                   checkboxes: checkboxes,
-                  admittedCheck: true,
                 )
               : Center(
                   child: CircularProgressIndicator(),
