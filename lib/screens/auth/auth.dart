@@ -45,19 +45,21 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       isLoaded = false;
     });
     SharedPreferences.getInstance().then((sp) async {
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      if (!kIsWeb) {
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-      NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true,
-      );
+        NotificationSettings settings = await messaging.requestPermission(
+          alert: true,
+          announcement: false,
+          badge: true,
+          carPlay: false,
+          criticalAlert: false,
+          provisional: false,
+          sound: true,
+        );
 
-      print('User granted permission: ${settings.authorizationStatus}');
+        print('User granted permission: ${settings.authorizationStatus}');
+      }
       if (sp.getString('access') != null) {
         createDio(errHandler: (DioError err, handler) {
           setState(() {
