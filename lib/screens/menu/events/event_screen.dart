@@ -261,6 +261,7 @@ class _EventScreenState extends State<EventScreen> {
             child: item.cover != null
                 ? LoadingImage(
                     item.cover!,
+                    borderRadius: BorderRadius.zero,
                   )
                 : Container(
                     height: 220,

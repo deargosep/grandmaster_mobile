@@ -533,7 +533,7 @@ class _Item extends StatelessWidget {
                           ? isTrainer
                               ? Theme.of(context).colorScheme.secondary
                               : Theme.of(context).primaryColor
-                          : Theme.of(context).colorScheme.secondary),
+                          : Color(0xFF2674E9)),
                 ),
               )
             : Text(
