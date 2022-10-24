@@ -91,7 +91,7 @@ class _EventScreenState extends State<EventScreen> {
                               Theme.of(context).colorScheme.secondaryContainer)
                       : Container(),
                   zapisan
-                      ? !item.ended
+                      ? !item.ended && !hasChildren()
                           ? Container()
                           : Padding(
                               padding: const EdgeInsets.only(top: 16),

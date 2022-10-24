@@ -39,7 +39,7 @@ void showErrorSnackbar(String message) {
 Dio createDio(
     {Function(DioError, ErrorInterceptorHandler)? errHandler,
     showSnackbar = true}) {
-  Dio dio = Dio(BaseOptions(baseUrl: "https://app.grandmaster.center/api"));
+  Dio dio = Dio(BaseOptions(baseUrl: "https://app.grandmaster.club/api"));
   dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
     SharedPreferences.getInstance().then((value) {

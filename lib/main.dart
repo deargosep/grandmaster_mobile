@@ -559,7 +559,7 @@ class MyHttpOverrides extends HttpOverrides {
     return super.createHttpClient(context)
       ..badCertificateCallback =
           ((X509Certificate cert, String host, int port) {
-        final isValidHost = ["app.grandmaster.center"]
+        final isValidHost = ["app.grandmaster.club"]
             .contains(host); // <-- allow only hosts in array
         return isValidHost;
       });

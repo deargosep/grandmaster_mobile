@@ -160,7 +160,7 @@ class VideoCard extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15))),
                 child: LoadingImage(
-                  'https://app.grandmaster.center/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}',
+                  'https://app.grandmaster.club/api/videos/image/?id=${Uri.parse(item.link).queryParameters["v"]}',
                 )),
             SizedBox(
               height: 16,

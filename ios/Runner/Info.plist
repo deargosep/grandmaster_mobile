@@ -4,7 +4,7 @@
 	<dict>
 		<key>com.apple.developer.associated-domains</key>
 		<array>
-			<string>applinks:app.grandmaster.center</string>
+			<string>applinks:app.grandmaster.club</string>
 		</array>
 		<key>CFBundleURLTypes</key>
 		<array>
@@ -12,7 +12,7 @@
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
 				<key>CFBundleURLName</key>
-				<string>app.grandmaster.center</string>
+				<string>app.grandmaster.club</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>grandmaster</string>

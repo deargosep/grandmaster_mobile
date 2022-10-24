@@ -21,24 +21,13 @@ class ChooseChild extends StatelessWidget {
           SizedBox(
             height: 24,
           ),
-          Row(
-            children: [
-              SizedBox(
-                width: 16,
-              ),
-              BrandIcon(
-                icon: 'back_arrow',
+          Text(
+            'Выберите своего ребенка',
+            textAlign: TextAlign.center,
+            style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
-              ),
-              Text(
-                'Выберите своего ребенка',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
+                fontSize: 24,
+                fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 32,
