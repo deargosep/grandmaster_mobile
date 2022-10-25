@@ -72,36 +72,10 @@ Dio createDio(
           showErrorSnackbar('Ошибка сервера. Попробуйте позднее');
         }
       }
-      if (errHandler != null) errHandler(error, handler);
-      SharedPreferences.getInstance().then((sp) {
-        if (error.response?.data.runtimeType.toString() != 'String') {
-          if (error.response?.data.containsKey("code")) {
-            if (error.response?.data["code"] == 'token_not_valid') {
-              createDio()
-                  .post('/auth/token/refresh/',
-                      data: {"refresh": sp.getString('refresh')},
-                      options: Options(headers: {"Authorization": null}))
-                  .then((value) {
-                sp.setString('access', value.data["access"]);
-                sp.setString('refresh', value.data["refresh"]).then((value) {
-                  createDio().get('/users/self/').then((value) {
-                    if (isValidContactType(value.data["contact_type"])) {
-                      Get.offAllNamed('/bar', arguments: 1);
-                    }
-                  });
-                });
-              });
-            }
-          }
-          if (error.response?.data["code"] == 'user_inactive') {
-            sp.clear();
-            Get.offAllNamed('/');
-          }
-        }
-      });
     } catch (e) {
       print(e);
     }
+    if (errHandler != null) errHandler(error, handler);
   }));
   return dio;
 }

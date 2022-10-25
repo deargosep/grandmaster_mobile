@@ -21,7 +21,6 @@ class EventsState extends ChangeNotifier {
         ...value.data
             .where((el) => el["hidden"] == null || !el["hidden"])
             .map((e) {
-          log(e.toString());
           DateTime deadlineDate = DateTime.parse(e["deadline_date"]);
           List<MinimalUser> members = [
             ...e["members"]

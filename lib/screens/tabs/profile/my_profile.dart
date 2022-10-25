@@ -47,9 +47,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       return user.admitted;
     }
 
-    if (user.role == 'moderator' ||
-        user.children.isNotEmpty ||
-        user.role == 'specialist')
+    if (user.role == 'moderator' || user.role == 'specialist')
       return CustomScaffold(
         bottomNavigationBar:
             user.children.isNotEmpty ? BottomBarWrap(currentTab: 3) : null,
@@ -91,6 +89,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
+        bottomNavigationBar: BottomBarWrap(currentTab: 3),
         body: NestedScrollView(
           headerSliverBuilder: (context, value) {
             return [

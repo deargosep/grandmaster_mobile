@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -63,9 +61,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 await prefs.setString('access', value.data["access"]);
                 await prefs.setString('refresh', value.data["refresh"]);
                 createDio().get('/users/self/').then((value) {
-                  log(value.data.toString());
                   var data = value.data;
-                  log(data.toString());
                   if (isValidContactType(value.data["contact_type"])) {
                     Provider.of<UserState>(context, listen: false)
                         .setUser(data);

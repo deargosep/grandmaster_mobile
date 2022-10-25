@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,7 +24,6 @@ class PlacesState extends ChangeNotifier {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
-          log(e.toString());
           return PlaceType(
               id: e["id"].toString(),
               name: e["title"] ?? '',

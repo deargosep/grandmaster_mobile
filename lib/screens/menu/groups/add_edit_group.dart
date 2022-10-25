@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
@@ -110,7 +108,6 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
                 data: data,
               )
                   .then((value) {
-                log(value.toString());
                 Provider.of<GroupsState>(context, listen: false).setGroups();
                 Get.back();
               });
@@ -136,7 +133,6 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
                 data: data,
               )
                   .then((value) {
-                log(value.toString());
                 Provider.of<GroupsState>(context, listen: false).setGroups();
                 Get.back();
               });

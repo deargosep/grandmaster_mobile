@@ -5,6 +5,7 @@ import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
@@ -145,6 +146,13 @@ class _DocumentScreenState extends State<DocumentScreen> {
         noPadding: false,
         appBar: AppHeader(
           text: optionList[currentIndex]["title"],
+          icon: documents[optionList[currentIndex]["code"]] != null
+              ? 'download'
+              : '',
+          iconOnTap: () async {
+            await launchUrl(Uri.parse(documents[optionList[currentIndex]["code"]]),
+                mode: LaunchMode.externalApplication);
+          },
         ),
         body: Center(
             child: CarouselSlider(

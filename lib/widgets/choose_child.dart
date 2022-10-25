@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
-import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:provider/provider.dart';
 
 class ChooseChild extends StatelessWidget {
@@ -48,6 +48,8 @@ class ChooseChild extends StatelessWidget {
                           print(user.children[index].id);
                           Provider.of<UserState>(context, listen: false)
                               .setChildId(user.children[index].id);
+                          Provider.of<ChatsState>(context, listen: false)
+                              .setChats(childId: user.children[index].id);
                           Get.back();
                         },
                       ),

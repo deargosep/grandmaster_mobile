@@ -51,6 +51,9 @@ class _EventScreenState extends State<EventScreen> {
             (element) => element.marked != null && element.marked!) !=
         null;
 
+    print(zapisan);
+    print(hasChildren());
+
     return CustomScaffold(
       noPadding: true,
       scrollable: true,
@@ -61,12 +64,11 @@ class _EventScreenState extends State<EventScreen> {
               (item.ended && !zapisan)
           ? null
           : BottomPanel(
-              withShadow: false,
               height: zapisan
                   ? item.ended
                       ? getRole() == "trainer"
                           ? 148.0
-                          : 82.0
+                          : 85.0
                       : 148.0
                   : 85.0,
               child: Column(
@@ -93,163 +95,155 @@ class _EventScreenState extends State<EventScreen> {
                   zapisan
                       ? !item.ended && !hasChildren()
                           ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: BrandButton(
-                                type: 'primary',
-                                text: 'Посмотреть список',
-                                onPressed: () {
-                                  // посмотреть список
-                                  Get.toNamed('/events/list', arguments: {
-                                    "item": item,
-                                    "options": {"type": "view"}
-                                  });
-                                },
-                              ),
+                          : BrandButton(
+                              type: 'primary',
+                              text: 'Посмотреть список',
+                              onPressed: () {
+                                // посмотреть список
+                                Get.toNamed('/events/list', arguments: {
+                                  "item": item,
+                                  "options": {"type": "view"}
+                                });
+                              },
                             )
                       : Container(),
                   item.ended
                       ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: BrandButton(
-                            type: item.members.isNotEmpty ? 'primary' : 'info',
-                            onPressed: () {
-                              if (item.members.isNotEmpty) {
-                                // if not trainer or parent (multiple students)
-                                if (getRole() != 'trainer' && !hasChildren()) {
+                      : BrandButton(
+                          type: item.members.isNotEmpty ? 'primary' : 'info',
+                          onPressed: () {
+                            if (item.members.isNotEmpty) {
+                              // if not trainer or parent (multiple students)
+                              if (getRole() != 'trainer' && !hasChildren()) {
+                                if (zapisan) {
+                                  if (!item.open) {
+                                    // посмотреть список
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "view"}
+                                    });
+                                  }
+                                  if (item.open) {
+                                    // отменить запись
+                                    createDio().put(
+                                      '/events/members/',
+                                      data: {"members": []},
+                                      queryParameters: {"event": item.id},
+                                    ).then((value) {
+                                      Provider.of<EventsState>(context,
+                                              listen: false)
+                                          .setEvents();
+                                    });
+                                  }
+                                }
+
+                                if (!zapisan) {
+                                  // записаться
+                                  // if (mounted)
+                                  //   setState(() {
+                                  //     zapisan = true;
+                                  //   });
+                                  createDio().put('/events/members/',
+                                      queryParameters: {
+                                        "event": item.id
+                                      },
+                                      data: {
+                                        "members": [
+                                          Provider.of<UserState>(context,
+                                                  listen: false)
+                                              .user
+                                              .id
+                                        ]
+                                      }).then((value) {
+                                    Provider.of<EventsState>(context,
+                                            listen: false)
+                                        .setEvents();
+                                    Get.toNamed('/success',
+                                        arguments:
+                                            'Вы успешно записались на мероприятие');
+                                  });
+                                  // Get.toNamed('/success',
+                                  //     arguments:
+                                  //         'Вы успешно записались на мероприятие');
+                                }
+                              } else {
+                                if (getRole() == "trainer") {
+                                  if (!zapisan) {
+                                    // if (mounted)
+                                    //   setState(() {
+                                    //     zapisan = true;
+                                    //   });
+                                    // add
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "add"}
+                                    });
+                                  }
                                   if (zapisan) {
+                                    // edit
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "edit"}
+                                    });
+                                  }
+                                }
+
+                                if (hasChildren()) {
+                                  if (!hasMoreThanOneChild()) {
+                                    Get.toNamed('/success',
+                                        arguments:
+                                            'Вы успешно записались на мероприятие');
+                                  }
+                                  if (hasMoreThanOneChild()) {
                                     if (!item.open) {
-                                      // посмотреть список
                                       Get.toNamed('/events/list', arguments: {
                                         "item": item,
                                         "options": {"type": "view"}
                                       });
                                     }
                                     if (item.open) {
-                                      // отменить запись
-                                      createDio().put(
-                                        '/events/members/',
-                                        data: {"members": []},
-                                        queryParameters: {"event": item.id},
-                                      ).then((value) {
-                                        Provider.of<EventsState>(context,
-                                                listen: false)
-                                            .setEvents();
-                                      });
-                                    }
-                                  }
-
-                                  if (!zapisan) {
-                                    // записаться
-                                    // if (mounted)
-                                    //   setState(() {
-                                    //     zapisan = true;
-                                    //   });
-                                    createDio().put('/events/members/',
-                                        queryParameters: {
-                                          "event": item.id
-                                        },
-                                        data: {
-                                          "members": [
-                                            Provider.of<UserState>(context,
-                                                    listen: false)
-                                                .user
-                                                .id
-                                          ]
-                                        }).then((value) {
-                                      Provider.of<EventsState>(context,
-                                              listen: false)
-                                          .setEvents();
-                                      Get.toNamed('/success',
-                                          arguments:
-                                              'Вы успешно записались на мероприятие');
-                                    });
-                                    // Get.toNamed('/success',
-                                    //     arguments:
-                                    //         'Вы успешно записались на мероприятие');
-                                  }
-                                } else {
-                                  if (getRole() == "trainer") {
-                                    if (!zapisan) {
-                                      // if (mounted)
-                                      //   setState(() {
-                                      //     zapisan = true;
-                                      //   });
-                                      // add
-                                      Get.toNamed('/events/list', arguments: {
-                                        "item": item,
-                                        "options": {"type": "add"}
-                                      });
-                                    }
-                                    if (zapisan) {
-                                      // edit
-                                      Get.toNamed('/events/list', arguments: {
-                                        "item": item,
-                                        "options": {"type": "edit"}
-                                      });
-                                    }
-                                  }
-
-                                  if (hasChildren()) {
-                                    if (!hasMoreThanOneChild()) {
-                                      Get.toNamed('/success',
-                                          arguments:
-                                              'Вы успешно записались на мероприятие');
-                                    }
-                                    if (hasMoreThanOneChild()) {
-                                      if (!item.open) {
+                                      if (zapisan) {
                                         Get.toNamed('/events/list', arguments: {
                                           "item": item,
                                           "options": {"type": "view"}
                                         });
-                                      }
-                                      if (item.open) {
-                                        if (zapisan) {
-                                          Get.toNamed('/events/list',
-                                              arguments: {
-                                                "item": item,
-                                                "options": {"type": "view"}
-                                              });
-                                        } else {
-                                          Get.toNamed('/events/list',
-                                              arguments: {
-                                                "item": item,
-                                                "options": {"type": "choose"}
-                                              });
-                                        }
+                                      } else {
+                                        Get.toNamed('/events/list', arguments: {
+                                          "item": item,
+                                          "options": {"type": "choose"}
+                                        });
                                       }
                                     }
                                   }
                                 }
                               }
-                            },
-                            text: !hasChildren() && getRole() != 'trainer'
-                                ? zapisan
-                                    ? !item.open
-                                        ? 'Посмотреть список'
-                                        : 'Отменить запись'
-                                    : item.members.isNotEmpty
-                                        ? 'Записаться'
-                                        : 'Нет пользователей для записи'
-                                : zapisan
-                                    ? getRole() != 'trainer'
-                                        ? 'Посмотреть список'
-                                        : 'Редактировать список'
-                                    : hasMoreThanOneChild()
-                                        ? 'Записать спортсменов'
-                                        : item.members.isNotEmpty
-                                            ? 'Записать спортсменов'
-                                            : 'Нет пользователей для записи',
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: item.members.isNotEmpty
-                                    ? Colors.white
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .secondaryContainer),
-                          ),
+                            }
+                          },
+                          text: !hasChildren() && getRole() != 'trainer'
+                              ? zapisan
+                                  ? !item.open
+                                      ? 'Посмотреть список'
+                                      : 'Отменить запись'
+                                  : item.members.isNotEmpty
+                                      ? 'Записаться'
+                                      : 'Нет пользователей для записи'
+                              : zapisan
+                                  ? getRole() != 'trainer'
+                                      ? 'Посмотреть список'
+                                      : 'Редактировать список'
+                                  : hasMoreThanOneChild()
+                                      ? 'Записать спортсменов'
+                                      : item.members.isNotEmpty
+                                          ? 'Записать спортсменов'
+                                          : 'Нет пользователей для записи',
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: item.members.isNotEmpty
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer),
                         )
                 ],
               )),

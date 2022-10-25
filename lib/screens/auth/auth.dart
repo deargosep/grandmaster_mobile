@@ -62,9 +62,40 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
       }
       if (sp.getString('access') != null) {
         createDio(errHandler: (DioError err, handler) {
-          setState(() {
-            isLoaded = true;
-          });
+          if (err.response?.data["code"] == 'token_not_valid') {
+            try {
+              createDio()
+                  .post('/auth/token/refresh/',
+                      data: {"refresh": sp.getString('refresh')},
+                      options: Options(headers: {"Authorization": null}))
+                  .then((value) {
+                sp.setString('access', value.data["access"]);
+                sp.setString('refresh', value.data["refresh"]).then((value) {
+                  createDio().get('/users/self/').then((value) {
+                    if (isValidContactType(value.data["contact_type"])) {
+                      FlutterNativeSplash.remove();
+                      setState(() {
+                        isLoaded = true;
+                      });
+                      Get.offAllNamed('/bar', arguments: 1);
+                    }
+                  });
+                });
+              });
+            } catch (e) {
+              FlutterNativeSplash.remove();
+              setState(() {
+                isLoaded = true;
+              });
+            }
+          }
+          if (err.response?.data["code"] == 'user_inactive') {
+            sp.clear();
+            FlutterNativeSplash.remove();
+            setState(() {
+              isLoaded = true;
+            });
+          }
         })
             .get(
           '/users/self/',

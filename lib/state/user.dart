@@ -159,9 +159,7 @@ class UserState extends ChangeNotifier {
     var completer = new Completer();
     log(data.toString());
     User user = convertMapToUser(data);
-    if (user.children.isNotEmpty && user.children.length < 2) {
-      _childId = user.children.first.id;
-    } else if (user.children.isNotEmpty && user.children.length > 1) {
+    if (user.children.isNotEmpty) {
       _childId = user.children.first.id;
     } else {
       _childId = null;

@@ -27,27 +27,24 @@ class ProfileScreen extends StatelessWidget {
           .map((e) => OptionType(e.fullName, '/child_profile', arguments: e)),
     ];
     return CustomScaffold(
+        appBar: AppHeader(
+          text: 'Профили',
+          withBack: false,
+          // icon: 'logout',
+          // iconOnTap: () {
+          //   SharedPreferences.getInstance().then((value) =>
+          //       value.clear().then((value) => Get.offAllNamed('/')));
+          // },
+        ),
         body: Padding(
             padding: EdgeInsets.fromLTRB(
-                0, 38 + MediaQuery.of(context).viewInsets.top, 0, 0),
-            child: Column(children: [
-              Header(
-                text: 'Профили',
-                withBack: false,
-                // icon: 'logout',
-                // iconOnTap: () {
-                //   SharedPreferences.getInstance().then((value) =>
-                //       value.clear().then((value) => Get.offAllNamed('/')));
-                // },
+                0, 32 + MediaQuery.of(context).viewInsets.top, 0, 0),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
               ),
-              SizedBox(
-                height: 32,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListOfOptions(list: optionList),
-              )
-            ])));
+              child: ListOfOptions(list: optionList),
+            )));
   }
 }
 
