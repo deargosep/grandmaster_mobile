@@ -88,8 +88,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 noHorPadding: true,
                 noPadding: false,
                 appBar: AppHeader(
-                  text: "Другие документы",
-                ),
+                    text: "Другие документы",
+                    icon: 'download',
+                    iconOnTap: () async {
+                      await launchUrl(Uri.parse(other_documents[currentIndex]),
+                          mode: LaunchMode.externalApplication);
+                    }),
                 body: Center(
                     child: CarouselSlider(
                   carouselController: controller,
@@ -150,7 +154,8 @@ class _DocumentScreenState extends State<DocumentScreen> {
               ? 'download'
               : '',
           iconOnTap: () async {
-            await launchUrl(Uri.parse(documents[optionList[currentIndex]["code"]]),
+            await launchUrl(
+                Uri.parse(documents[optionList[currentIndex]["code"]]),
                 mode: LaunchMode.externalApplication);
           },
         ),

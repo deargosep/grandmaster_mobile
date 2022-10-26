@@ -336,9 +336,9 @@ class _View extends StatefulWidget {
 }
 
 class _ViewState extends State<_View> {
+  EventType item = Get.arguments["item"];
   @override
   Widget build(BuildContext context) {
-    EventType item = Get.arguments["item"];
     List<OptionType> list = item.members
         .map((e) => OptionType(
             e.fullName,
@@ -347,9 +347,14 @@ class _ViewState extends State<_View> {
                     .children
                     .isNotEmpty
                 ? '/child_profile'
-                : '/other_profile',
+                : Provider.of<UserState>(context, listen: false).user.id == e.id
+                    ? '/my_profile'
+                    : '/other_profile',
             arguments: User(
-                fullName: e.fullName, photo: e.photo, passport: Passport()),
+                fullName: e.fullName,
+                photo: e.photo,
+                id: e.id,
+                passport: Passport()),
             mark: e.marked))
         .toList();
     return CustomScaffold(

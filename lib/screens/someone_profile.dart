@@ -38,6 +38,8 @@ class _SomeoneProfileState extends State<SomeoneProfile>
   User user = Get.arguments;
   @override
   Widget build(BuildContext context) {
+    print(user.id);
+    print(Provider.of<UserState>(context, listen: false).user.id);
     return DefaultTabController(
       length: 2,
       child: CustomScaffold(
@@ -258,9 +260,19 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                         SizedBox(
                           height: 24,
                         ),
-                        Provider.of<UserState>(context).user.role ==
-                                    'trainer' &&
-                                user.isMyStudent
+                        (Provider.of<UserState>(context).user.role ==
+                                        'trainer' &&
+                                    user.isMyStudent) ||
+                                Provider.of<UserState>(context, listen: false)
+                                        .user
+                                        .children
+                                        .firstWhereOrNull((element) =>
+                                            element.id == user.id) !=
+                                    null ||
+                                Provider.of<UserState>(context, listen: false)
+                                        .user
+                                        .id ==
+                                    user.id
                             ? TabsSwitch(
                                 controller: controller,
                                 children: [
