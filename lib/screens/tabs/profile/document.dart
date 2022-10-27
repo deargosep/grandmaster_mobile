@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:http/http.dart' as http;
+import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
@@ -91,8 +96,32 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     text: "Другие документы",
                     icon: 'download',
                     iconOnTap: () async {
-                      await launchUrl(Uri.parse(other_documents[currentIndex]),
-                          mode: LaunchMode.externalApplication);
+                      String rawUrl = other_documents[currentIndex];
+                      Uri url = Uri.parse(rawUrl);
+                      if (kIsWeb) {
+                        try {
+                          // first we make a request to the url like you did
+                          // in the android and ios version
+                          final http.Response r = await http.get(url);
+
+                          // we get the bytes from the body
+                          final data = r.bodyBytes;
+                          // and encode them to base64
+                          final base64data = base64Encode(data);
+                          html.AnchorElement anchorElement =
+                              new html.AnchorElement(
+                                  href: 'data:image/jpeg;base64,$base64data');
+                          anchorElement.download =
+                              "other_document${currentIndex}";
+                          anchorElement.click();
+                          anchorElement.remove();
+                        } catch (e) {
+                          print(e);
+                        }
+                      } else {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      }
                     }),
                 body: Center(
                     child: CarouselSlider(
@@ -154,9 +183,32 @@ class _DocumentScreenState extends State<DocumentScreen> {
               ? 'download'
               : '',
           iconOnTap: () async {
-            await launchUrl(
-                Uri.parse(documents[optionList[currentIndex]["code"]]),
-                mode: LaunchMode.externalApplication);
+            String rawUrl = documents[optionList[currentIndex]["code"]];
+            Uri url = Uri.parse(rawUrl);
+            if (kIsWeb) {
+              try {
+                // first we make a request to the url like you did
+                // in the android and ios version
+                final http.Response r = await http.get(url);
+
+                // we get the bytes from the body
+                final data = r.bodyBytes;
+                // and encode them to base64
+                final base64data = base64Encode(data);
+                html.AnchorElement anchorElement = new html.AnchorElement(
+                    href: 'data:image/jpeg;base64,$base64data');
+                anchorElement.download =
+                    "document_${optionList[currentIndex]["code"]}";
+                anchorElement.click();
+                anchorElement.remove();
+              } catch (e) {
+                print(e);
+              }
+            } else {
+              await launchUrl(
+                  Uri.parse(documents[optionList[currentIndex]["code"]]),
+                  mode: LaunchMode.externalApplication);
+            }
           },
         ),
         body: Center(

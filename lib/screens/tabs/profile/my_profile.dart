@@ -100,14 +100,16 @@ class _MyProfileScreenState extends State<MyProfileScreen>
               SliverToBoxAdapter(
                 child: Stack(
                   children: [
-                    Get.previousRoute == '/bar' ? Container():Positioned(
-                      child: BrandIcon(
-                        icon: 'back_arrow',
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      top: 40,
-                      left: 25,
-                    ),
+                    Get.currentRoute == '/bar'
+                        ? Container()
+                        : Positioned(
+                            child: BrandIcon(
+                              icon: 'back_arrow',
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            top: 40,
+                            left: 25,
+                          ),
                     Column(
                       children: [
                         SizedBox(

@@ -39,8 +39,11 @@ class _MarkJournalScreenState extends State<MarkJournalScreen> {
       // });
       // Provider.of<VisitLogState>(context).setVisitLog(placeId, groupId)
       createDio().get('/sport_groups/${arguments["groupId"]}/').then((value) {
-        var users = value.data["members"]
-            .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]));
+        var users = [
+          ...value.data["members"]
+              .map((e) => MinimalUser(fullName: e["full_name"], id: e["id"]))
+              .toList()
+        ];
         users.sort((a, b) {
           return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
         });

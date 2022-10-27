@@ -6,6 +6,10 @@
 		<array>
 			<string>applinks:app.grandmaster.club</string>
 		</array>
+		<key>LSSupportsOpeningDocumentsInPlace</key>
+        <true/>
+        <key>UIFileSharingEnabled</key>
+        <true/>
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>

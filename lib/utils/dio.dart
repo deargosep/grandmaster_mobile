@@ -14,6 +14,8 @@ bool isValidContactType(contact_type) {
       return true;
     case 'PARTNER':
       return true;
+    case 'MODERATOR':
+      return true;
     case 'PARENT':
       return true;
     case 'CLIENT':
