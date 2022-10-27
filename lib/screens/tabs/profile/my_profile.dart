@@ -188,7 +188,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         SizedBox(
                           height: 24,
                         ),
-                        user.role != 'trainer'
+                        user.role != 'trainer' || user.children.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -222,21 +222,23 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         SizedBox(
                           height: 32,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, bottom: 32),
-                          child: TabsSwitch(
-                            controller: controller,
-                            children: [
-                              TopTab(
-                                text: 'Информация',
-                              ),
-                              TopTab(
-                                text: 'Паспорт',
+                        user.children.isEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 32),
+                                child: TabsSwitch(
+                                  controller: controller,
+                                  children: [
+                                    TopTab(
+                                      text: 'Информация',
+                                    ),
+                                    TopTab(
+                                      text: 'Паспорт',
+                                    )
+                                  ],
+                                ),
                               )
-                            ],
-                          ),
-                        ),
+                            : Container(),
                       ],
                     ),
                   ],
@@ -247,15 +249,17 @@ class _MyProfileScreenState extends State<MyProfileScreen>
           body: TabBarView(
               controller: controller,
               physics: NeverScrollableScrollPhysics(),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Info(
-                    user: user,
-                  ),
-                ),
-                PassportInfo(user: user)
-              ]),
+              children: user.children.isEmpty
+                  ? [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Info(
+                          user: user,
+                        ),
+                      ),
+                      PassportInfo(user: user)
+                    ]
+                  : [Container()]),
         ),
       ),
     );

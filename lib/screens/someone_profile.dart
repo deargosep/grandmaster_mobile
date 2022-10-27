@@ -156,7 +156,8 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                   SizedBox(
                                     height: 24,
                                   ),
-                                  user.role != 'trainer'
+                                  user.role != 'trainer' ||
+                                          user.children.isEmpty
                                       ? Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -272,7 +273,8 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                 Provider.of<UserState>(context, listen: false)
                                         .user
                                         .id ==
-                                    user.id
+                                    user.id ||
+                                user.children.isEmpty
                             ? TabsSwitch(
                                 controller: controller,
                                 children: [
