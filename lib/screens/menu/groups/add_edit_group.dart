@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/state/chats.dart';
 import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
@@ -137,6 +138,7 @@ class _GroupAddEditScreenState extends State<GroupAddEditScreen> {
                 Get.back();
               });
             }
+            Provider.of<ChatsState>(context, listen: false).setChats();
           },
         ),
       ),

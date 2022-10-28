@@ -493,7 +493,8 @@ class _Header extends StatelessWidget {
                     "members": chat.members,
                     "id": chat.id,
                     "isOwner": chat.owner ==
-                        Provider.of<UserState>(context, listen: false).user.id
+                        Provider.of<UserState>(context, listen: false).user.id,
+                    "name": chat.name
                   });
                 } else if (chat.type == 'dm') {
                   createDio()

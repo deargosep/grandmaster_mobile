@@ -9,6 +9,7 @@ import 'package:grandmaster/widgets/input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/dio.dart';
+import '../../../utils/is_image.dart';
 
 class AddEditLearningScreen extends StatefulWidget {
   AddEditLearningScreen({Key? key}) : super(key: key);
@@ -137,6 +138,12 @@ class _AddEditLearningScreenState extends State<AddEditLearningScreen> {
               ),
               Input(
                 label: 'Ссылка',
+                validator: (text) {
+                  if (isImage(text!))
+                    return null;
+                  else
+                    return 'Неправильная ссылка на изображение!';
+                },
                 controller: link,
               ),
               SizedBox(

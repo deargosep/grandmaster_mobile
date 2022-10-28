@@ -31,6 +31,7 @@ import 'package:grandmaster/screens/menu/journal/journal_log.dart';
 import 'package:grandmaster/screens/menu/journal/journal_mark.dart';
 import 'package:grandmaster/screens/menu/journal/journal_places.dart';
 import 'package:grandmaster/screens/menu/learnings/add_edit_learning.dart';
+import 'package:grandmaster/screens/menu/learnings/learning_photo.dart';
 import 'package:grandmaster/screens/menu/learnings/learnings.dart';
 import 'package:grandmaster/screens/menu/payment/payment.dart';
 import 'package:grandmaster/screens/menu/places/add_edit_place.dart';
@@ -53,6 +54,7 @@ import 'package:grandmaster/screens/someone_profile.dart';
 import 'package:grandmaster/screens/success.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/screens/tabs/chat/chat_create.dart';
+import 'package:grandmaster/screens/tabs/chat/chat_edit.dart';
 import 'package:grandmaster/screens/tabs/chat/chat_photo.dart';
 import 'package:grandmaster/screens/tabs/chat/folder.dart';
 import 'package:grandmaster/screens/tabs/home/add_edit_article.dart';
@@ -382,6 +384,10 @@ class _MyAppState extends State<MyApp> {
           GetPage(name: '/chat/folder', page: () => FolderScreen()),
           GetPage(name: '/chat/create', page: () => ChatCreateScreen()),
           GetPage(
+            name: '/chat/edit',
+            page: () => ChatEditScreen(),
+          ),
+          GetPage(
             name: '/chat/photo',
             page: () => ChatPhotoScreen(),
           ),
@@ -446,6 +452,7 @@ class _MyAppState extends State<MyApp> {
             name: '/learnings/add',
             page: () => AddEditLearningScreen(),
           ),
+          GetPage(name: '/learnings/photo', page: () => LearningPhotoScreen()),
           GetPage(
             name: '/places',
             page: () => PlacesScreen(),

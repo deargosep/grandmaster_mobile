@@ -6,7 +6,6 @@ import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
@@ -77,9 +76,9 @@ class _LearningsScreenState extends State<LearningsScreen> {
                                 margin: EdgeInsets.only(bottom: 16),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Uri url = Uri.parse(items[index].link);
-                                    launchUrl(url,
-                                        mode: LaunchMode.externalApplication);
+                                    // Uri url = Uri.parse(items[index].link);
+                                    Get.toNamed('/learnings/photo',
+                                        arguments: items[index]);
                                   },
                                   child: BrandCard(
                                     items[index],

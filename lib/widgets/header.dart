@@ -139,16 +139,25 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         textColor ?? Theme.of(context).colorScheme.secondary),
               ),
             ),
-            icon != '' ? Spacer() : Container(),
-            icon != ''
-                ? BrandIcon(
-                    icon: icon,
-                    onTap: iconOnTap,
-                    color: Theme.of(context).colorScheme.secondary,
-                    height: 18,
-                    width: 30,
-                  )
-                : Container()
+            // icon != '' ? Spacer() : Container(),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  icon != ''
+                      ? BrandIcon(
+                          icon: icon,
+                          onTap: iconOnTap,
+                          color: textColor ??
+                              Theme.of(context).colorScheme.secondary,
+                          height: 18,
+                          width: 30,
+                        )
+                      : Container()
+                ],
+              ),
+            ),
           ],
         ),
       ),

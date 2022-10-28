@@ -557,17 +557,39 @@ class _Item extends StatelessWidget {
                           : Color(0xFF2674E9)),
                 ),
               )
-            : Text(
-                "${value ?? "Необходимо заполнить"}",
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: value == null && ifNullRed
-                        ? isTrainer
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context).primaryColor
-                        : Theme.of(context).colorScheme.secondary),
-              ),
+            : value != null &&
+                    (name.toLowerCase().contains('справка') ||
+                        name.toLowerCase().contains('полис'))
+                ? Text(
+                    "${value ?? "Необходимо заполнить"}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: (DateFormat('dd.MM.y')
+                                        .parse(value)
+                                        .isBefore(DateTime.now()) ||
+                                    DateFormat('dd.MM.y')
+                                        .parse(value)
+                                        .isAtSameMomentAs(DateTime.now())) &&
+                                ifNullRed
+                            ?
+                            // isTrainer
+                            Theme.of(context).primaryColor
+                            : Theme.of(context).colorScheme.secondary
+                        // : Theme.of(context).colorScheme.secondary
+                        ),
+                  )
+                : Text(
+                    "${value ?? "Необходимо заполнить"}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: value == null && ifNullRed
+                            ? isTrainer
+                                ? Theme.of(context).colorScheme.secondary
+                                : Theme.of(context).primaryColor
+                            : Theme.of(context).colorScheme.secondary),
+                  ),
         SizedBox(
           height: 24,
         ),

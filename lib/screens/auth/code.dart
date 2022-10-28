@@ -49,8 +49,10 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
               await prefs.clear();
               String? token;
               if (!kIsWeb) {
-                final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-                token = await _fcm.getToken();
+                try {
+                  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+                  token = await _fcm.getToken();
+                } catch (e) {}
               }
               createDio().post('/auth/validate_code/', data: {
                 "phone_number": Get.arguments["raw"],

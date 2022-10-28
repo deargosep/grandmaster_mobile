@@ -10,6 +10,8 @@ import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/circle_logo.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/images/brand_icon.dart';
+
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({Key? key}) : super(key: key);
 
@@ -366,7 +368,13 @@ class ChatTile extends StatelessWidget {
                           ),
                   ],
                 ),
-              )
+              ),
+        !folder
+            ? Container()
+            : BrandIcon(
+                icon: 'right_arrow',
+                color: Theme.of(context).colorScheme.secondary,
+              ),
       ],
     );
   }

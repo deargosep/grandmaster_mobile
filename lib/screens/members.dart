@@ -13,20 +13,35 @@ import 'tabs/chat/chat.dart';
 
 class MembersScreen extends StatelessWidget {
   MembersScreen({Key? key}) : super(key: key);
+  TextEditingController controller =
+      TextEditingController(text: Get.arguments["name"]);
   bool isOwner = Get.arguments["isOwner"];
   var id = Get.arguments["id"];
+  var name = Get.arguments["name"];
   Map item = Get.arguments;
-  List<MinimalUser> members = Get.arguments["members"];
   @override
   Widget build(BuildContext context) {
+    List<MinimalUser> members = Provider.of<ChatsState>(context)
+        .chats
+        .firstWhere((element) => element.id == id)
+        .members;
     // print(id);
     // print(item);
     return CustomScaffold(
         appBar: AppHeader(
           text: 'Список участников',
+          icon: isOwner ? 'settings' : '',
+          iconOnTap: () {
+            if (isOwner)
+              Get.toNamed('/chat/edit',
+                  arguments: ChatType(id: id, name: name, members: members));
+          },
         ),
         body: Column(
           children: [
+            SizedBox(
+              height: 8,
+            ),
             Divider(
               height: 0,
             ),
