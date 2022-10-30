@@ -156,7 +156,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                   SizedBox(
                                     height: 24,
                                   ),
-                                  user.role != 'trainer' ||
+                                  user.role != 'trainer' &&
                                           user.children.isEmpty
                                       ? Row(
                                           mainAxisAlignment:
@@ -261,20 +261,25 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                         SizedBox(
                           height: 24,
                         ),
-                        (Provider.of<UserState>(context).user.role ==
-                                        'trainer' &&
+                        ((Provider.of<UserState>(context).user.role ==
+                                            'trainer' ||
+                                        Provider.of<UserState>(context)
+                                                .user
+                                                .role ==
+                                            'moderator' ||
+                                        Provider.of<UserState>(context)
+                                                .user
+                                                .role ==
+                                            'specialist') &&
                                     user.isMyStudent) ||
-                                Provider.of<UserState>(context, listen: false)
+                                Provider.of<UserState>(context)
                                         .user
                                         .children
                                         .firstWhereOrNull((element) =>
-                                            element.id == user.id) !=
+                                            user.id == element.id) !=
                                     null ||
-                                Provider.of<UserState>(context, listen: false)
-                                        .user
-                                        .id ==
-                                    user.id ||
-                                user.children.isEmpty
+                                Provider.of<UserState>(context).user.id ==
+                                    user.id
                             ? TabsSwitch(
                                 controller: controller,
                                 children: [
@@ -294,8 +299,19 @@ class _SomeoneProfileState extends State<SomeoneProfile>
               ))
             ];
           },
-          body: Provider.of<UserState>(context).user.role == 'trainer' &&
-                  user.isMyStudent
+          body: ((Provider.of<UserState>(context).user.role == 'trainer' ||
+                          Provider.of<UserState>(context).user.role ==
+                              'moderator' ||
+                          Provider.of<UserState>(context).user.role ==
+                              'specialist') &&
+                      user.isMyStudent) ||
+                  Provider.of<UserState>(context)
+                          .user
+                          .children
+                          .firstWhereOrNull(
+                              (element) => user.id == element.id) !=
+                      null ||
+                  Provider.of<UserState>(context).user.id == user.id
               ? Padding(
                   padding: const EdgeInsets.only(top: kIsWeb ? 20 : 0),
                   child: TabBarView(controller: controller, children: [

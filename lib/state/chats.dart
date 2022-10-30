@@ -72,6 +72,7 @@ class ChatsState extends ChangeNotifier {
           members.sort((a, b) {
             return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
           });
+          print(e["type"]);
           return ChatType(
               id: e["id"],
               name: e["display_name"] ?? e["name"],

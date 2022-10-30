@@ -12,12 +12,14 @@ class BrandIcon extends StatelessWidget {
       this.height,
       this.fit,
       this.onTapCalendar,
+      this.disabled = false,
       this.onTap})
       : super(key: key);
   final icon;
   Color? color;
   double? width;
   double? height;
+  bool disabled;
   final fit;
   final onTapCalendar;
   final onTap;
@@ -91,24 +93,29 @@ class BrandIcon extends StatelessWidget {
         ),
       );
     }
-    return onTap != null
-        ? GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              onTap();
-            },
-            child: SvgPicture.asset(
+    return Opacity(
+      opacity: disabled ? 0.7 : 1,
+      child: onTap != null
+          ? GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                if (!disabled) {
+                  onTap();
+                }
+              },
+              child: SvgPicture.asset(
+                'assets/icons/${icon}.svg',
+                color: color ?? Theme.of(context).primaryColor,
+                height: height,
+                width: width,
+              ),
+            )
+          : SvgPicture.asset(
               'assets/icons/${icon}.svg',
               color: color ?? Theme.of(context).primaryColor,
               height: height,
               width: width,
             ),
-          )
-        : SvgPicture.asset(
-            'assets/icons/${icon}.svg',
-            color: color ?? Theme.of(context).primaryColor,
-            height: height,
-            width: width,
-          );
+    );
   }
 }

@@ -28,6 +28,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
   User user = Get.arguments["user"];
   int currentIndex = 0;
   CarouselController controller = CarouselController();
+  bool photoLoaded = false;
 
   List<Map> optionList = [
     {
@@ -128,9 +129,10 @@ class _DocumentScreenState extends State<DocumentScreen> {
                   carouselController: controller,
                   options: CarouselOptions(
                     onPageChanged: (ind, CarouselPageChangedReason reason) {
-                      setState(() {
-                        currentIndex = ind;
-                      });
+                      if (mounted)
+                        setState(() {
+                          currentIndex = ind;
+                        });
                     },
                     initialPage: 0,
                     viewportFraction: 1,
@@ -182,6 +184,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
           icon: documents[optionList[currentIndex]["code"]] != null
               ? 'download'
               : '',
+          iconDisabled: !photoLoaded,
           iconOnTap: () async {
             String rawUrl = documents[optionList[currentIndex]["code"]];
             Uri url = Uri.parse(rawUrl);
@@ -216,9 +219,11 @@ class _DocumentScreenState extends State<DocumentScreen> {
           carouselController: controller,
           options: CarouselOptions(
             onPageChanged: (ind, CarouselPageChangedReason reason) {
-              setState(() {
-                currentIndex = ind;
-              });
+              if (mounted)
+                setState(() {
+                  photoLoaded = false;
+                  currentIndex = ind;
+                });
             },
             initialPage: arguments["index"],
             viewportFraction: 1,
@@ -245,6 +250,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
                               documents[i["code"]]!,
                               height: 335,
                               width: 335,
+                              onLoad: () {
+                                if (mounted)
+                                  setState(() {
+                                    photoLoaded = true;
+                                  });
+                              },
                             )
                           : Center(
                               child: Text(

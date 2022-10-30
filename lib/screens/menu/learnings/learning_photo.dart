@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/learnings.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:photo_view/photo_view.dart';
@@ -21,7 +22,35 @@ class LearningPhotoScreen extends StatefulWidget {
 }
 
 class _LearningPhotoScreenState extends State<LearningPhotoScreen> {
+  bool _loading = true;
+  late NetworkImage _image;
   LearningType learning = Get.arguments;
+  // PhotoViewController controller = PhotoViewController();
+  // late ImageStream stream;
+  @override
+  void initState() {
+    super.initState();
+    _image = NetworkImage(learning.link);
+    _image
+        .resolve(ImageConfiguration())
+        .addListener(ImageStreamListener((image, synchronousCall) {
+      if (mounted)
+        setState(() {
+          _loading = false;
+        });
+    }));
+    if (!isImage(learning.link)) {
+      _loading = false;
+    }
+    // stream.addListener(ImageStreamListener((image, synchronousCall) {
+    //
+    // }));
+    // stream = controller.outputStateStream;
+    // stream.listen((event) {}, onDone: () {
+    //   _loading = false;
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -32,6 +61,7 @@ class _LearningPhotoScreenState extends State<LearningPhotoScreen> {
         text: learning.name,
         withBack: true,
         icon: 'download',
+        iconDisabled: _loading,
         iconOnTap: () async {
           if (isImage(learning.link)) {
             if (kIsWeb) {
@@ -51,7 +81,7 @@ class _LearningPhotoScreenState extends State<LearningPhotoScreen> {
                 anchorElement.click();
                 anchorElement.remove();
               } catch (e) {
-                print(e);
+                showErrorSnackbar(e.toString());
               }
             } else {
               await launchUrl(Uri.parse(learning.link),
@@ -64,7 +94,7 @@ class _LearningPhotoScreenState extends State<LearningPhotoScreen> {
         },
       ),
       body: isImage(learning.link)
-          ? PhotoView(imageProvider: NetworkImage(learning.link))
+          ? PhotoView(imageProvider: _image)
           : Center(
               child: Text(
                 'Невозможно отобразить изображение в приложении из-за неверной ссылки. \n\nПопробуйте загрузить изображение вручную.',

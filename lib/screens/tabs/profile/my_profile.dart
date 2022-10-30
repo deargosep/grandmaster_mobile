@@ -188,7 +188,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         SizedBox(
                           height: 24,
                         ),
-                        user.role != 'trainer' || user.children.isEmpty
+                        user.role != 'trainer' && user.children.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

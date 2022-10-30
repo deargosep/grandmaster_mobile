@@ -149,39 +149,58 @@ class BrandCard extends StatelessWidget {
   }
 }
 
-class LoadingImage extends StatelessWidget {
-  const LoadingImage(
-    this.url, {
-    Key? key,
-    this.height,
-    this.width,
-    this.borderRadius,
-  }) : super(key: key);
+class LoadingImage extends StatefulWidget {
+  const LoadingImage(this.url,
+      {Key? key, this.height, this.width, this.borderRadius, this.onLoad})
+      : super(key: key);
   final String url;
   final double? width;
   final double? height;
+  final VoidCallback? onLoad;
   final BorderRadius? borderRadius;
+
+  @override
+  State<LoadingImage> createState() => _LoadingImageState();
+}
+
+class _LoadingImageState extends State<LoadingImage> {
+  late Image _image;
+  bool _loading = true;
+  @override
+  void initState() {
+    super.initState();
+    _image = Image.network(
+      widget.url,
+      fit: BoxFit.cover,
+      height: widget.height,
+      width: widget.width ?? double.infinity,
+    );
+    _image.image
+        .resolve(new ImageConfiguration())
+        .addListener(ImageStreamListener((image, synchronousCall) {
+      if (widget.onLoad != null) {
+        widget.onLoad!();
+      }
+      if (mounted)
+        setState(() {
+          _loading = false;
+        });
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Image.network(url, fit: BoxFit.cover, height: height, width: width,
-        loadingBuilder: (context, child, loading) {
-      if (loading == null)
-        return ClipRRect(
-            borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(15)),
-            child: child);
-      return Container(
-        height: height,
-        width: width,
-        child: Skeleton(
-            isLoading: true,
-            skeleton: SkeletonLine(
-              style: SkeletonLineStyle(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  height: height ?? 132,
-                  width: width ?? double.infinity),
-            ),
-            child: child),
-      );
-    });
+    return Skeleton(
+        isLoading: _loading,
+        skeleton: SkeletonLine(
+          style: SkeletonLineStyle(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              height: widget.height ?? 132,
+              width: widget.width ?? double.infinity),
+        ),
+        child: ClipRRect(
+            borderRadius:
+                widget.borderRadius ?? BorderRadius.all(Radius.circular(15)),
+            child: _image));
   }
 }

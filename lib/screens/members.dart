@@ -32,7 +32,9 @@ class MembersScreen extends StatelessWidget {
           text: 'Список участников',
           icon: isOwner ? 'settings' : '',
           iconOnTap: () {
-            if (isOwner)
+            if (Provider.of<UserState>(context, listen: false).user.role ==
+                    'moderator' ||
+                isOwner)
               Get.toNamed('/chat/edit',
                   arguments: ChatType(id: id, name: name, members: members));
           },

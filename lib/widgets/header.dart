@@ -89,6 +89,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       this.iconOnTap,
       this.padding,
       this.onTap,
+      this.iconDisabled = false,
       this.textColor})
       : super(key: key);
   final text;
@@ -96,6 +97,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   bool withBack;
   final padding;
   String? icon;
+  bool iconDisabled;
   final VoidCallback? onTap;
   final VoidCallback? iconOnTap;
   final Color? textColor;
@@ -153,6 +155,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                               Theme.of(context).colorScheme.secondary,
                           height: 18,
                           width: 30,
+                          disabled: iconDisabled,
                         )
                       : Container()
                 ],
