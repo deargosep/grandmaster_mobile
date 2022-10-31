@@ -565,16 +565,17 @@ class _Item extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
-                        color: (DateFormat('dd.MM.y')
-                                        .parse(value)
-                                        .isBefore(DateTime.now()) ||
-                                    DateFormat('dd.MM.y')
-                                        .parse(value)
-                                        .isAtSameMomentAs(DateTime.now())) &&
-                                ifNullRed
-                            ?
-                            // isTrainer
-                            Theme.of(context).primaryColor
+                        color: DateFormat('dd.MM.y')
+                                    .parse(value)
+                                    .isBefore(DateTime.now()) ||
+                                DateFormat('dd.MM.y')
+                                    .parse(value)
+                                    .isAtSameMomentAs(DateTime.now()) ||
+                                DateFormat('dd.MM.y')
+                                    .parse(value)
+                                    .subtract(Duration(days: 3))
+                                    .isBefore(DateTime.now())
+                            ? Theme.of(context).primaryColor
                             : Theme.of(context).colorScheme.secondary
                         // : Theme.of(context).colorScheme.secondary
                         ),

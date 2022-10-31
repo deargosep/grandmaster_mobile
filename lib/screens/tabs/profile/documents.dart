@@ -85,7 +85,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       OptionType('СНИЛС', destination,
           arguments: {"index": 9, "user": user, "documents": documents}),
       OptionType('Другие документы', destination,
-          arguments: {"type": "other", "user": user})
+          arguments: {"type": "other", "user": user, "documents": documents})
     ];
     if (user.role == 'trainer') {
       optionList = [

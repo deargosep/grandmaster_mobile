@@ -24,7 +24,7 @@ class DocumentScreen extends StatefulWidget {
 
 class _DocumentScreenState extends State<DocumentScreen> {
   Map arguments = Get.arguments;
-  Map<String, dynamic> documents = Map.from(Get.arguments["documents"]);
+  Map<String, dynamic> documents = Map.from(Get.arguments["documents"] ?? {});
   User user = Get.arguments["user"];
   int currentIndex = 0;
   CarouselController controller = CarouselController();
