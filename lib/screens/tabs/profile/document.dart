@@ -96,6 +96,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 appBar: AppHeader(
                     text: "Другие документы",
                     icon: 'download',
+                    iconDisabled: !photoLoaded,
                     iconOnTap: () async {
                       String rawUrl = other_documents[currentIndex];
                       Uri url = Uri.parse(rawUrl);
@@ -131,6 +132,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     onPageChanged: (ind, CarouselPageChangedReason reason) {
                       if (mounted)
                         setState(() {
+                          photoLoaded = false;
                           currentIndex = ind;
                         });
                     },
@@ -161,6 +163,12 @@ class _DocumentScreenState extends State<DocumentScreen> {
                                     i,
                                     height: 335,
                                     width: 335,
+                                    onLoad: () {
+                                      if (mounted)
+                                        setState(() {
+                                          photoLoaded = true;
+                                        });
+                                    },
                                   )
                                 : Center(
                                     child: Text(
