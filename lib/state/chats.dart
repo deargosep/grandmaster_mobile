@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,14 @@ class ChatsState extends ChangeNotifier {
     createDio()
         .get('/chats/${childId != null ? '?id=' : ''}${childId ?? ''}')
         .then((value) {
+      List oldList =
+          value.data.where((e) => e["folder"] != 'trainers').toList();
+      List trainers =
+          value.data.where((e) => e["folder"] == 'trainers').toList();
+      oldList = [...trainers, ...oldList];
       List<ChatType> newList = [
-        ...value.data.map((e) {
+        ...oldList.map((e) {
+          log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
             ...e["members"]

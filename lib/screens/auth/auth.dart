@@ -35,8 +35,9 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: kDebugMode ? numbers["parent_chats"] : '');
+      TextEditingController(text: kDebugMode ? numbers["trainer"] : '');
   bool isLoaded = false;
+  bool isLoadedAuth = true;
 
   @override
   void initState() {
@@ -158,11 +159,16 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
             BrandButton(
                 text: 'Продолжить',
                 type: 'primary',
+                isLoaded: isLoadedAuth,
                 // disabled: _formKey.currentState != null
                 //     ? !_formKey.currentState!.validate()
                 //     : true,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    if (mounted)
+                      setState(() {
+                        isLoadedAuth = false;
+                      });
                     SharedPreferences.getInstance()
                         .then((value) => value.clear());
                     var number = '+7 ${phoneNumber.text}'
@@ -176,10 +182,17 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                               "phone_number": '${number}',
                             },
                             options: Options(headers: {}))
-                        .then((value) => Get.toNamed('/code', arguments: {
-                              "formatted": '+7 ${phoneNumber.text}',
-                              "raw": number
-                            }));
+                        .then((value) {
+                      Get.toNamed('/code', arguments: {
+                        "formatted": '+7 ${phoneNumber.text}',
+                        "raw": number
+                      });
+                    }).whenComplete(() {
+                      if (mounted)
+                        setState(() {
+                          isLoadedAuth = true;
+                        });
+                    });
                   }
                 }),
             Visibility(

@@ -24,7 +24,8 @@ class InputCodeScreen extends StatefulWidget {
 
 class _InputCodeScreenState extends State<InputCodeScreen> {
   bool error = false;
-  TextEditingController controller = TextEditingController(text: '12345');
+  bool isLoaded = true;
+  TextEditingController controller = TextEditingController(text: '1234');
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -43,8 +44,13 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
         bottomNavigationBar: BottomPanel(
           withShadow: false,
           child: BrandButton(
+            isLoaded: isLoaded,
             disabled: error,
             onPressed: () async {
+              if (mounted)
+                setState(() {
+                  isLoaded = false;
+                });
               final prefs = await SharedPreferences.getInstance();
               await prefs.clear();
               String? token;
@@ -71,6 +77,11 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                     Get.offAllNamed('/bar', arguments: 1);
                   }
                 });
+              }).whenComplete(() {
+                if (mounted)
+                  setState(() {
+                    isLoaded = true;
+                  });
               });
             },
             text: 'Вход',
@@ -129,7 +140,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 ),
                 errorStyle: TextStyle(height: 0.01, color: Colors.transparent),
                 onChanged: (text) {
-                  if (text.length < 5) {
+                  if (text.length < 4) {
                     if (mounted)
                       setState(() {
                         error = true;
@@ -142,13 +153,13 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                   }
                 },
                 validator: (text) {
-                  if (text!.length < 5) {
+                  if (text!.length < 4) {
                     return 'Введите код';
                   } else {
                     return null;
                   }
                 },
-                maxLength: 5,
+                maxLength: 4,
               ),
               SizedBox(
                 height: 32,

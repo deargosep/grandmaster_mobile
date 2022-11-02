@@ -7,10 +7,11 @@ class BrandButton extends StatefulWidget {
   bool disabled;
   final onPressed;
   final double? width;
-  final textAlign;
+  final Alignment textAlign;
   final TextStyle? textStyle;
   final String? icon;
   final Color? iconColor;
+  final bool isLoaded;
 
   BrandButton(
       {Key? key,
@@ -18,8 +19,9 @@ class BrandButton extends StatefulWidget {
       this.type = 'primary',
       this.onPressed,
       this.disabled = false,
+      this.isLoaded = true,
       this.width,
-      this.textAlign = 'center',
+      this.textAlign = Alignment.center,
       this.textStyle,
       this.icon,
       this.iconColor})
@@ -71,58 +73,129 @@ class _BrandButtonState extends State<BrandButton> {
           });
         },
         onTap: () {
-          if (widget.disabled == true) {
-            print('null');
+          if (widget.disabled == true || !widget.isLoaded) {
             return null;
           } else {
             widget.onPressed();
           }
         },
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: getColor(),
-          ),
-          width: widget.width ?? MediaQuery.of(context).size.width,
-          height: 50,
-          child: widget.icon != null
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Spacer(),
-                    BrandIcon(
-                      icon: widget.icon,
-                      color: widget.iconColor,
-                    ),
-                    SizedBox(
-                      width: 11,
-                    ),
-                    Text(
-                      widget.text,
-                      style: style,
-                    ),
-                    Spacer()
-                  ],
-                )
-              : widget.textAlign == 'center'
-                  ? Center(
-                      child: Text(
-                      widget.text,
-                      style: style,
-                    ))
-                  : widget.textAlign == 'left'
-                      ? Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(20, 16.5, 20, 16.5),
-                          child: Text(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: getColor(),
+            ),
+            width: widget.width ?? MediaQuery.of(context).size.width,
+            height: 50,
+            child: widget.icon != null
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Spacer(),
+                      BrandIcon(
+                        icon: widget.icon,
+                        color: widget.iconColor,
+                      ),
+                      SizedBox(
+                        width: 11,
+                      ),
+                      Text(
+                        widget.text,
+                        style: style,
+                      ),
+                      Spacer()
+                    ],
+                  )
+                : !widget.isLoaded
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Spacer(),
+                          Container(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 11,
+                          ),
+                          Text(
                             widget.text,
                             style: style,
                           ),
-                        )
-                      : Text(
+                          Spacer()
+                        ],
+                      )
+                    : Align(
+                        alignment: Alignment.center,
+                        child: Text(
                           widget.text,
                           style: style,
-                        ),
-        ));
+                        ))));
   }
 }
+
+// GestureDetector(
+// onTap: !isLoaded
+// ? null
+//     : () {
+// setState(() {
+// isLoaded = false;
+// });
+// createDio()
+//     .get('/chats/${user.chatId}/')
+//     .then((value) {
+// Provider.of<ChatsState>(context,
+// listen: false)
+//     .setChats(
+// childId: Provider.of<UserState>(
+// context,
+// listen: false)
+//     .childId)
+//     .then((value) {
+// if (mounted)
+// setState(() {
+// isLoaded = true;
+// });
+// Get.toNamed('/chat',
+// arguments: Provider.of<ChatsState>(
+// context,
+// listen: false)
+//     .chats
+//     .firstWhere((element) =>
+// element.id == user.chatId));
+// });
+// });
+// },
+// child: Container(
+// height: 40,
+// decoration: BoxDecoration(
+// color: Color(0xFFFBF7F7),
+// borderRadius:
+// BorderRadius.all(Radius.circular(100))),
+// child: Row(
+// mainAxisAlignment: MainAxisAlignment.center,
+// children: [
+// !isLoaded
+// ? Container(
+// height: 20,
+// width: 20,
+// margin:
+// const EdgeInsets.only(right: 20),
+// child: CircularProgressIndicator(),
+// )
+// : Container(),
+// Text(
+// 'Написать сообщение',
+// style: TextStyle(
+// color: Theme.of(context)
+// .colorScheme
+//     .secondary,
+// fontWeight: FontWeight.w500,
+// fontSize: 16),
+// ),
+// ],
+// ),
+// ),
+// ),
