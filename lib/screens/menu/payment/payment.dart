@@ -192,14 +192,18 @@ class _Payment extends StatelessWidget {
                                       color: getTextColor()),
                                 ),
                               )
-                            : Text(
-                                'Оплатить до: ${DateFormat('dd.MM.y').format(item.must_be_paid_at)}',
-                                maxLines: 1,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: getTextColor()),
-                              )
+                            : DateFormat('dd.MM.y')
+                                        .format(item.must_be_paid_at) ==
+                                    '01.01.2100'
+                                ? Container()
+                                : Text(
+                                    'Оплатить до: ${DateFormat('dd.MM.y').format(item.must_be_paid_at)}',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: getTextColor()),
+                                  )
                       ],
                     ),
                     Text(

@@ -25,7 +25,9 @@ class InputCodeScreen extends StatefulWidget {
 class _InputCodeScreenState extends State<InputCodeScreen> {
   bool error = false;
   bool isLoaded = true;
-  TextEditingController controller = TextEditingController(text: '1234');
+  TextEditingController controller =
+      TextEditingController(text: kDebugMode ? '1234' : '');
+
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

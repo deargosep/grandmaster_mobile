@@ -146,43 +146,53 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                         SizedBox(
                           height: 33,
                         ),
-                        user.passport.sport_qualification != null &&
-                                (user.passport.sport_qualification != '' &&
-                                    user.passport.sport_qualification !=
-                                        'Нет квалификации')
-                            ? Container(
-                                width: 300,
-                                child: Text(
-                                  'Спортивная квалификация: ${user.passport.sport_qualification}',
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryContainer,
-                                      fontSize: 14),
-                                ),
-                              )
-                            : Container(),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        user.passport.tech_qualification != null &&
-                                (user.passport.tech_qualification != '' &&
-                                    user.passport.tech_qualification !=
-                                        'Нет квалификации')
-                            ? Container(
-                                width: 300,
-                                child: Text(
-                                  'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryContainer,
-                                      fontSize: 14),
-                                ),
+                        user.children.isEmpty
+                            ? Column(
+                                children: [
+                                  user.passport.sport_qualification != null &&
+                                          (user.passport.sport_qualification !=
+                                                  '' &&
+                                              user.passport
+                                                      .sport_qualification !=
+                                                  'Нет квалификации')
+                                      ? Container(
+                                          width: 300,
+                                          child: Text(
+                                            'Спортивная квалификация: ${user.passport.sport_qualification}',
+                                            maxLines: 2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryContainer,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  user.passport.tech_qualification != null &&
+                                          (user.passport.tech_qualification !=
+                                                  '' &&
+                                              user.passport
+                                                      .tech_qualification !=
+                                                  'Нет квалификации')
+                                      ? Container(
+                                          width: 300,
+                                          child: Text(
+                                            'Техническая квалификация: ${user.passport.tech_qualification.toString()}',
+                                            maxLines: 2,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondaryContainer,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
                               )
                             : Container(),
                         SizedBox(
@@ -401,7 +411,7 @@ class PassportInfo extends StatelessWidget {
               user.role != 'trainer'
                   ? _Item(
                       name: "Место учебы (город, школа)",
-                      ifNullRed: true,
+                      ifNullRed: false,
                       value: passport.school,
                     )
                   : Container(),
