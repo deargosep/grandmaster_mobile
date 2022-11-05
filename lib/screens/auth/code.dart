@@ -27,6 +27,8 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
   bool isLoaded = true;
   TextEditingController controller =
       TextEditingController(text: kDebugMode ? '1234' : '');
+  var formatted = Get.arguments["formatted"];
+  var raw = Get.arguments["raw"];
 
   void initState() {
     super.initState();
@@ -63,7 +65,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                 } catch (e) {}
               }
               createDio().post('/auth/validate_code/', data: {
-                "phone_number": Get.arguments["raw"],
+                "phone_number": raw,
                 "code": controller.text,
                 "fcm_token": token
               }).then((value) async {
@@ -97,7 +99,8 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
               Spacer(),
               Logo(),
               Spacer(),
-              Text('Код отправлен на номер',
+              Text('Введите последние 4 цифры позвонившего вам номера.',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
@@ -106,7 +109,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
               SizedBox(
                 height: 8,
               ),
-              Text('${Get.arguments["formatted"]}',
+              Text('${formatted}',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
