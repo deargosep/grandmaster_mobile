@@ -128,7 +128,7 @@ class Input extends StatelessWidget {
               ? Transform.scale(
                   scale: 0.45,
                   child: BrandIcon(
-                    icon: icon,
+                    icon: icon!,
                     onTapCalendar: onTapCalendar,
                     onTap: onTapIcon,
                   ))

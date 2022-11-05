@@ -92,7 +92,7 @@ class _BrandButtonState extends State<BrandButton> {
                     children: [
                       Spacer(),
                       BrandIcon(
-                        icon: widget.icon,
+                        icon: widget.icon!,
                         color: widget.iconColor,
                       ),
                       SizedBox(

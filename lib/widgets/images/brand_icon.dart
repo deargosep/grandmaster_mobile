@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:simple_shadow/simple_shadow.dart';
+import 'package:universal_html/html.dart' as html;
 
 class BrandIcon extends StatelessWidget {
   BrandIcon(
@@ -15,7 +17,7 @@ class BrandIcon extends StatelessWidget {
       this.disabled = false,
       this.onTap})
       : super(key: key);
-  final icon;
+  String icon;
   Color? color;
   double? width;
   double? height;
@@ -23,6 +25,7 @@ class BrandIcon extends StatelessWidget {
   final fit;
   final onTapCalendar;
   final onTap;
+
   @override
   Widget build(BuildContext context) {
     DateTime selectedDate = DateTime.now();
@@ -30,13 +33,15 @@ class BrandIcon extends StatelessWidget {
       return InkWell(
         onTap: () async {
           if (onTap != null) onTap();
-          final DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: selectedDate,
-              firstDate: DateTime(1950, 1),
-              lastDate: DateTime(2045));
-          if (picked != null && picked != selectedDate) {
-            onTapCalendar("${picked.day}.${picked.month}.${picked.year}");
+          if (onTapCalendar != null) {
+            final DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime(1950, 1),
+                lastDate: DateTime(2045));
+            if (picked != null && picked != selectedDate) {
+              onTapCalendar("${picked.day}.${picked.month}.${picked.year}");
+            }
           }
         },
         child: SvgPicture.asset(
@@ -92,6 +97,11 @@ class BrandIcon extends StatelessWidget {
           ),
         ),
       );
+    }
+    if (kIsWeb &&
+        icon == 'download' &&
+        html.window.matchMedia('(display-mode: standalone)').matches) {
+      return Container();
     }
     return Opacity(
       opacity: disabled ? 0.7 : 1,

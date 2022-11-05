@@ -65,7 +65,7 @@ class Header extends StatelessWidget {
             icon != '' ? Spacer() : Container(),
             icon != ''
                 ? BrandIcon(
-                    icon: icon,
+                    icon: icon!,
                     onTap: iconOnTap,
                     color: Theme.of(context).colorScheme.secondary,
                     height: 18,
@@ -149,7 +149,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   icon != ''
                       ? BrandIcon(
-                          icon: icon,
+                          icon: icon!,
                           onTap: iconOnTap,
                           color: textColor ??
                               Theme.of(context).colorScheme.secondary,
