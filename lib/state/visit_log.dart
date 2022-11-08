@@ -26,7 +26,7 @@ class VisitLogState extends ChangeNotifier {
       completer.completeError(err);
     }).get('/visit_log/?gym=${placeId}&sport_group=${groupId}').then((value) {
       var e = value.data;
-      print(e);
+      // print(e);
       _visitLog = VisitLogType(
           id: e["schedule"]["id"],
           weekday: e["schedule"]["weekday"],

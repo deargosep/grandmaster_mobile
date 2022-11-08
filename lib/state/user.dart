@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -157,7 +156,7 @@ class UserState extends ChangeNotifier {
 
   Future<void> setUser(data) async {
     var completer = new Completer();
-    log(data.toString());
+    // log(data.toString());
     User user = convertMapToUser(data);
     if (user.children.isNotEmpty) {
       _childId = user.children.first.id;

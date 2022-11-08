@@ -176,7 +176,12 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
                         .replaceAll(')', '')
                         .replaceAll('(', '')
                         .replaceAll('-', '');
-                    createDio()
+                    createDio(errHandler: (err, handler) {
+                      if (mounted)
+                        setState(() {
+                          isLoadedAuth = true;
+                        });
+                    })
                         .post('/auth/send_code/',
                             data: {
                               "phone_number": '${number}',

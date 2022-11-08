@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +64,7 @@ class ChatsState extends ChangeNotifier {
       oldList = [...trainers, ...oldList];
       List<ChatType> newList = [
         ...oldList.map((e) {
-          log(e.toString());
+          // log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
             ...e["members"]
@@ -79,7 +78,7 @@ class ChatsState extends ChangeNotifier {
           members.sort((a, b) {
             return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
           });
-          print(e["type"]);
+          // print(e["type"]);
           return ChatType(
               id: e["id"],
               name: e["display_name"] ?? e["name"],

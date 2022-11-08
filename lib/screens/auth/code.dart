@@ -26,7 +26,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
   bool error = false;
   bool isLoaded = true;
   TextEditingController controller =
-      TextEditingController(text: kDebugMode ? '1234' : '');
+      TextEditingController(text: kDebugMode ? '5555' : '');
   var formatted = Get.arguments["formatted"];
   var raw = Get.arguments["raw"];
 
@@ -64,7 +64,12 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                   token = await _fcm.getToken();
                 } catch (e) {}
               }
-              createDio().post('/auth/validate_code/', data: {
+              createDio(errHandler: (err, handler) {
+                if (mounted)
+                  setState(() {
+                    isLoaded = true;
+                  });
+              }).post('/auth/validate_code/', data: {
                 "phone_number": raw,
                 "code": controller.text,
                 "fcm_token": token

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
@@ -10,6 +11,7 @@ import 'package:grandmaster/widgets/input.dart';
 import 'package:grandmaster/widgets/select_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
 class LogJournalScreen extends StatefulWidget {
@@ -26,6 +28,7 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
   TextEditingController timeStart = TextEditingController(text: '');
   TextEditingController dateEnd = TextEditingController(text: '');
   TextEditingController timeEnd = TextEditingController(text: '');
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,6 +37,7 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
   }
 
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     List<GroupType> groups = Provider.of<GroupsState>(context).groups;
@@ -78,8 +82,16 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
                 'end_datetime': datetimeend
               }).then((value) {
                 Get.toNamed('/success', arguments: 'Отчет успешно сформирован');
-                launchUrl(Uri.parse(value.data["url"]),
-                    mode: LaunchMode.externalApplication);
+                if (kIsWeb &&
+                    html.window
+                        .matchMedia('(display-mode: standalone)')
+                        .matches) {
+                  showErrorSnackbar(
+                      'Перейдите в версию для браузера или в мобильное приложение для скачивания');
+                } else {
+                  launchUrl(Uri.parse(value.data["url"]),
+                      mode: LaunchMode.externalApplication);
+                }
               });
             }
           },

@@ -4,6 +4,8 @@ import 'package:grandmaster/state/schedule.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/bottombar_wrap.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/input.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +18,17 @@ class TableScheduleScreen extends StatefulWidget {
 }
 
 class _TableScheduleScreenState extends State<TableScheduleScreen> {
+  bool isLoaded = true;
+  var placeId = Get.arguments["placeId"];
+  var groupId = Get.arguments["groupId"];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var placeId = Get.arguments["placeId"];
-      var groupId = Get.arguments["groupId"];
+      placeId = Get.arguments["placeId"];
+      groupId = Get.arguments["groupId"];
       // print('$placeId $groupId');
       Provider.of<ScheduleState>(context, listen: false)
           .setSchedule(placeId, groupId);
@@ -66,7 +72,34 @@ class _TableScheduleScreenState extends State<TableScheduleScreen> {
             SizedBox(
               height: 16,
             ),
-            Schedule(schedule)
+            Schedule(schedule),
+            Spacer(),
+            BrandButton(
+              isLoaded: isLoaded,
+              text: 'Очистить',
+              onPressed: () {
+                if (mounted)
+                  setState(() {
+                    isLoaded = false;
+                  });
+                createDio(errHandler: (err, handler) {
+                  if (mounted)
+                    setState(() {
+                      isLoaded = true;
+                    });
+                }).delete('/schedule/', data: {
+                  "gym": placeId.toString(),
+                  "sport_group": groupId.toString(),
+                }).then((value) {
+                  if (mounted)
+                    setState(() {
+                      isLoaded = true;
+                    });
+                  Provider.of<ScheduleState>(context, listen: false)
+                      .setSchedule(placeId.toString(), groupId.toString());
+                });
+              },
+            )
           ],
         ));
   }

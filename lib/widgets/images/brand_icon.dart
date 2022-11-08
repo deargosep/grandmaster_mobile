@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:grandmaster/utils/dio.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -101,7 +102,21 @@ class BrandIcon extends StatelessWidget {
     if (kIsWeb &&
         icon == 'download' &&
         html.window.matchMedia('(display-mode: standalone)').matches) {
-      return Container();
+      return Opacity(
+          opacity: 0.7,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              showErrorSnackbar(
+                  'Перейдите в версию для браузера или в мобильное приложение для скачивания');
+            },
+            child: SvgPicture.asset(
+              'assets/icons/${icon}.svg',
+              color: color ?? Theme.of(context).primaryColor,
+              height: height,
+              width: width,
+            ),
+          ));
     }
     return Opacity(
       opacity: disabled ? 0.7 : 1,
