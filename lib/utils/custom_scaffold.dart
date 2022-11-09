@@ -14,6 +14,7 @@ class CustomScaffold extends StatefulWidget {
       EdgeInsets? this.padding,
       this.bottomNavigationBar,
       this.appBar,
+      this.isLoading = false,
       this.backgroundColor})
       : super(key: key);
   final body;
@@ -24,6 +25,7 @@ class CustomScaffold extends StatefulWidget {
   bool? noBottomPadding = false;
   bool? noTopPadding = false;
   bool? onlyTopPadding = false;
+  bool isLoading;
   EdgeInsets? padding = EdgeInsets.zero;
   final bottomNavigationBar;
   final appBar;
@@ -49,6 +51,13 @@ class _CustomScaffoldState extends State<CustomScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isLoading) {
+      return Scaffold(
+          backgroundColor: widget.backgroundColor,
+          appBar: widget.appBar,
+          // bottomNavigationBar: widget.bottomNavigationBar,
+          body: Center(child: CircularProgressIndicator()));
+    }
     if (widget.scrollable == true) {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,

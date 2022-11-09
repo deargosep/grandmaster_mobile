@@ -27,7 +27,9 @@ class MembersScreen extends StatelessWidget {
         .members;
     // print(id);
     // print(item);
+    bool isLoaded = Provider.of<ChatsState>(context).isLoaded;
     return CustomScaffold(
+        isLoading: !isLoaded,
         appBar: AppHeader(
           text: 'Список участников',
           icon: isOwner ? 'settings' : '',

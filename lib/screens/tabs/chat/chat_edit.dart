@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grandmaster/state/chats.dart';
-import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:provider/provider.dart';
 
+import '../../../state/chats.dart';
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
 import '../../../widgets/checkboxes_list.dart';
@@ -33,18 +32,27 @@ class _ChatEditScreenState extends State<ChatEditScreen> {
     });
     name.text = chat?.name ?? '';
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<ChatsState>(context, listen: false).setChats();
-      Provider.of<GroupsState>(context, listen: false)
-          .setSportsmens()
-          .then((value) {
-        List<MinimalUser> members = chat!.members;
+      // await Provider.of<ChatsState>(context, listen: false).setChats();
+      createDio().get('/chats/members/').then((value) {
+        List<MinimalUser> members = [
+          ...value.data
+              .map((e) => MinimalUser(
+                  fullName: e["full_name"],
+                  id: e["id"],
+                  role: UserState().getRole(e["contact_type"])))
+              .toList()
+        ];
+        List<MinimalUser> chatmembers = chat!.members;
+        members.sort((a, b) {
+          return a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase());
+        });
         if (mounted)
           setState(() {
             checkboxes = {
-              for (var v in value)
-                '${v.id}_${v.fullName}_${v.isAdmitted}':
-                    members.firstWhereOrNull((element) => element.id == v.id) !=
-                        null
+              for (var v in members)
+                '${v.id}_${v.fullName}_${v.isAdmitted}': chatmembers
+                        .firstWhereOrNull((element) => element.id == v.id) !=
+                    null
             };
             isLoaded = true;
           });

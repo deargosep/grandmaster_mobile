@@ -330,9 +330,17 @@ class _MyAppState extends State<MyApp> {
           const Locale('ru', 'RU'),
         ],
         locale: Locale('ru'),
-        builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!),
+        builder: (context, child) {
+          FirebaseMessaging.onMessage.listen((event) {
+            Provider.of<ChatsState>(context, listen: false).setChats(
+                childId:
+                    Provider.of<UserState>(context, listen: false).childId);
+          });
+          return MediaQuery(
+              data:
+                  MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+              child: child!);
+        },
         // onGenerateRoute: (settings) {
         //   print(settings);
         //   if (settings.name != null) {

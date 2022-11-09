@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
@@ -35,13 +33,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
       // }
       Provider.of<ChatsState>(context, listen: false).setChats(
           childId: Provider.of<UserState>(context, listen: false).childId);
-      if (mounted)
-        Timer.periodic(Duration(seconds: 10), (timer) {
-          if (mounted)
-            Provider.of<ChatsState>(context, listen: false).setChats(
-                childId:
-                    Provider.of<UserState>(context, listen: false).childId);
-        });
+      // if (mounted)
+      //   Timer.periodic(Duration(seconds: 10), (timer) {
+      //     if (mounted)
+      //       Provider.of<ChatsState>(context, listen: false).setChats(
+      //           childId:
+      //               Provider.of<UserState>(context, listen: false).childId);
+      //   });
     });
   }
 
