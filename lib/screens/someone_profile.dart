@@ -261,17 +261,13 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                         SizedBox(
                           height: 24,
                         ),
-                        ((Provider.of<UserState>(context).user.role ==
-                                            'trainer' ||
-                                        Provider.of<UserState>(context)
-                                                .user
-                                                .role ==
-                                            'moderator' ||
-                                        Provider.of<UserState>(context)
-                                                .user
-                                                .role ==
-                                            'specialist') &&
+                        (Provider.of<UserState>(context).user.role ==
+                                        'trainer' &&
                                     user.isMyStudent) ||
+                                Provider.of<UserState>(context).user.role ==
+                                    'moderator' ||
+                                Provider.of<UserState>(context).user.role ==
+                                    'specialist' ||
                                 Provider.of<UserState>(context)
                                         .user
                                         .children
@@ -299,12 +295,10 @@ class _SomeoneProfileState extends State<SomeoneProfile>
               ))
             ];
           },
-          body: ((Provider.of<UserState>(context).user.role == 'trainer' ||
-                          Provider.of<UserState>(context).user.role ==
-                              'moderator' ||
-                          Provider.of<UserState>(context).user.role ==
-                              'specialist') &&
+          body: (Provider.of<UserState>(context).user.role == 'trainer' &&
                       user.isMyStudent) ||
+                  Provider.of<UserState>(context).user.role == 'moderator' ||
+                  Provider.of<UserState>(context).user.role == 'specialist' ||
                   Provider.of<UserState>(context)
                           .user
                           .children
