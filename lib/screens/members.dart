@@ -32,7 +32,11 @@ class MembersScreen extends StatelessWidget {
         isLoading: !isLoaded,
         appBar: AppHeader(
           text: 'Список участников',
-          icon: isOwner ? 'settings' : '',
+          icon: Provider.of<UserState>(context, listen: false).user.role ==
+                      'moderator' ||
+                  isOwner
+              ? 'settings'
+              : '',
           iconOnTap: () {
             if (Provider.of<UserState>(context, listen: false).user.role ==
                     'moderator' ||
@@ -112,31 +116,36 @@ class MembersScreen extends StatelessWidget {
                           ),
                         ),
                         Builder(builder: (context) {
-                          if (!isOwner) return Container();
                           if (members[index].id ==
                               Provider.of<UserState>(context, listen: false)
                                   .user
                                   .id) return Container();
-                          return Row(
-                            children: [
-                              BrandIcon(
-                                height: 16,
-                                width: 16,
-                                icon: 'decline',
-                                onTap: () {
-                                  createDio()
-                                      .put(
-                                          '/chats/remove/?chat=${id}&member=${members[index].id}')
-                                      .then((value) {
-                                    Provider.of<ChatsState>(context,
-                                            listen: false)
-                                        .setChats();
-                                  });
-                                },
-                                color: Color(0xFF4F3333),
-                              )
-                            ],
-                          );
+                          if (isOwner ||
+                              Provider.of<UserState>(context, listen: false)
+                                      .user
+                                      .role ==
+                                  'moderator')
+                            return Row(
+                              children: [
+                                BrandIcon(
+                                  height: 16,
+                                  width: 16,
+                                  icon: 'decline',
+                                  onTap: () {
+                                    createDio()
+                                        .put(
+                                            '/chats/remove/?chat=${id}&member=${members[index].id}')
+                                        .then((value) {
+                                      Provider.of<ChatsState>(context,
+                                              listen: false)
+                                          .setChats();
+                                    });
+                                  },
+                                  color: Color(0xFF4F3333),
+                                )
+                              ],
+                            );
+                          return Container();
                         })
                       ],
                     ),

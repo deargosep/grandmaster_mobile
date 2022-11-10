@@ -38,6 +38,19 @@ class _SomeoneProfileState extends State<SomeoneProfile>
   User user = Get.arguments;
   @override
   Widget build(BuildContext context) {
+    bool canSeePassport() {
+      return (Provider.of<UserState>(context).user.role == 'trainer' &&
+              user.isMyStudent) ||
+          Provider.of<UserState>(context).user.role == 'moderator' ||
+          Provider.of<UserState>(context).user.role == 'specialist' ||
+          Provider.of<UserState>(context)
+                  .user
+                  .children
+                  .firstWhereOrNull((element) => user.id == element.id) !=
+              null ||
+          Provider.of<UserState>(context).user.id == user.id;
+    }
+
     print(user.id);
     print(Provider.of<UserState>(context, listen: false).user.id);
     return DefaultTabController(
@@ -103,11 +116,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                               fontWeight: FontWeight.bold,
                               fontSize: 18),
                         ),
-                        user.isMyStudent &&
-                                Provider.of<UserState>(context, listen: false)
-                                        .user
-                                        .role ==
-                                    'trainer'
+                        canSeePassport()
                             ? Column(
                                 children: [
                                   user.passport.sport_qualification != null &&
@@ -156,8 +165,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                                   SizedBox(
                                     height: 24,
                                   ),
-                                  user.role != 'trainer' &&
-                                          user.children.isEmpty
+                                  canSeePassport()
                                       ? Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -261,21 +269,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
                         SizedBox(
                           height: 24,
                         ),
-                        (Provider.of<UserState>(context).user.role ==
-                                        'trainer' &&
-                                    user.isMyStudent) ||
-                                Provider.of<UserState>(context).user.role ==
-                                    'moderator' ||
-                                Provider.of<UserState>(context).user.role ==
-                                    'specialist' ||
-                                Provider.of<UserState>(context)
-                                        .user
-                                        .children
-                                        .firstWhereOrNull((element) =>
-                                            user.id == element.id) !=
-                                    null ||
-                                Provider.of<UserState>(context).user.id ==
-                                    user.id
+                        canSeePassport()
                             ? TabsSwitch(
                                 controller: controller,
                                 children: [
@@ -295,17 +289,7 @@ class _SomeoneProfileState extends State<SomeoneProfile>
               ))
             ];
           },
-          body: (Provider.of<UserState>(context).user.role == 'trainer' &&
-                      user.isMyStudent) ||
-                  Provider.of<UserState>(context).user.role == 'moderator' ||
-                  Provider.of<UserState>(context).user.role == 'specialist' ||
-                  Provider.of<UserState>(context)
-                          .user
-                          .children
-                          .firstWhereOrNull(
-                              (element) => user.id == element.id) !=
-                      null ||
-                  Provider.of<UserState>(context).user.id == user.id
+          body: canSeePassport()
               ? Padding(
                   padding: const EdgeInsets.only(top: kIsWeb ? 20 : 0),
                   child: TabBarView(controller: controller, children: [
