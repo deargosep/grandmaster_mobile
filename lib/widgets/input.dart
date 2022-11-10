@@ -209,7 +209,7 @@ class _InputDateState extends State<InputDate> {
         DateTime? datetime = await showDatePicker(
             context: context,
             initialDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(Duration(days: 5)),
+            firstDate: DateTime.now().subtract(Duration(days: 365)),
             lastDate: DateTime.now().add(Duration(days: 60)));
         if (datetime != null)
           widget.controller.text = DateFormat('dd.MM.y').format(datetime);
