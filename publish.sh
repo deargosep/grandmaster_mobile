@@ -9,7 +9,7 @@ USERNAME='root'
 PASSWORD='aboba12345'
 OUTPUT='/home/dev/web'
 cd /Users/deargo/Projects/grandmaster
-# flutter build web --release --web-renderer canvaskit
+flutter build web --release --web-renderer canvaskit
 
 echo
 echo "Clearing grandmaster on server ..."
