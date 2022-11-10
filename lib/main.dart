@@ -155,7 +155,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _handleIncomingLinks();
+    // _handleIncomingLinks();
     _handleInitialUri();
   }
 
@@ -167,65 +167,67 @@ class _MyAppState extends State<MyApp> {
 
   /// Handle incoming links - the ones that the app will recieve from the OS
   /// while already started.
-  void _handleIncomingLinks() {
-    if (!kIsWeb) {
-      // It will handle app links while the app is already started - be it in
-      // the foreground or in the background.
-      _sub = uriLinkStream.listen((Uri? uri) {
-        if (!mounted) return;
-        print('got uri: $uri');
-        if (uri != null && uri.queryParameters["user"] != null) {
-          createDio(errHandler: (err, handler) {
-            showErrorSnackbar('Not found');
-          }).get('/users/${uri.queryParameters["user"]}/').then((value) {
-            print(value);
-            User user = UserState().convertMapToUser(value.data);
-            if (uri.queryParameters["type"] == 'event') {
-              Get.toNamed('/other_profile/passport', arguments: user);
-            } else {
-              Get.toNamed('/qr/user', arguments: user);
-            }
-          });
-        }
-        setState(() {
-          _latestUri = uri;
-          _err = null;
-        });
-      }, onError: (Object err) {
-        if (!mounted) return;
-        print('got err: $err');
-        setState(() {
-          _latestUri = null;
-          if (err is FormatException) {
-            _err = err;
-          } else {
-            _err = null;
-          }
-        });
-      });
-    } else {
-      print(Uri.base);
-      if (Uri.base.queryParameters["type"] != null) {
-        var uri = Uri.base;
-        var userId = uri.queryParameters["user"];
-        var type = uri.queryParameters["type"];
-        createDio(errHandler: (err, handler) {
-          showErrorSnackbar('Not found');
-        })
-            .get(
-                '${uri.queryParameters["type"] == 'event' ? '' : '/qrcodes'}/users/${userId}/')
-            .then((value) {
-          print(value);
-          User user = UserState().convertMapToUser(value.data);
-          if (type == 'event') {
-            Get.toNamed('/other_profile/passport', arguments: user);
-          } else {
-            Get.toNamed('/qr/user', arguments: user);
-          }
-        });
-      }
-    }
-  }
+  // void _handleIncomingLinks() {
+  //   if (!kIsWeb) {
+  //     // It will handle app links while the app is already started - be it in
+  //     // the foreground or in the background.
+  //     _sub = uriLinkStream.listen((Uri? uri) {
+  //       if (!mounted) return;
+  //       print('got uri: $uri');
+  //       if (uri != null && uri.queryParameters["user"] != null) {
+  //         createDio(errHandler: (err, handler) {
+  //           if (err.response!.statusCode == 401)
+  //             showErrorSnackbar('Сначала необходимо войти.');
+  //         }).get('/users/${uri.queryParameters["user"]}/').then((value) {
+  //           print(value);
+  //           User user = UserState().convertMapToUser(value.data);
+  //           if (uri.queryParameters["type"] == 'event') {
+  //             Get.toNamed('/other_profile/passport', arguments: user);
+  //           } else {
+  //             Get.toNamed('/qr/user', arguments: user);
+  //           }
+  //         });
+  //       }
+  //       setState(() {
+  //         _latestUri = uri;
+  //         _err = null;
+  //       });
+  //     }, onError: (Object err) {
+  //       if (!mounted) return;
+  //       print('got err: $err');
+  //       setState(() {
+  //         _latestUri = null;
+  //         if (err is FormatException) {
+  //           _err = err;
+  //         } else {
+  //           _err = null;
+  //         }
+  //       });
+  //     });
+  //   } else {
+  //     print(Uri.base);
+  //     if (Uri.base.queryParameters["type"] != null) {
+  //       var uri = Uri.base;
+  //       var userId = uri.queryParameters["user"];
+  //       var type = uri.queryParameters["type"];
+  //       createDio(errHandler: (err, handler) {
+  //         if (err.response!.statusCode == 401)
+  //           showErrorSnackbar('Сначала необходимо войти.');
+  //       })
+  //           .get(
+  //               '${uri.queryParameters["type"] == 'event' ? '' : '/qrcodes'}/users/${userId}/')
+  //           .then((value) {
+  //         print(value);
+  //         User user = UserState().convertMapToUser(value.data);
+  //         if (type == 'event') {
+  //           Get.toNamed('/other_profile/passport', arguments: user);
+  //         } else {
+  //           Get.toNamed('/qr/user', arguments: user);
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 
   /// Handle the initial Uri - the one the app was started with
   ///
@@ -250,7 +252,8 @@ class _MyAppState extends State<MyApp> {
             print('got initial uri: ${uri}');
             if (uri.queryParameters["user"] != null) {
               createDio(errHandler: (err, handler) {
-                showErrorSnackbar('Not found');
+                if (err.response!.statusCode == 401)
+                  showErrorSnackbar('Сначала необходимо войти.');
               })
                   .get(
                       '${uri.queryParameters["type"] == 'event' ? '' : '/qrcodes'}/users/${uri.queryParameters["user"]}/')
@@ -282,10 +285,11 @@ class _MyAppState extends State<MyApp> {
         var userId = uri.queryParameters["user"];
         var type = uri.queryParameters["type"];
         createDio(errHandler: (err, handler) {
-          showErrorSnackbar('Not found');
+          if (err.response!.statusCode == 401)
+            showErrorSnackbar('Сначала необходимо войти.');
         })
-            .get('${type == 'event' ? '' : 'qrcodes'}/users/${userId}/',
-                options: Options(headers: {"Authorization": "Bearer 123"}))
+            .get('${type == 'event' ? '' : '/qrcodes'}/users/${userId}/',
+                options: Options(headers: {"Authorization": ""}))
             .then((value) {
           print(value);
           User user = UserState().convertMapToUser(value.data);
@@ -405,8 +409,7 @@ class _MyAppState extends State<MyApp> {
           ),
           GetPage(name: '/other_profile', page: () => SomeoneProfile()),
           GetPage(
-              name: '/other_profile/passport',
-              page: () => MyProfileScreen(showPassport: true)),
+              name: '/other_profile/passport', page: () => SomeoneProfile()),
           GetPage(
             name: '/qr/user',
             page: () => QrUser(),
