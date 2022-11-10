@@ -26,17 +26,10 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen>
     with TickerProviderStateMixin {
   late TabController controller;
-  late User user;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      user = Provider.of<UserState>(context).user;
-      if (widget.showPassport) {
-        user = Get.arguments;
-      }
-    });
     controller = TabController(vsync: this, length: 2);
     controller.addListener(() {
       if (mounted) setState(() {});
@@ -47,6 +40,10 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   final red = Color(0xFFE44444);
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<UserState>(context).user;
+    if (widget.showPassport) {
+      user = Get.arguments;
+    }
     bool isAdmitted() {
       return user.admitted;
     }

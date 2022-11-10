@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grandmaster/screens/tabs/chat/chat.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:intl/intl.dart';
@@ -63,8 +64,6 @@ class ChatsState extends ChangeNotifier {
       oldList = [...trainers, ...oldList];
       List<ChatType> newList = [
         ...oldList.map((e) {
-          print(e["cover"]);
-          print(e["type"]);
           // log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
@@ -73,7 +72,8 @@ class ChatsState extends ChangeNotifier {
                     fullName: es["full_name"],
                     id: es["id"],
                     photo: es["photo"],
-                    role: UserState().getRole(es["contact_type"])))
+                    role: UserState().getRole(es["contact_type"]),
+                    me: es["me"]))
                 .toList()
           ];
           members.sort((a, b) {
@@ -89,14 +89,9 @@ class ChatsState extends ChangeNotifier {
               // : e["name"],
               lastMessage: e["last_message"]["text"] ?? '',
               unread: e["unreaded_count"] ?? '',
-              photo: e["cover"],
-              // ?? e["type"] == 'dm'
-              // ? [...e["members"].map((e) => e).toList()].firstWhereOrNull(
-              //     (e) => e["me"] == 'false' || !e["me"])["photo"]
-              // : null,
-              // ?? e["type"] == 'dm'
-              // ? e["members"].firstWhere((e) => !e["me"])["photo"]
-              // : null,
+              photo: e["type"] == 'dm'
+                  ? members.firstWhereOrNull((e) => !e.me)?.photo
+                  : e["cover"],
               type: e["type"] == 'auto'
                   ? 'system'
                   : e["type"] == 'custom'
