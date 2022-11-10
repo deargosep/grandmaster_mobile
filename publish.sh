@@ -4,17 +4,18 @@
 # flutter build web
 # flutter build web --web-renderer html
 
-HOST='79.133.181.103'
-USERNAME='dev'
-PASSWORD='0412'
+HOST='app.grandmaster.club'
+USERNAME='root'
+PASSWORD='aboba12345'
 OUTPUT='/home/dev/web'
-
-flutter build web --release --web-renderer html
+cd /Users/deargo/Projects/grandmaster
+# flutter build web --release --web-renderer canvaskit
 
 echo
-echo "Clearing cash_bot_client on server ..."
-sshpass -p $PASSWORD ssh $USERNAME@$HOST "rm -rf $OUTPUT/*"
-echo "Copying cash_bot_client on server ..."
+echo "Clearing grandmaster on server ..."
+# sftp $USERNAME@$HOST
+sshpass -p $PASSWORD ssh $USERNAME@$HOST -o StrictHostKeyChecking=no  "rm -rf $OUTPUT/*"
+echo "Copying grandmaster on server ..."
 sshpass -p $PASSWORD scp -r ./build/web/* $USERNAME@$HOST:$OUTPUT
 echo
 echo "Ready 👍"
