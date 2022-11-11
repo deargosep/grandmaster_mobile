@@ -1,5 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide FormData;
+import 'package:get/get.dart' hide FormData, Response;
 import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
@@ -7,11 +8,10 @@ import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/brand_option.dart';
 import 'package:grandmaster/widgets/checkboxes_list.dart';
-import 'package:grandmaster/widgets/header.dart';
-import 'package:grandmaster/widgets/list_of_options.dart';
+import 'package:grandmaster/widgets/header./../../utils/dio.dart';
 import 'package:provider/provider.dart';
 
-import '../../../utils/dio.dart';
+import '../../../widgets/header.dart';
 
 class EventMembersListScreen extends StatefulWidget {
   const EventMembersListScreen({Key? key}) : super(key: key);
@@ -225,6 +225,7 @@ class _EditState extends State<_Edit> {
   }
 
   EventType item = Get.arguments["item"];
+
   @override
   Widget build(BuildContext context) {
     void changeCheckbox(value) {
@@ -337,25 +338,40 @@ class _View extends StatefulWidget {
 
 class _ViewState extends State<_View> {
   EventType item = Get.arguments["item"];
+
   @override
   Widget build(BuildContext context) {
-    List<OptionType> list = item.members
-        .map((e) => OptionType(
-            e.fullName,
-            Provider.of<UserState>(context, listen: false)
-                    .user
-                    .children
-                    .isNotEmpty
-                ? '/child_profile'
-                : Provider.of<UserState>(context, listen: false).user.id == e.id
-                    ? '/my_profile'
-                    : '/other_profile',
-            arguments: User(
-                fullName: e.fullName,
-                photo: e.photo,
-                id: e.id,
-                passport: Passport()),
-            mark: e.marked))
+    List<Widget> list = item.members
+        .map((e) => Container(
+              margin: EdgeInsets.only(top: 16),
+              child: Option(
+                  text: e.fullName,
+                  onTap: () async {
+                    Response response =
+                        await createDio().get('/users/${e.id}/');
+                    Map data = response.data;
+                    User user = UserState().convertMapToUser(data);
+                    Get.toNamed(
+                        Provider.of<UserState>(context, listen: false)
+                                .user
+                                .children
+                                .isNotEmpty
+                            ? '/child_profile'
+                            : Provider.of<UserState>(context, listen: false)
+                                        .user
+                                        .id ==
+                                    e.id
+                                ? '/my_profile'
+                                : '/other_profile',
+                        arguments: user);
+                    // arguments: User(
+                    //     fullName: e.fullName,
+                    //     photo: e.photo,
+                    //     id: e.id,
+                    //     passport: Passport())
+                  },
+                  mark: e.marked),
+            ))
         .toList();
     return CustomScaffold(
         noVerPadding: true,
@@ -364,11 +380,6 @@ class _ViewState extends State<_View> {
         ),
         noTopPadding: true,
         noPadding: false,
-        body: ListView(children: [
-          ListOfOptions(
-            list: list,
-            noArrow: true,
-          ),
-        ]));
+        body: ListView(children: [...list]));
   }
 }
