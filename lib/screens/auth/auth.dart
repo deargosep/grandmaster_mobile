@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Map numbers = {
   "parent": '(918) 546-85-81',
-  "child": '(918) 5528722',
+  "child": '(918) 552-87-22',
   "moderator": "(931) 963-10-29",
   "trainer": "(988) 250-30-03",
   "payment": "(900) 126-16-92",
@@ -35,7 +35,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: kDebugMode ? numbers["trainer"] : '');
+      TextEditingController(text: kDebugMode ? numbers["child"] : '');
   bool isLoaded = false;
   bool isLoadedAuth = true;
 

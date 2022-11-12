@@ -33,7 +33,17 @@ class ChatsState extends ChangeNotifier {
   }
 
   List<ChatType> getChats() {
-    return _chats.where((element) => element.folder == 'none').toList();
+    List<ChatType> noneChats = _chats
+        .where((element) => element.type == 'dm' && element.folder == 'none'
+            ? element.members.firstWhere((e) => !e.me).role != 'trainer'
+            : true)
+        .toList();
+    List<ChatType> trainersDMs = _chats
+        .where((element) => element.type == 'dm' && element.folder == 'none'
+            ? element.members.firstWhere((e) => !e.me).role == 'trainer'
+            : false)
+        .toList();
+    return [...trainersDMs, ...noneChats];
   }
 
   List<ChatType> getSpecialistsChats() {
@@ -57,13 +67,8 @@ class ChatsState extends ChangeNotifier {
     createDio()
         .get('/chats/${childId != null ? '?id=' : ''}${childId ?? ''}')
         .then((value) {
-      List oldList =
-          value.data.where((e) => e["folder"] != 'trainers').toList();
-      List trainers =
-          value.data.where((e) => e["folder"] == 'trainers').toList();
-      oldList = [...trainers, ...oldList];
       List<ChatType> newList = [
-        ...oldList.map((e) {
+        ...value.data.map((e) {
           // log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
