@@ -34,7 +34,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: kDebugMode ? numbers["child"] : '');
+      TextEditingController(text: kDebugMode ? numbers["parent"] : '');
   bool isLoaded = false;
   bool isLoadedAuth = true;
 

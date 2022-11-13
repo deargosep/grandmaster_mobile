@@ -31,8 +31,15 @@ class _ChatsScreenState extends State<ChatsScreen> {
       //         return ChooseChild();
       //       });
       // }
-      Provider.of<ChatsState>(context, listen: false).setChats(
-          childId: Provider.of<UserState>(context, listen: false).childId);
+      if (Provider.of<UserState>(context, listen: false).user.children.length ==
+              1 ||
+          Provider.of<UserState>(context, listen: false)
+              .user
+              .children
+              .isEmpty) {
+        Provider.of<ChatsState>(context, listen: false).setChats(
+            childId: Provider.of<UserState>(context, listen: false).childId);
+      }
       // if (mounted)
       //   Timer.periodic(Duration(seconds: 10), (timer) {
       //     if (mounted)

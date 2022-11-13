@@ -62,6 +62,8 @@ class _EventScreenState extends State<EventScreen> {
               getRole() == 'specialist' ||
               (getRole() == 'sportsmen' && !item.open && !zapisan) ||
               (!hasChildren() &&
+                  Provider.of<UserState>(context, listen: false).user.role !=
+                      'trainer' &&
                   !Provider.of<UserState>(context, listen: false)
                       .user
                       .admitted) ||
