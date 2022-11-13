@@ -13,7 +13,6 @@ class PaymentsState extends ChangeNotifier {
   Future<void> setPayments() async {
     var completer = new Completer();
     createDio().get('/invoices/current_bills/').then((value) {
-      print(value.data);
       List<PaymentType> newList = [
         ...value.data.map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);

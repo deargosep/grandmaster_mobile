@@ -53,23 +53,20 @@ class _EventScreenState extends State<EventScreen> {
 
     print(zapisan);
     print(hasChildren());
+    print(getRole());
 
     return CustomScaffold(
       noPadding: true,
       scrollable: true,
-      bottomNavigationBar: getRole() == 'moderator' ||
-              getRole() == 'guest' ||
-              getRole() == 'specialist' ||
-              (getRole() == 'sportsmen' && !item.open && !zapisan) ||
-              (!hasChildren() &&
-                  Provider.of<UserState>(context, listen: false).user.role !=
-                      'trainer' &&
-                  !Provider.of<UserState>(context, listen: false)
-                      .user
-                      .admitted) ||
-              (item.ended && !zapisan)
-          ? null
-          : BottomPanel(
+      bottomNavigationBar: (getRole() != 'moderator' &&
+                      getRole() != 'guest' &&
+                      getRole() != 'specialist') &&
+                  getRole() == 'trainer' ||
+              hasChildren() ||
+              (zapisan || (item.open || !item.ended))
+
+          // (!item.open && !zapisan)
+          ? BottomPanel(
               // height: zapisan
               //     ? item.ended
               //         ? getRole() == "trainer"
@@ -101,23 +98,30 @@ class _EventScreenState extends State<EventScreen> {
                     : Container(),
                 zapisan
                     ? item.ended
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: BrandButton(
-                              type: 'primary',
-                              text: 'Посмотреть список',
-                              onPressed: () {
-                                // посмотреть список
-                                Get.toNamed('/events/list', arguments: {
-                                  "item": item,
-                                  "options": {"type": "view"}
-                                });
-                              },
-                            ),
-                          )
+                        ? item.members.length != 1 && getRole() != 'trainer'
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: BrandButton(
+                                  type: 'primary',
+                                  text: 'Посмотреть список',
+                                  onPressed: () {
+                                    // посмотреть список
+                                    Get.toNamed('/events/list', arguments: {
+                                      "item": item,
+                                      "options": {"type": "view"}
+                                    });
+                                  },
+                                ),
+                              )
+                            : Container()
                         : Container()
                     : Container(),
-                item.ended
+                item.ended ||
+                        (!Provider.of<UserState>(context, listen: false)
+                                .user
+                                .admitted &&
+                            !hasChildren() &&
+                            getRole() != 'trainer')
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.only(top: 16),
@@ -259,7 +263,8 @@ class _EventScreenState extends State<EventScreen> {
                         ),
                       )
               ],
-            )),
+            ))
+          : null,
       body: Stack(
         children: [
           Container(

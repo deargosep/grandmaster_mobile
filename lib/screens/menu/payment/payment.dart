@@ -47,8 +47,8 @@ class _PaymentScreenState extends State<PaymentScreen>
     List<PaymentType> unpaid =
         payments.where((element) => !element.paid).toList();
     List<PaymentType> paid = payments.where((element) => element.paid).toList();
-    paid.sort((a, b) => a.paid_at!.compareTo(b.paid_at!));
-    unpaid.sort((a, b) => a.activated_at.compareTo(b.activated_at));
+    paid.sort((a, b) => b.paid_at!.compareTo(a.paid_at!));
+    unpaid.sort((a, b) => b.activated_at.compareTo(a.activated_at));
     bool isLoaded = Provider.of<PaymentsState>(context).isLoaded;
     return DefaultTabController(
       length: 2,
