@@ -39,7 +39,8 @@ class _SomeoneProfileState extends State<SomeoneProfile>
   @override
   Widget build(BuildContext context) {
     bool canSeePassport() {
-      return Provider.of<UserState>(context).user.role == 'trainer' ||
+      return (Provider.of<UserState>(context).user.role == 'trainer' &&
+              user.role != 'trainer') ||
           Provider.of<UserState>(context).user.role == 'moderator' ||
           Provider.of<UserState>(context).user.role == 'specialist' ||
           Provider.of<UserState>(context)

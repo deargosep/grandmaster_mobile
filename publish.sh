@@ -14,7 +14,8 @@ flutter build web --release --web-renderer canvaskit
 echo
 echo "Clearing grandmaster on server ..."
 # sftp $USERNAME@$HOST
-sshpass -p $PASSWORD ssh $USERNAME@$HOST -o StrictHostKeyChecking=no  "rm -rf $OUTPUT/*"
+sshpass -p $PASSWORD ssh $USERNAME@$HOST -o StrictHostKeyChecking=no  
+"rm -rf $OUTPUT/*"
 echo "Copying grandmaster on server ..."
 sshpass -p $PASSWORD scp -r ./build/web/* $USERNAME@$HOST:$OUTPUT
 echo

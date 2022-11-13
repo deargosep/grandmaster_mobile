@@ -33,17 +33,15 @@ class ChatsState extends ChangeNotifier {
   }
 
   List<ChatType> getChats() {
-    List<ChatType> noneChats = _chats
-        .where((element) => element.type == 'dm' && element.folder == 'none'
-            ? element.members.firstWhere((e) => !e.me).role != 'trainer'
-            : true)
-        .toList();
-    List<ChatType> trainersDMs = _chats
-        .where((element) => element.type == 'dm' && element.folder == 'none'
-            ? element.members.firstWhere((e) => !e.me).role == 'trainer'
-            : false)
-        .toList();
-    return [...trainersDMs, ...noneChats];
+    List<ChatType> chats =
+        _chats.where((element) => element.folder == 'none').toList();
+    chats.sort((a, b) {
+      if (b.isTrainerDM) {
+        return 1;
+      }
+      return -1;
+    });
+    return chats;
   }
 
   List<ChatType> getSpecialistsChats() {
@@ -69,7 +67,6 @@ class ChatsState extends ChangeNotifier {
         .then((value) {
       List<ChatType> newList = [
         ...value.data.map((e) {
-          // log(e.toString());
           // DateTime newDate = DateTime.parse(e["created_at"]);
           List<MinimalUser> members = [
             ...e["members"]
@@ -106,7 +103,10 @@ class ChatsState extends ChangeNotifier {
                   ? DateFormat('H:mm')
                       .format(DateTime.parse(e["last_message"]["created_at"]))
                   : '',
-              members: members);
+              members: members,
+              isTrainerDM: e["type"] == 'dm' &&
+                  members.firstWhere((element) => !element.me).role ==
+                      'trainer');
         }).toList()
       ];
       _chats = newList;
@@ -140,6 +140,7 @@ class ChatType {
   final List<MinimalUser> members;
   final String folder;
   final owner;
+  final bool isTrainerDM;
 
   ChatType(
       {required this.id,
@@ -150,6 +151,7 @@ class ChatType {
       this.unread,
       this.owner,
       required this.members,
+      this.isTrainerDM = false,
       this.type = 'dm',
       this.folder = 'none'});
 }
