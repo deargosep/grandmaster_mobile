@@ -61,6 +61,10 @@ class _EventScreenState extends State<EventScreen> {
               getRole() == 'guest' ||
               getRole() == 'specialist' ||
               (getRole() == 'sportsmen' && !item.open && !zapisan) ||
+              (!hasChildren() &&
+                  !Provider.of<UserState>(context, listen: false)
+                      .user
+                      .admitted) ||
               (item.ended && !zapisan)
           ? null
           : BottomPanel(
@@ -216,7 +220,7 @@ class _EventScreenState extends State<EventScreen> {
                                       } else {
                                         Get.toNamed('/events/list', arguments: {
                                           "item": item,
-                                          "options": {"type": "choose"}
+                                          "options": {"type": "add"}
                                         });
                                       }
                                     }
