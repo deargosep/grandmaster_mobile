@@ -13,6 +13,7 @@ class PaymentsState extends ChangeNotifier {
   Future<void> setPayments() async {
     var completer = new Completer();
     createDio().get('/invoices/current_bills/').then((value) {
+      print(value.data);
       List<PaymentType> newList = [
         ...value.data.map((e) {
           // DateTime newDate = DateTime.parse(e["created_at"]);
@@ -24,7 +25,7 @@ class PaymentsState extends ChangeNotifier {
               paid: e["is_paid"],
               user: e["user"]["full_name"],
               blocked: e["is_blocked"],
-              // paid_at: DateTime.parse(e["bill"]["paid_at"]),
+              paid_at: e["is_paid"] ? DateTime.parse(e["paid_at"]) : null,
               activated_at: DateTime.parse(e["bill"]["activated_at"]),
               must_be_paid_at: DateTime.parse(e["bill"]["must_be_paid_at"]),
               periodic: e["bill"]["is_periodic"],
@@ -59,7 +60,7 @@ class PaymentType {
   final DateTime activated_at;
   final DateTime must_be_paid_at;
 
-  // final DateTime paid_at;
+  final DateTime? paid_at;
   final int amount;
   final bool paid;
   final bool blocked;
@@ -74,7 +75,7 @@ class PaymentType {
       required this.activated_at,
       this.user = '',
       required this.must_be_paid_at,
-      // required this.paid_at,
+      required this.paid_at,
       required this.amount,
       required this.periodic,
       required this.period,

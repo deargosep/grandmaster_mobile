@@ -44,8 +44,11 @@ class _PaymentScreenState extends State<PaymentScreen>
   @override
   Widget build(BuildContext context) {
     List<PaymentType> payments = Provider.of<PaymentsState>(context).payments;
-    payments.sort((a, b) => a.activated_at.compareTo(b.activated_at));
-    payments.sort((a, b) => a.must_be_paid_at.compareTo(b.must_be_paid_at));
+    List<PaymentType> unpaid =
+        payments.where((element) => !element.paid).toList();
+    List<PaymentType> paid = payments.where((element) => element.paid).toList();
+    paid.sort((a, b) => a.paid_at!.compareTo(b.paid_at!));
+    unpaid.sort((a, b) => a.activated_at.compareTo(b.activated_at));
     bool isLoaded = Provider.of<PaymentsState>(context).isLoaded;
     return DefaultTabController(
       length: 2,
@@ -84,10 +87,8 @@ class _PaymentScreenState extends State<PaymentScreen>
                             onRefresh:
                                 Provider.of<PaymentsState>(context).setPayments,
                             child: ListView(
-                                children: payments
-                                    .map(((e) =>
-                                        !e.paid ? _Payment(e) : Container()))
-                                    .toList()),
+                                children:
+                                    unpaid.map(((e) => _Payment(e))).toList()),
                           )
                         : Center(
                             child: CircularProgressIndicator(),
@@ -97,10 +98,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                             onRefresh:
                                 Provider.of<PaymentsState>(context).setPayments,
                             child: ListView(
-                              children: (payments
-                                  .map(
-                                      (e) => e.paid ? _Payment(e) : Container())
-                                  .toList()),
+                              children: (paid.map((e) => _Payment(e)).toList()),
                             ),
                           )
                         : Center(
