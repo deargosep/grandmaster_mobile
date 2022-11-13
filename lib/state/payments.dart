@@ -15,6 +15,7 @@ class PaymentsState extends ChangeNotifier {
     createDio().get('/invoices/current_bills/').then((value) {
       List<PaymentType> newList = [
         ...value.data.map((e) {
+          print(e);
           // DateTime newDate = DateTime.parse(e["created_at"]);
           return PaymentType(
               id: e["id"],

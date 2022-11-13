@@ -18,7 +18,6 @@ Map numbers = {
   "child": '(918) 552-87-22',
   "moderator": "(931) 963-10-29",
   "trainer": "(988) 250-30-03",
-  "payment": "(900) 126-16-92",
   "documents": "(900) 123-09-56",
   "schedule": "(938) 115-54-47",
   "parent_chats": '(928) 111-02-00',
@@ -35,7 +34,7 @@ class AuthRegisterScreen extends StatefulWidget {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen> {
   TextEditingController phoneNumber =
-      TextEditingController(text: kDebugMode ? numbers["child"] : '');
+      TextEditingController(text: kDebugMode ? numbers["trainer"] : '');
   bool isLoaded = false;
   bool isLoadedAuth = true;
 

@@ -44,6 +44,8 @@ class _PaymentScreenState extends State<PaymentScreen>
   @override
   Widget build(BuildContext context) {
     List<PaymentType> payments = Provider.of<PaymentsState>(context).payments;
+    payments.sort((a, b) => a.activated_at.compareTo(b.activated_at));
+    payments.sort((a, b) => a.must_be_paid_at.compareTo(b.must_be_paid_at));
     bool isLoaded = Provider.of<PaymentsState>(context).isLoaded;
     return DefaultTabController(
       length: 2,
@@ -61,7 +63,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                   controller: controller,
                   children: [
                     TopTab(
-                      text: 'Текущие счета',
+                      text: 'Счет на оплату',
                     ),
                     TopTab(
                       text: 'История оплат',
@@ -162,49 +164,53 @@ class _Payment extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          item.purpose,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: getTextColor()),
-                        ),
-                        Text(
-                          item.user,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        isOverTime() && !item.paid
-                            ? Container(
-                                width: 204,
-                                child: Text(
-                                  'Статус спортсмена изменится после погашения счета',
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      color: getTextColor()),
-                                ),
-                              )
-                            : DateFormat('dd.MM.y')
-                                        .format(item.must_be_paid_at) ==
-                                    '01.01.2100'
-                                ? Container()
-                                : Text(
-                                    'Оплатить до: ${DateFormat('dd.MM.y').format(item.must_be_paid_at)}',
-                                    maxLines: 1,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            item.purpose,
+                            maxLines: 2,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: getTextColor()),
+                          ),
+                          Text(
+                            item.user,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          isOverTime() && !item.paid
+                              ? Container(
+                                  width: 204,
+                                  child: Text(
+                                    'Статус спортсмена изменится после погашения счета',
+                                    maxLines: 2,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 12,
                                         color: getTextColor()),
-                                  )
-                      ],
+                                  ),
+                                )
+                              : DateFormat('dd.MM.y')
+                                          .format(item.must_be_paid_at) ==
+                                      '01.01.2100'
+                                  ? Container()
+                                  : Text(
+                                      'Оплатить до: ${DateFormat('dd.MM.y').format(item.must_be_paid_at)}',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                          color: getTextColor()),
+                                    )
+                        ],
+                      ),
                     ),
                     Text(
                       '${item.amount}.00 ₽',

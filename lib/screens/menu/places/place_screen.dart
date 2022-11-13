@@ -185,6 +185,24 @@ class TrainerCard extends StatefulWidget {
 }
 
 class _TrainerCardState extends State<TrainerCard> {
+  late List<TrainerSchedule>? schedules;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.item.schedules != null) {
+      List<TrainerSchedule> oldSchedules = widget.item.schedules!;
+      List<TrainerSchedule> newSchedules = oldSchedules.map((e) {
+        List<TScheduleTime> unsorted = e.items;
+        unsorted.sort((a, b) => a.finishTime.compareTo(b.finishTime));
+        // return unsorted;
+        return TrainerSchedule(
+            minAge: e.minAge, maxAge: e.maxAge, items: unsorted);
+      }).toList();
+      schedules = newSchedules;
+    }
+  }
+
   // ExpandableController controller = ExpandableController();
   // final Trainer item = Trainer(id: 2, fio: 'fio', category: category, daysOfWeek: daysOfWeek, time: time)
   @override
@@ -255,7 +273,7 @@ class _TrainerCardState extends State<TrainerCard> {
           collapsed: Container(),
           expanded: Column(
             children: [
-              ...widget.item.schedules!.map((e) => Column(
+              ...schedules!.map((e) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
