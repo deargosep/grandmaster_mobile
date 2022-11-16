@@ -20,6 +20,12 @@ class PlacesState extends ChangeNotifier {
   Future<void> setPlaces({List<PlaceType>? data, String? url}) async {
     _isLoaded = false;
     var completer = new Completer();
+    if (data != null) {
+      _places = data;
+      _isLoaded = true;
+      notifyListeners();
+      return completer.complete(data);
+    }
     createDio().get(url ?? '/gyms/').then((value) {
       List<PlaceType> newList = [
         ...value.data.where((el) => !el["hidden"]).map((e) {

@@ -7,6 +7,7 @@ import 'package:grandmaster/utils/dio.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:grandmaster/widgets/images/circle_logo.dart';
+import 'package:grandmaster/widgets/search_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../state/places.dart';
@@ -30,14 +31,14 @@ class _PlacesScreenState extends State<PlacesScreen> {
     });
   }
 
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserState>(context).user;
     bool isModer() {
       return user.role == 'moderator';
     }
-
-    Orientation currentOrientation = MediaQuery.of(context).orientation;
 
     List<PlaceType> items = Provider.of<PlacesState>(context).places;
     bool isLoaded = Provider.of<PlacesState>(context).isLoaded;
@@ -55,44 +56,69 @@ class _PlacesScreenState extends State<PlacesScreen> {
               : null,
         ),
         body: isLoaded
-            ? items.isNotEmpty
-                ? RefreshIndicator(
-                    onRefresh: Provider.of<PlacesState>(context, listen: false)
-                        .setPlaces,
-                    child: ListView.builder(
-                        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        //     crossAxisCount: getDeviceType() == 'tablet' ? 2 : 1,
-                        //     crossAxisSpacing: 0.0,
-                        //     mainAxisSpacing: 0.0,
-                        //     childAspectRatio: getDeviceType() == 'tablet'
-                        //         ? currentOrientation == Orientation.portrait
-                        //             ? 0.89
-                        //             : 1.4
-                        //         : 1.1),
-                        itemCount: items.length,
-                        itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {
-                                Get.toNamed('/places', arguments: items[index]);
-                              },
-                              child: BrandCard(
-                                items[index],
-                                // TODO
-                                () {
-                                  createDio().patch('/gyms/${items[index].id}/',
-                                      data: {"hidden": true});
-                                  Provider.of<PlacesState>(context).setPlaces();
-                                },
-                                () {
-                                  createDio()
-                                      .delete('/gyms/${items[index].id}/');
-                                  Provider.of<PlacesState>(context).setPlaces();
-                                },
+            ? RefreshIndicator(
+                onRefresh:
+                    Provider.of<PlacesState>(context, listen: false).setPlaces,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: SearchInput(
+                        controller: controller,
+                        onComplete: (String text) {
+                          if (text.trim() != '') {
+                            List<PlaceType> filtered = Provider.of<PlacesState>(
+                                    context,
+                                    listen: false)
+                                .places
+                                .where((element) => element.name.contains(text))
+                                .toList();
+                            Provider.of<PlacesState>(context, listen: false)
+                                .setPlaces(data: filtered);
+                          } else {
+                            Provider.of<PlacesState>(context, listen: false)
+                                .setPlaces();
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Expanded(
+                        child: items.isNotEmpty
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  PlaceType item = items[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Get.toNamed('/places', arguments: item);
+                                    },
+                                    child: BrandCard(
+                                      item,
+                                      // TODO
+                                      () {
+                                        createDio().patch('/gyms/${item.id}/',
+                                            data: {"hidden": true});
+                                        Provider.of<PlacesState>(context)
+                                            .setPlaces();
+                                      },
+                                      () {
+                                        createDio().delete('/gyms/${item.id}/');
+                                        Provider.of<PlacesState>(context)
+                                            .setPlaces();
+                                      },
 
-                                type: 'places',
-                              ),
-                            )),
-                  )
-                : Text('Нет залов')
+                                      type: 'places',
+                                    ),
+                                  );
+                                })
+                            : Center(child: Text('Нет залов')))
+                  ],
+                ),
+              )
             : Center(
                 child: CircularProgressIndicator(),
               ));

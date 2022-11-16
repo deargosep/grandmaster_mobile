@@ -15,6 +15,7 @@ class Input extends StatelessWidget {
       this.onChanged,
       this.expanded = false,
       this.icon,
+      this.iconColor,
       this.borderRadius,
       this.width,
       this.height,
@@ -44,12 +45,13 @@ class Input extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final bool expanded;
   final String? icon;
-  final borderRadius;
+  final Color? iconColor;
+  final BorderRadius? borderRadius;
   final double? width;
   final double? height;
   final Function(String)? onFieldSubmitted;
   final onTapCalendar;
-  final onTapIcon;
+  final VoidCallback? onTapIcon;
   final TextStyle? textStyle;
   final bool centerText;
   final TextInputType? keyboardType;
@@ -131,6 +133,7 @@ class Input extends StatelessWidget {
                     icon: icon!,
                     onTapCalendar: onTapCalendar,
                     onTap: onTapIcon,
+                    color: iconColor ?? Theme.of(context).colorScheme.secondary,
                   ))
               : null,
           alignLabelWithHint: true,

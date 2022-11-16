@@ -8,6 +8,7 @@ import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/checkboxes_list.dart';
 import 'package:grandmaster/widgets/header.dart';
+import 'package:grandmaster/widgets/search_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/input.dart';
@@ -21,7 +22,9 @@ class ChatCreateScreen extends StatefulWidget {
 
 class _ChatCreateScreenState extends State<ChatCreateScreen> {
   late Map<String, bool> checkboxes;
+  late Map<String, bool> initCheckboxes;
   bool isLoaded = false;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +48,9 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
           checkboxes = {
             for (var v in members) '${v.id}_${v.fullName}': false,
           };
+          initCheckboxes = {
+            for (var v in members) '${v.id}_${v.fullName}': false,
+          };
           isLoaded = true;
         });
       });
@@ -64,6 +70,8 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
   }
 
   TextEditingController name = TextEditingController();
+  TextEditingController search = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -119,6 +127,18 @@ class _ChatCreateScreenState extends State<ChatCreateScreen> {
             ),
             SizedBox(
               height: 32,
+            ),
+            SearchInput(
+              controller: search,
+              onComplete: (String text) {
+                if (mounted)
+                  setState(() {
+                    checkboxes = filterUsers(text, initCheckboxes, checkboxes);
+                  });
+              },
+            ),
+            SizedBox(
+              height: 16,
             ),
             isLoaded
                 ? CheckboxesList(

@@ -59,11 +59,9 @@ class _EventScreenState extends State<EventScreen> {
       noPadding: true,
       scrollable: true,
       bottomNavigationBar: (getRole() != 'moderator' &&
-                      getRole() != 'guest' &&
-                      getRole() != 'specialist') &&
-                  getRole() == 'trainer' ||
-              hasChildren() ||
-              (zapisan || (item.open || !item.ended))
+                  getRole() != 'guest' &&
+                  getRole() != 'specialist') &&
+              (getRole() == 'trainer' || zapisan)
 
           // (!item.open && !zapisan)
           ? BottomPanel(
@@ -97,33 +95,29 @@ class _EventScreenState extends State<EventScreen> {
                             Theme.of(context).colorScheme.secondaryContainer)
                     : Container(),
                 zapisan
-                    ? item.ended
-                        ? item.members.length != 1 && getRole() != 'trainer'
-                            ? Padding(
-                                padding: const EdgeInsets.only(top: 16),
-                                child: BrandButton(
-                                  type: 'primary',
-                                  text: 'Посмотреть список',
-                                  onPressed: () {
-                                    // посмотреть список
-                                    Get.toNamed('/events/list', arguments: {
-                                      "item": item,
-                                      "options": {"type": "view"}
-                                    });
-                                  },
-                                ),
-                              )
-                            : Container()
+                    ? item.members.length > 1 && getRole() != 'trainer'
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: BrandButton(
+                              type: 'primary',
+                              text: 'Посмотреть список',
+                              onPressed: () {
+                                // посмотреть список
+                                Get.toNamed('/events/list', arguments: {
+                                  "item": item,
+                                  "options": {"type": "view"}
+                                });
+                              },
+                            ),
+                          )
                         : Container()
                     : Container(),
-                item.ended ||
-                        (!Provider.of<UserState>(context, listen: false)
+                (!item.ended || (getRole() == 'trainer')) ||
+                        (getRole() != 'trainer' &&
+                            Provider.of<UserState>(context, listen: false)
                                 .user
-                                .admitted &&
-                            !hasChildren() &&
-                            getRole() != 'trainer')
-                    ? Container()
-                    : Padding(
+                                .admitted)
+                    ? Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: BrandButton(
                           type: item.members.isNotEmpty ? 'primary' : 'info',
@@ -262,6 +256,7 @@ class _EventScreenState extends State<EventScreen> {
                                       .secondaryContainer),
                         ),
                       )
+                    : Container()
               ],
             ))
           : null,

@@ -1,59 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import 'images/brand_icon.dart';
 import 'input.dart';
 
 class SearchInput extends StatelessWidget {
-  const SearchInput(
-      {Key? key, this.onChanged, this.controller, this.onComplete, this.onTap})
+  SearchInput(
+      {Key? key,
+      this.onChanged,
+      required this.controller,
+      this.onComplete,
+      this.onTap})
       : super(key: key);
-  final onChanged;
-  final controller;
-  final onComplete;
-  final onTap;
+  VoidCallback? onChanged;
+  TextEditingController controller;
+  Function(String text)? onComplete;
+  VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      child: Row(
-        children: [
-          Expanded(
-            child: Input(
-              controller: controller,
-              onFieldSubmitted: (text) {
-                onComplete!();
-              },
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              height: 40.0,
-              label: 'Поиск',
-              onTapIcon: () {
-                onComplete!();
-              },
-              icon: 'search_input',
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Container(
-            height: 40,
-            width: 40,
-            padding: EdgeInsets.symmetric(vertical: 13, horizontal: 11),
-            decoration: BoxDecoration(
-                color: Color(0xFFF8F8F8),
-                borderRadius: BorderRadius.all(Radius.circular(16))),
-            child: GestureDetector(
-              onTap: () {
-                Get.toNamed('/filters', arguments: onTap);
-              },
-              child: BrandIcon(
-                icon: 'filters',
-              ),
-            ),
-          )
-        ],
-      ),
+    return Input(
+      controller: controller,
+      onFieldSubmitted: (text) {
+        onComplete!(text);
+      },
+      height: 40.0,
+      label: 'Поиск',
+      onTapIcon: () {
+        controller.text = '';
+        onComplete!(controller.text);
+      },
+      validator: (text) => null,
+      icon: 'decline',
     );
+  }
+}
+
+Map<String, bool> filterUsers(String text, Map<String, bool> initCheckboxes,
+    Map<String, bool> oldCheckboxes) {
+  Map<String, bool> newCheckboxes = initCheckboxes;
+  Iterable<MapEntry<String, bool>> oldEntries = oldCheckboxes.entries;
+  Iterable<MapEntry<String, bool>> entries = newCheckboxes.entries.where(
+      (element) => element.key
+          .split('_')[1]
+          .toLowerCase()
+          .contains(text.trim().toLowerCase()));
+  Map<String, bool> filteredMap = {};
+  filteredMap.addEntries(entries);
+  filteredMap.addEntries(oldEntries.where((element) =>
+      element.key
+          .split('_')[1]
+          .toLowerCase()
+          .contains(text.trim().toLowerCase()) ||
+      element.value));
+  if (text.trim() != '') {
+    Map<String, bool> sortedMap = Map.fromEntries(filteredMap.entries.toList()
+      ..sort((e1, e2) {
+        if (e2.value) {
+          return 1;
+        }
+        return -1;
+      }));
+    return sortedMap;
+  } else {
+    return filteredMap;
   }
 }
