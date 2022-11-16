@@ -49,7 +49,22 @@ class BrandCheckboxListTile extends StatelessWidget {
                         },
                       ),
                     )
-                  : Container()
+                  : value
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 13),
+                          child: BrandCheckbox(
+                            checked: value,
+                            disabled: true,
+                            onChanged: () {
+                              if (use_title) {
+                                onChanged(title, !value);
+                              } else {
+                                onChanged(!value);
+                              }
+                            },
+                          ),
+                        )
+                      : Container()
               : Padding(
                   padding: const EdgeInsets.only(right: 13),
                   child: BrandCheckbox(

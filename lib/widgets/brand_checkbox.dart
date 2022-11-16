@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 class BrandCheckbox extends StatefulWidget {
   BrandCheckbox(
       {Key? key,
-      bool? this.valid,
-      VoidCallback? this.onChanged,
-      required bool this.checked,
+      this.valid,
+      this.onChanged,
+      required this.checked,
+      this.disabled = false,
       this.noSquare})
       : super(key: key);
 
   bool? valid;
   VoidCallback? onChanged;
   bool checked;
+  bool disabled;
   final noSquare;
 
   @override
@@ -52,44 +54,70 @@ class _BrandCheckboxState extends State<BrandCheckbox>
       }
     }
 
-    return GestureDetector(
-      onTapDown: (details) {
-        setState(() {
-          pressing = true;
-        });
-      },
-      onTapUp: (details) {
-        setState(() {
-          pressing = false;
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          pressing = false;
-        });
-      },
-      onTap: () {
-        setState(() {
-          pressing = true;
-        });
-        Timer(Duration(milliseconds: 50), () {
-          setState(() {
-            pressing = false;
-          });
-        });
-        widget.onChanged!();
-      },
-      child: Container(
-          height: 22,
-          width: 22,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              border: Border.all(
-                  color: Theme.of(context).colorScheme.secondary, width: 1.5)),
-          child: Builder(builder: (context) {
-            if (widget.checked == false) {
-              if (pressing) {
-                return ScaleTransition(
+    return Opacity(
+      opacity: widget.disabled ? 0.7 : 1,
+      child: GestureDetector(
+        onTapDown: widget.disabled
+            ? null
+            : (details) {
+                setState(() {
+                  pressing = true;
+                });
+              },
+        onTapUp: widget.disabled
+            ? null
+            : (details) {
+                setState(() {
+                  pressing = false;
+                });
+              },
+        onTapCancel: widget.disabled
+            ? null
+            : () {
+                setState(() {
+                  pressing = false;
+                });
+              },
+        onTap: widget.disabled
+            ? null
+            : () {
+                setState(() {
+                  pressing = true;
+                });
+                Timer(Duration(milliseconds: 50), () {
+                  setState(() {
+                    pressing = false;
+                  });
+                });
+                widget.onChanged!();
+              },
+        child: Container(
+            height: 22,
+            width: 22,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 1.5)),
+            child: Builder(builder: (context) {
+              if (widget.checked == false) {
+                if (pressing) {
+                  return ScaleTransition(
+                      scale: _tween.animate(_animation),
+                      child: Container(
+                        margin: EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(2)),
+                          color: getColor(),
+                        ),
+                      ));
+                } else {
+                  return Container();
+                }
+              }
+              if (widget.checked == true) {
+                if (pressing) {
+                  return ScaleTransition(
                     scale: _tween.animate(_animation),
                     child: Container(
                       margin: EdgeInsets.all(3),
@@ -97,35 +125,21 @@ class _BrandCheckboxState extends State<BrandCheckbox>
                         borderRadius: BorderRadius.all(Radius.circular(2)),
                         color: getColor(),
                       ),
-                    ));
-              } else {
-                return Container();
-              }
-            }
-            if (widget.checked == true) {
-              if (pressing) {
-                return ScaleTransition(
-                  scale: _tween.animate(_animation),
-                  child: Container(
+                    ),
+                  );
+                } else {
+                  return Container(
                     margin: EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(2)),
                       color: getColor(),
                     ),
-                  ),
-                );
-              } else {
-                return Container(
-                  margin: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                    color: getColor(),
-                  ),
-                );
+                  );
+                }
               }
-            }
-            return Container();
-          })),
+              return Container();
+            })),
+      ),
     );
   }
 }

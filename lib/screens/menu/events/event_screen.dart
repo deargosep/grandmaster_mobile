@@ -190,11 +190,18 @@ class _EventScreenState extends State<EventScreen> {
                                     });
                                   }
                                   if (zapisan) {
-                                    // edit
-                                    Get.toNamed('/events/list', arguments: {
-                                      "item": item,
-                                      "options": {"type": "edit"}
-                                    });
+                                    if (item.ended) {
+                                      Get.toNamed('/events/list', arguments: {
+                                        "item": item,
+                                        "options": {"type": "view"}
+                                      });
+                                    } else {
+                                      // edit
+                                      Get.toNamed('/events/list', arguments: {
+                                        "item": item,
+                                        "options": {"type": "edit"}
+                                      });
+                                    }
                                   }
                                 }
 
@@ -240,7 +247,9 @@ class _EventScreenState extends State<EventScreen> {
                               : zapisan
                                   ? getRole() != 'trainer'
                                       ? 'Посмотреть список'
-                                      : 'Редактировать список'
+                                      : item.ended
+                                          ? 'Посмотреть список'
+                                          : 'Редактировать список'
                                   : hasMoreThanOneChild()
                                       ? 'Записать спортсменов'
                                       : item.members.isNotEmpty
