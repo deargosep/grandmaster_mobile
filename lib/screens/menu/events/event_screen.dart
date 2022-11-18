@@ -112,8 +112,8 @@ class _EventScreenState extends State<EventScreen> {
                           )
                         : Container()
                     : Container(),
-                (!item.ended || (getRole() == 'trainer')) ||
-                        (getRole() != 'trainer' &&
+                !item.ended &&
+                        ((getRole() == 'trainer') ||
                             Provider.of<UserState>(context, listen: false)
                                 .user
                                 .admitted)

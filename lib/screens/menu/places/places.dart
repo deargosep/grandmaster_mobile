@@ -67,12 +67,13 @@ class _PlacesScreenState extends State<PlacesScreen> {
                         controller: controller,
                         onComplete: (String text) {
                           if (text.trim() != '') {
-                            List<PlaceType> filtered = Provider.of<PlacesState>(
-                                    context,
-                                    listen: false)
-                                .places
-                                .where((element) => element.name.contains(text))
-                                .toList();
+                            List<PlaceType> filtered =
+                                Provider.of<PlacesState>(context, listen: false)
+                                    .places
+                                    .where((element) =>
+                                        element.name.contains(text) ||
+                                        element.address.contains(text))
+                                    .toList();
                             Provider.of<PlacesState>(context, listen: false)
                                 .setPlaces(data: filtered);
                           } else {
