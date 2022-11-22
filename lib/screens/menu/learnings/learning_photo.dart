@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/learnings.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/utils/download.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:photo_view/photo_view.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/is_image.dart';
 
@@ -84,12 +84,10 @@ class _LearningPhotoScreenState extends State<LearningPhotoScreen> {
                 showErrorSnackbar(e.toString());
               }
             } else {
-              await launchUrl(Uri.parse(learning.link),
-                  mode: LaunchMode.externalApplication);
+              download(learning.link);
             }
           } else {
-            await launchUrl(Uri.parse(learning.link),
-                mode: LaunchMode.externalApplication);
+            download(learning.link);
           }
         },
       ),

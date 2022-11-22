@@ -193,12 +193,12 @@ class _TrainerCardState extends State<TrainerCard> {
     if (widget.item.schedules != null) {
       List<TrainerSchedule> oldSchedules = widget.item.schedules!;
       List<TrainerSchedule> newSchedules = oldSchedules.map((e) {
-        List<TScheduleTime> unsorted = e.items;
-        unsorted.sort((a, b) => a.finishTime.compareTo(b.finishTime));
-        // return unsorted;
+        List<TScheduleTime> unsortedItems = e.items;
+        unsortedItems.sort((a, b) => a.finishTime.compareTo(b.finishTime));
         return TrainerSchedule(
-            minAge: e.minAge, maxAge: e.maxAge, items: unsorted);
+            minAge: e.minAge, maxAge: e.maxAge, items: unsortedItems);
       }).toList();
+      newSchedules.sort((a, b) => b.minAge.compareTo(a.minAge));
       schedules = newSchedules;
     }
   }

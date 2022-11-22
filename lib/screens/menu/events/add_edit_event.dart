@@ -63,6 +63,7 @@ class _AddEditEventScreenState extends State<AddEditEventScreen> {
       TextEditingController(text: Get.arguments?.order.toString());
 
   EventType? item = Get.arguments;
+
   // List<File?> images = [];
   File? cover;
   XFile? xCover;

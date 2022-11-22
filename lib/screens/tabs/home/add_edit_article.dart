@@ -39,6 +39,7 @@ class _AddEditArticleScreenState extends State<AddEditArticleScreen> {
   XFile? xCover;
   String? coverPath;
   ArticleType? item = Get.arguments;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -445,6 +446,7 @@ class MyFile {
   final XFile? pickedFile;
   final String? path;
   bool isModified;
+
   void modify() {
     this.isModified = true;
   }

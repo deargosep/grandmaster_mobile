@@ -4,6 +4,7 @@ import 'package:grandmaster/state/events.dart';
 import 'package:grandmaster/state/user.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/utils/download.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
@@ -11,8 +12,6 @@ import 'package:grandmaster/widgets/brand_pill.dart';
 import 'package:grandmaster/widgets/images/brand_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class EventScreen extends StatefulWidget {
   EventScreen({Key? key}) : super(key: key);
@@ -311,9 +310,7 @@ class _EventScreenState extends State<EventScreen> {
                                           .get(
                                               '/events/reports/?event=${item.id}')
                                           .then((value) {
-                                        launchUrlString(value.data["url"],
-                                            mode:
-                                                LaunchMode.externalApplication);
+                                        download(value.data["url"]);
                                       });
                                     },
                                     color:

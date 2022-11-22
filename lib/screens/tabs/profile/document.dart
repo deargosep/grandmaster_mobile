@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:grandmaster/utils/custom_scaffold.dart';
+import 'package:grandmaster/utils/download.dart';
 import 'package:grandmaster/widgets/brand_card.dart';
 import 'package:grandmaster/widgets/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../state/user.dart';
 import '../../../utils/dio.dart';
@@ -121,8 +121,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                           print(e);
                         }
                       } else {
-                        await launchUrl(url,
-                            mode: LaunchMode.externalApplication);
+                        download(url.toString());
                       }
                     }),
                 body: Center(
@@ -216,9 +215,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 print(e);
               }
             } else {
-              await launchUrl(
-                  Uri.parse(documents[optionList[currentIndex]["code"]]),
-                  mode: LaunchMode.externalApplication);
+              download(rawUrl);
             }
           },
         ),

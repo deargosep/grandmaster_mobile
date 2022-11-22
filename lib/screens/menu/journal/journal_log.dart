@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:grandmaster/state/groups.dart';
 import 'package:grandmaster/utils/custom_scaffold.dart';
 import 'package:grandmaster/utils/dio.dart';
+import 'package:grandmaster/utils/download.dart';
 import 'package:grandmaster/widgets/bottom_panel.dart';
 import 'package:grandmaster/widgets/brand_button.dart';
 import 'package:grandmaster/widgets/header.dart';
@@ -12,7 +13,6 @@ import 'package:grandmaster/widgets/select_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
 
 class LogJournalScreen extends StatefulWidget {
   LogJournalScreen({Key? key}) : super(key: key);
@@ -89,8 +89,7 @@ class _LogJournalScreenState extends State<LogJournalScreen> {
                   showErrorSnackbar(
                       'Перейдите в версию для браузера или в мобильное приложение для скачивания');
                 } else {
-                  launchUrl(Uri.parse(value.data["url"]),
-                      mode: LaunchMode.externalApplication);
+                  download(value.data["url"]);
                 }
               });
             }
